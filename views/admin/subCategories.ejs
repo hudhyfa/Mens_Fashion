@@ -1,0 +1,123 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Breeze Admin</title>
+    <link rel="stylesheet" href="/adminAssets/vendors/flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="/adminAssets/vendors/mdi/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="/adminAssets/vendors/css/vendor.bundle.base.css" />
+    <link rel="stylesheet" href="/adminAssets/vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/adminAssets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" href="/adminAssets/css/style.css" />
+    <link rel="shortcut icon" href="/adminAssets/images/favicon.png" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- sidebar -->
+    <%-include('_sidebar')-%>
+      <div class="container-fluid page-body-wrapper">
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close mdi mdi-close"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-default-theme">
+            <div class="img-ss rounded-circle bg-light border mr-3"></div> Default
+          </div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme">
+            <div class="img-ss rounded-circle bg-dark border mr-3"></div> Dark
+          </div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles light"></div>
+            <div class="tiles dark"></div>
+          </div>
+        </div>
+        <!-- navbar -->
+        <%-include('_navbar')-%>
+        <div class="main-panel">
+          <div class="content-wrapper pb-0">
+            <div class="page-header flex-wrap">
+              <h3 class="mb-0">welcome back admin! <span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Your Sub-Category management page.</span>
+              </h3>
+              <div class="d-flex">
+                <button type="button" class="btn btn-sm ml-3 btn-success">Add Sub-Category</button>
+              </div>
+            </div>
+        </div>
+        <!-- table begins -->
+        <div class="col-lg-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Sub-Category Name</th>
+                        <th>Parent Category</th>
+                        <th>Description</th>
+                        <th>Config</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>sports</td>
+                        <td>Tshirt</td>
+                        <td>Made for Sports with more breathable and anti-sweating material.</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" onclick="editItem()">Edit</button>
+                            <button type="button" class="btn btn-success" onclick="toggleListUnlist(this)">List</button>
+                            <button type="button" class="btn btn-warning" style="display:none;" onclick="toggleListUnlist(this)">Unlist</button>
+                        </td>
+                      </tr>  
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- table ends -->
+        <%-include('_footer')-%>
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="/adminAssets/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="/adminAssets/vendors/chart.js/Chart.min.js"></script>
+    <script src="/adminAssets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.resize.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.categories.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.fillbetween.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.stack.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.pie.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="/adminAssets/js/off-canvas.js"></script>
+    <script src="/adminAssets/js/hoverable-collapse.js"></script>
+    <script src="/adminAssets/js/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="/adminAssets/js/dashboard.js"></script>
+    <!-- End custom js for this page -->
+    <script>
+        // Function to toggle List/Unlist buttons
+        function toggleListUnlist(button) {
+            const listButton = button.parentElement.querySelector('.btn-success');
+            const unlistButton = button.parentElement.querySelector('.btn-warning');
+
+            // Toggle button visibility
+            listButton.style.display = listButton.style.display === 'none' ? 'inline-block' : 'none';
+            unlistButton.style.display = unlistButton.style.display === 'none' ? 'inline-block' : 'none';
+        }
+
+        // Function to handle the edit action
+        function editItem() {
+            // Implement edit logic here
+            alert('Edit item clicked');
+        }
+    </script>
+  </body>
+</html>

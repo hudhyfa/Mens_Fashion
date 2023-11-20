@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Breeze Admin</title>
+    <link rel="stylesheet" href="/adminAssets/vendors/flag-icon-css/css/flag-icon.min.css" />
+    <link rel="stylesheet" href="/adminAssets/vendors/mdi/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="/adminAssets/vendors/css/vendor.bundle.base.css" />
+    <link rel="stylesheet" href="/adminAssets/vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/adminAssets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css" />
+    <link rel="stylesheet" href="/adminAssets/css/style.css" />
+    <link rel="shortcut icon" href="/adminAssets/images/favicon.png" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container label {
+            font-weight: bold;
+            color: #343a40;
+        }
+
+        .form-container .form-control {
+            margin-bottom: 15px;
+        }
+
+        .form-container .btn-primary {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .form-container .btn-primary:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- sidebar -->
+    <%-include('_sidebar')-%>
+      <div class="container-fluid page-body-wrapper">
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close mdi mdi-close"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-default-theme">
+            <div class="img-ss rounded-circle bg-light border mr-3"></div> Default
+          </div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme">
+            <div class="img-ss rounded-circle bg-dark border mr-3"></div> Dark
+          </div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles light"></div>
+            <div class="tiles dark"></div>
+          </div>
+        </div>
+        <!-- navbar -->
+        <%-include('_navbar')-%>
+        <div class="main-panel">
+          <div class="content-wrapper pb-0">
+            <div class="page-header flex-wrap">
+              <h3 class="mb-0">welcome back admin! <span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Your Product editing page.</span>
+              </h3>
+            </div>
+        </div>
+        <!-- table begins -->
+        <div class="container form-container">
+            <h2 class="mb-4">Edit Product</h2>
+            <form>
+                <div class="mb-3">
+                    <label for="productImage" class="form-label">Product Image</label>
+                    <input type="file" class="form-control" id="productImage">
+                </div>
+    
+                <div class="mb-3">
+                    <label for="productName" class="form-label">Product Name</label>
+                    <input type="text" class="form-control" id="productName" required>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" class="form-control" id="category" required>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="subCategory" class="form-label">Subcategory</label>
+                    <input type="text" class="form-control" id="subCategory" required>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="number" class="form-control" id="price" required>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="offerPrice" class="form-label">Offer Price</label>
+                    <input type="number" class="form-control" id="offerPrice">
+                </div>
+    
+                <div class="mb-3">
+                    <label class="form-label">Quantity:</label>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label for="quantitySmall" class="form-label">Small</label>
+                            <input type="number" class="form-control" id="quantitySmall" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="quantityMedium" class="form-label">Medium</label>
+                            <input type="number" class="form-control" id="quantityMedium" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="quantityLarge" class="form-label">Large</label>
+                            <input type="number" class="form-control" id="quantityLarge" required>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="mb-3">
+                    <label for="productDescription" class="form-label">Product Description</label>
+                    <textarea class="form-control" id="productDescription" rows="4" required></textarea>
+                </div>
+    
+                <button type="submit" class="btn btn-primary">Update product</button>
+            </form>
+        </div>
+        <!-- table ends -->
+        <%-include('_footer')-%>
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="/adminAssets/vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="/adminAssets/vendors/chart.js/Chart.min.js"></script>
+    <script src="/adminAssets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.resize.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.categories.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.fillbetween.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.stack.js"></script>
+    <script src="/adminAssets/vendors/flot/jquery.flot.pie.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="/adminAssets/js/off-canvas.js"></script>
+    <script src="/adminAssets/js/hoverable-collapse.js"></script>
+    <script src="/adminAssets/js/misc.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="/adminAssets/js/dashboard.js"></script>
+    <!-- End custom js for this page -->
+  </body>
+</html>

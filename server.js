@@ -1,4 +1,6 @@
 const express = require('express');
+const session = require('express-session')
+const flash = require('connect-flash')
 const path = require('path');
 const mongo = require('./config/db')
 
@@ -15,6 +17,17 @@ app.set('views',path.join(__dirname,'views'))
 // load static files
 app.use(express.static(path.join(__dirname,'public/userAssets')));
 app.use(express.static(path.join(__dirname,'public')));
+
+// Configurations
+app.use(session({
+    secret:'envStuff',
+    resave:false,
+    saveUninitialized:false
+}))
+app.use(flash());
+
+
+
 
 app.get('/',(req,res)=>{
     res.render('user/home')

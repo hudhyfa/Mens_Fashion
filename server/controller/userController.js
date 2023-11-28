@@ -30,22 +30,24 @@ const sendOtp = async (email) => {
 }
 
 const emailValidation = async (req,res) => {
-    const { email } = req.body;
+    const { email,phone } = req.body;
     req.session.newEmail = email;
+    req.session.newPhone = phone;
 
     try {
 
         // check if the user already exists
         const userExists = await User.findOne({email: email})
-        if(exsistingUser){
-            req.flash("userExists","user already exists")
+        const userPhone = await User.findOne({phone: phone})
+        if(userExists){
+            req.flash("userExists","user with this email already exists")
             res.status(402).redirect('/email_Validation')
         }
 
-        // create a new user
-        const newUser = await User.create({email: email})
-        newUser.save()
-        console.log(`user created: ${newUser.email}`)
+        if(userPhone){
+            req.flash("userExists","user with this phone already exists")
+            res.status(402).redirect('/email_Validation')
+        }
 
         // send otp for email validation
         const otp = await sendOtp(email);
@@ -64,6 +66,7 @@ const otpValidation = async (req,res) => {
     
     try {
         const email = req.session.newEmail;
+        const phone = req.session.newPhone;
         if(!email){
             req.flash('validationError',"Email not found");
             res.status(402).redirect('/email_validation');
@@ -85,13 +88,14 @@ const otpValidation = async (req,res) => {
             res.status(403).redirect("/otp_verification")
         }
 
-        // mark email as verified
-        const user = await User.findOne({email: email});
-        user.isEmailVerified = true;
-        user.save();
+        // create a new user
+        const newUser = await User.create({email: email,phone: phone})
+        newUser.save()
+        console.log(`user created: ${newUser.email}`)
 
         await otpData.delete();
         delete req.session.newEmail;
+        delete req.session.newPhone;
         
         res.status(200).redirect("/home")
 
@@ -104,7 +108,7 @@ const otpValidation = async (req,res) => {
 const resendOtp = async (req,res) => {
     try {
         const email = req.session.newEmail;
-        
+
         // update otp in user's doc
         const newOtp = await sendOtp(email)
     

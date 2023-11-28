@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const schema = new mongoose.Schema({
     username:{
         type:String,
-        require:true
+        require:true,
+        default:"username"
     },
     email:{
         type:String,
@@ -12,7 +13,8 @@ const schema = new mongoose.Schema({
     },
     phone:{
         type:Number,
-        require:true
+        require:true,
+        unique:true
     },
     userProfile:{
         type:String,

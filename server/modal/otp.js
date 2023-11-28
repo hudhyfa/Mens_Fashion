@@ -12,7 +12,7 @@ const schema  = new mongoose.Schema({
     expirationTime:{
         type: Date,
         required:true,
-        expires: 60
+        expires: 300
     }
 })
 

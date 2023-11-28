@@ -4,30 +4,6 @@ const Otp = require('../modal/otp')
 const transporter = require('../../config/nodemailer');
 const { generateOtp } = require('../../utils/otpUtils');
 
-const sendOtp = async (email) => {
-
-    const { otp,expireTime } = generateOtp();
-
-    try{
-
-        const newOtp = await Otp.create({email, otp, expireTime});
-        await newOtp.save();
-
-        await transporter.sendMail({
-            from:"hudyfaismail@gmail.com",
-            to: email,
-            subject:"verification otp",
-            text:`Your OTP for email verification: ${otp} will expire after one minute` 
-        });
-
-        console.log(`OTP sent to ${email}: ${otp}, Expiration Time: ${new Date(expireTime).toLocaleString()}`);
-        return otp;
-
-    }catch(error){
-        console.error('Error sending OTP',error.message);
-        throw new Error('Error sending OTP')
-    }
-}
 
 const emailValidation = async (req,res) => {
     const { email,phone } = req.body;
@@ -54,7 +30,7 @@ const emailValidation = async (req,res) => {
 
         req.flash("otpInfo","check OTP code in your Gmail inbox")
         res.status(200).redirect('/otp_Verification');
-
+        
     } catch (error) {
         req.flash("validationError","error in validating your email")
         res.status(402).redirect('/email_Validation');
@@ -98,7 +74,7 @@ const otpValidation = async (req,res) => {
         delete req.session.newPhone;
         
         res.status(200).redirect("/home")
-
+        
     } catch (error) {
         req.flash("validationError","otp validation failed");
         res.status(402).redirect('/email_Validation');
@@ -127,7 +103,7 @@ const resendOtp = async (req,res) => {
             })
             await newUpdatedOtp.save();
         }
-
+        
         console.log(`Resending OTP to ${email}. Expiration Time: ${new Date(newExpirationTime).toLocaleString()}`);
         res.status(200).redirect('otp_validation')
         
@@ -136,8 +112,34 @@ const resendOtp = async (req,res) => {
         req.flash("validationError","otp resend failed");
         res.status(500).redirect('otp_validation')
     }
-
+    
 }
+
+const sendOtp = async (email) => {
+
+    const { otp,expireTime } = generateOtp();
+
+    try{
+
+        const newOtp = await Otp.create({email, otp, expireTime});
+        await newOtp.save();
+
+        await transporter.sendMail({
+            from:"hudyfaismail@gmail.com",
+            to: email,
+            subject:"verification otp",
+            text:`Your OTP for email verification: ${otp} will expire after one minute` 
+        });
+
+        console.log(`OTP sent to ${email}: ${otp}, Expiration Time: ${new Date(expireTime).toLocaleString()}`);
+        return otp;
+
+    }catch(error){
+        console.error('Error sending OTP',error.message);
+        throw new Error('Error sending OTP')
+    }
+}
+
 
 module.exports = {
     sendOtp,

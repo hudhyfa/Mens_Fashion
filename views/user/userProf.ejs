@@ -7,7 +7,7 @@
     <meta name="keywords" content="Male_Fashion, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Male-Fashion | Template</title>
+    <title>Men's Fashion</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap"
@@ -26,105 +26,157 @@
 
     <style>
         body {
-            background-color: #f2f2f2;
+            background-color: #fff;
             color: #333;
             margin: 0;
             font-family: 'Nunito Sans', sans-serif;
         }
-    
-        .full-height {
-            min-height: 100vh;
+        
+        .loginSection{
+            background-color: #eeeeee;
+            color: #333;
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100vh;
         }
-    
-        .otp-container {
-            max-width: 500px;
+
+        .login-form {
+            max-width: 400px;
             padding: 30px;
             text-align: center;
-            border: 2px solid #333;
-            border-radius: 15px;
-            background-color: #fff;
-            transition: box-shadow 0.3s;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #f5f5f5;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
         }
-    
-        .otp-container:hover {
+
+        .login-form:hover {
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
-    
-        .otp-input-group {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+
+        .form-group {
+            margin-bottom: 20px;
         }
-    
-        .otp-input {
-            width: 200px;
-            height: 40px;
-            margin: 10px;
-            font-size: 20px;
-            text-align: center;
-            border: 2px solid #333;
-            border-radius: 10px;
-            transition: border-color 0.3s, transform 0.3s;
-            transition-timing-function: ease-out;
+
+        .form-group label {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 5px;
+            color: #555;
         }
-    
-        .otp-input:hover,
-        .otp-input:focus {
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            background-color: #eee;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
             border-color: #e74c3c;
-            transform: scale(1.05);
         }
-    
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
         .submit-btn {
-            background-color: #333;
+            background-color: #e74c3c;
             color: #fff;
             border: none;
             padding: 15px 30px;
             cursor: pointer;
-            border-radius: 10px;
+            border-radius: 5px;
             transition: background-color 0.3s, transform 0.3s;
         }
-    
+
         .submit-btn:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .social-login {
+            margin-top: 20px;
+        }
+
+        .social-login-btn {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            margin: 0 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .social-login-btn:hover {
             background-color: #555;
             transform: scale(1.05);
         }
-    
-        .resend-link {
+
+        .signup-link,
+        .forgot-password {
             color: #e74c3c;
             text-decoration: none;
-            margin-top: 20px;
+            margin-top: 10px;
             display: block;
+            transition: color 0.3s;
         }
-    
-        .resend-link:hover {
-            color: #333;
+
+        .signup-link:hover,
+        .forgot-password:hover {
+            color: #c0392b;
         }
-    
-        /* Responsive styles */
-    
         @media only screen and (max-width: 768px) {
-            .otp-container {
-                max-width: 90%;
+            .loginSection {
+                height: auto;
+                padding: 20px;
             }
-    
-            .otp-input {
-                width: 100%;
+
+            .login-form {
+                max-width: 100%;
+                margin: 0 auto;
             }
-    
-            .submit-btn {
-                width: 100%;
+
+            .form-group input {
+                width: calc(100% - 20px);
             }
-        }
-    
-        @media only screen and (min-width: 769px) and (max-width: 1024px) {
-            .otp-container {
-                max-width: 70%;
-            }
-        }
+}
+
+@media only screen and (max-width: 576px) {
+    .form-group input {
+        width: calc(100% - 10px);
+    }
+
+    .social-login-btn,
+    .submit-btn {
+        width: 100%;
+    }
+
+    .header__menu {
+        display: none;
+    }
+
+    .canvas__open {
+        display: block;
+    }
+
+    .header__top__links,
+    .header__top__hover,
+    .offcanvas__nav__option {
+        display: none;
+    }
+}
     </style>
 </head>
 
@@ -136,21 +188,9 @@
 
     <%-include('userNavbar')%>
 
-    <!-- OTP Section Begin -->
-    <div class="full-height">
-        <div class="otp-container">
-            <h2>Enter Your Four-Digit OTP</h2>
-            <form action="#">
-                <div class="otp-input-group">
-                    <input type="text" class="otp-input" maxlength="4" id="otp" />
-                </div>
-                <br>
-                <button type="submit" class="submit-btn">Submit</button>
-                <a href="#" class="resend-link">Resend OTP</a>
-            </form>
-        </div>
-    </div>
-    <!-- OTP Section End -->
+    <center>
+        <h2>hello username</h2>
+    </center>
 
     <%-include('userFooter')%>
 
@@ -176,23 +216,6 @@
     <script src="js/mixitup.min.js"></script>
     <script src="js/owl.carousel.min.js"></script>
     <script src="js/main.js"></script>
-    <script>
-        function moveToNext(currentInput, nextInputId) {
-            if (event.keyCode === 8 && currentInput.value.length === 0) {
-                // Backspace key pressed and current input is empty
-                if (nextInputId) {
-                    document.getElementById(nextInputId).focus();
-                }
-            } else if (currentInput.value.length === currentInput.maxLength) {
-                // Input is filled, move to the next input
-                if (nextInputId) {
-                    document.getElementById(nextInputId).focus();
-                } else {
-                    currentInput.blur(); // Remove focus after the last input
-                }
-            }
-        }
-    </script>
 </body>
 
 </html>

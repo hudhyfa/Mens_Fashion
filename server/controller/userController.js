@@ -29,7 +29,7 @@ const emailValidation = async (req,res) => {
         // check if the user already exists
         const userExists = await User.findOne({email: email})
         if(exsistingUser){
-            // user already exists
+            req.flash("userExists","user already exists")
             res.status(402).redirect('/email_Validation')
         }
 
@@ -44,17 +44,43 @@ const emailValidation = async (req,res) => {
         newUser.otp = otp;
         await newUser.save();
 
-        // check otp in your gmail inbox
+        req.flash("otpInfo","check OTP code in your Gmail inbox")
         res.status(200).redirect('/otp_Verification');
 
     } catch (error) {
+        req.flash("validationError","error in validating your email")
         res.status(402).redirect('/email_Validation');
+    }
+}
 
+const otpValidation = async (req,res) => {
+    const { email,otp } = req.body;
+
+    try {
+        // find user by email
+        const user = await User.findOne({email: email});
+        
+        // check if otp matches
+        if(user.otp !== otp){
+            req.flash("invalidOtp","invalid otp")
+            res.status(402).redirect("/email_validation")
+        }
+
+        // mark email as verified
+        user.isEmailVerified = true;
+        user.save();
+
+        res.status(200).redirect("/home")
+
+    } catch (error) {
+        
     }
 }
 
 module.exports = {
-    sendOtp
+    sendOtp,
+    emailValidation,
+    otpValidation
 }
 
 

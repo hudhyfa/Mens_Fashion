@@ -1,16 +1,37 @@
-const user_route = express();
+
 const User = require('../modal/user');
 const Otp = require('../modal/otp')
 const transporter = require('../../config/nodemailer');
+const userValidator = require('../../utils/user_validator')
 const { generateOtp } = require('../../utils/otpUtils');
+
+const get_userLogin = async (req,res) => {
+    // if user is not logged in
+    res.render('user/login');
+}
+
+const get_userSignup = async (req,res) => {
+    res.render('user/emailValidation')
+}
+
 
 
 const emailValidation = async (req,res) => {
+
     const { email,phone } = req.body;
     req.session.newEmail = email;
     req.session.newPhone = phone;
 
+    // validate input data
+    const validationErrors = userValidator.primary_validation(req.body)
+
     try {
+        // check if there are validation errors
+        if(Object.keys(validationErrors).length > 0){
+            Object.keys(validationErrors).forEach( key => {
+                req.flash('invalidCreds',validationErrors[key]);
+            })
+        }
 
         // check if the user already exists
         const userExists = await User.findOne({email: email})
@@ -128,7 +149,7 @@ const sendOtp = async (email) => {
             from:"hudyfaismail@gmail.com",
             to: email,
             subject:"verification otp",
-            text:`Your OTP for email verification: ${otp} will expire after one minute` 
+            text:`Your OTP for email verification: ${otp} will expire after five minutes!!` 
         });
 
         console.log(`OTP sent to ${email}: ${otp}, Expiration Time: ${new Date(expireTime).toLocaleString()}`);
@@ -144,8 +165,10 @@ const sendOtp = async (email) => {
 module.exports = {
     sendOtp,
     resendOtp,
+    otpValidation,
     emailValidation,
-    otpValidation
+    get_userLogin,
+    get_userSignup
 }
 
 

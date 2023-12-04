@@ -32,4 +32,6 @@ const schema = new mongoose.Schema({
     }
 })
 
-const user_reg =  mongoose.model("user_collection", schema)
+const user =  mongoose.model("user_collection", schema)
+
+module.exports = user;

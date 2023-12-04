@@ -1,9 +1,14 @@
 
 const User = require('../modal/user');
 const Otp = require('../modal/otp')
-const transporter = require('../../config/nodemailer');
 const userValidator = require('../../utils/user_validator')
+const transporter = require('../../config/nodemailer');
 const { generateOtp } = require('../../utils/otpUtils');
+
+
+const get_homepage = async (req,res) => {
+    res.render('user/home')
+}
 
 const get_userLogin = async (req,res) => {
     // if user is not logged in
@@ -18,24 +23,26 @@ const get_userSignup = async (req,res) => {
 
 const emailValidation = async (req,res) => {
 
-    const { email,phone } = req.body;
-    req.session.newEmail = email;
-    req.session.newPhone = phone;
+    try{
 
-    // validate input data
-    const validationErrors = userValidator.primary_validation(req.body)
+        const { email,phone } = req.body;
+        req.session.newEmail = email;
+        req.session.newPhone = phone;
 
-    try {
+        // validate input data
+        const validationErrors = userValidator.primary_validation(req.body)
+
         // check if there are validation errors
         if(Object.keys(validationErrors).length > 0){
             Object.keys(validationErrors).forEach( key => {
                 req.flash('invalidCreds',validationErrors[key]);
             })
         }
-
+        
         // check if the user already exists
         const userExists = await User.findOne({email: email})
-        const userPhone = await User.findOne({phone: phone})
+        const userPhone = await User.findOne({phone: phone})        
+        
         if(userExists){
             req.flash("userExists","user with this email already exists")
             res.status(402).redirect('/email_Validation')
@@ -142,21 +149,29 @@ const sendOtp = async (email) => {
 
     try{
 
-        const newOtp = await Otp.create({email, otp, expireTime});
+        const newOtp = await Otp.create({email,otp:otp,expirationTime:expireTime});
         await newOtp.save();
 
-        await transporter.sendMail({
-            from:"hudyfaismail@gmail.com",
+        const mailOptions = {
+            from:"Men's Fashion",
             to: email,
             subject:"verification otp",
-            text:`Your OTP for email verification: ${otp} will expire after five minutes!!` 
-        });
+            text:`Your OTP for email verification: ${otp} will expire after five minutes!!`
+        }
+
+        await transporter.sendmail(mailOptions,(err, result)=>{
+            if(err){
+                console.error(err);
+            }else{
+                console.log(result);
+            }
+        })
 
         console.log(`OTP sent to ${email}: ${otp}, Expiration Time: ${new Date(expireTime).toLocaleString()}`);
         return otp;
 
     }catch(error){
-        console.error('Error sending OTP',error.message);
+        console.error('Error sending OTP:',error.message);
         throw new Error('Error sending OTP')
     }
 }
@@ -168,7 +183,8 @@ module.exports = {
     otpValidation,
     emailValidation,
     get_userLogin,
-    get_userSignup
+    get_userSignup,
+    get_homepage
 }
 
 

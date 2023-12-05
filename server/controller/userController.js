@@ -2,7 +2,7 @@
 const User = require('../modal/user');
 const Otp = require('../modal/otp')
 const userValidator = require('../../utils/user_validator')
-const transporter = require('../../config/nodemailer');
+const { transporter } = require('../../config/nodemailer');
 const { generateOtp } = require('../../utils/otpUtils');
 
 
@@ -158,8 +158,8 @@ const sendOtp = async (email) => {
             subject:"verification otp",
             text:`Your OTP for email verification: ${otp} will expire after five minutes!!`
         }
-
-        await transporter.sendmail(mailOptions,(err, result)=>{
+        console.log(typeof transporter.sendMail)
+        await transporter.sendMail(mailOptions,(err, result)=>{
             if(err){
                 console.error(err);
             }else{

@@ -1,12 +1,15 @@
 const express = require('express');
 const session = require('express-session')
 const flash = require('connect-flash')
+const cors = require('cors')
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongo = require('./config/db')
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+
+require('dotenv').config()
+// const PORT = process.env.PORT;
 
 // connect to mongoDB
 mongo.connectDB()
@@ -37,10 +40,10 @@ app.use((req,res,next)=>{
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
+app.use(cors());
+
 app.use('/',user_route);
 
-app.get('/',(req,res)=>{
-    res.render('user/home')
-})
 
-app.listen(PORT,()=>console.log("connection established in localhost:4000"))
+
+app.listen(process.env.PORT,()=>console.log(`connection on port ${process.env.PORT}`));

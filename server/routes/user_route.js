@@ -10,7 +10,7 @@ user_route.get('/',userController.get_homepage)
 
 user_route.get('/userProf', userLoggedIn, userController.get_userLogin)
 
-user_route.get('/userSignup',userController.get_userSignup)
-user_route.post('/userSignup',userController.emailValidation)
+user_route.get('/email_validation',userController.get_userSignup)
+user_route.post('/email_validation',userController.emailValidation)
 
 module.exports = user_route;

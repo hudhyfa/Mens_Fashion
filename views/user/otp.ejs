@@ -140,13 +140,28 @@
     <div class="full-height">
         <div class="otp-container">
             <h2>Enter Your Four-Digit OTP</h2>
-            <form action="#">
+            <form action="/otp_verification" method="post">
                 <div class="otp-input-group">
-                    <input type="text" class="otp-input" maxlength="4" id="otp" />
+                    <input type="text" class="otp-input" maxlength="4" id="otp" name="otp"/>
+                </div>
+                <div class="err_msg my-3">
+                    <% if(flash.invalidOtp){ %>
+                    <h6 style="color: #e74c3c;"><%=flash.invalidCreds%></h6>
+                    <% }else if(flash.validationError){ %>
+                    <h6 style="color: #e74c3c;"><%=flash.invalidCreds%></h6>
+                    <% }else if(flash.expiredOtp){ %>
+                    <h6 style="color: #e74c3c;"><%=flash.expiredOtp%></h6>
+                    <% }else if(flash.otpInfo){ %>
+                    <h6 style="color: rgb(80, 233, 126);"><%=flash.otpInfo%></h6>
+                    <% }else if(flash.resendOtp){ %>
+                    <h6 style="color: rgb(80, 233, 126);"><%=flash.resendOtp%></h6>
+                    <% } %>
                 </div>
                 <br>
                 <button type="submit" class="submit-btn">Submit</button>
-                <a href="#" class="resend-link">Resend OTP</a>
+            </form>
+            <form action="/otp_resent" id="resend-form" method="post">
+                <a style="cursor: pointer;" onclick="document.getElementById('resend-form').submit()" class="resend-link">Resend OTP</a>
             </form>
         </div>
     </div>

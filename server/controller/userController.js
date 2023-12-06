@@ -105,7 +105,7 @@ const otpValidation = async (req,res) => {
         delete req.session.newEmail;
         delete req.session.newPhone;
         
-        return res.status(200).redirect("/")
+        return res.redirect(200,"/user_login")
         
     } catch (error) {
         req.flash("validationError","otp validation failed");

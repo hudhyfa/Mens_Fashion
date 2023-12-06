@@ -16,12 +16,16 @@ const get_userLogin = async (req,res) => {
     res.render('user/login');
 }
 
-const get_userSignup = async (req,res) => {
+const get_emailValidation = async (req,res) => {
     res.render('user/emailValidation')
 }
 
 const get_verifyOtp = async (req,res) => {
     res.render('user/otp')
+}
+
+const get_userSignup = async (req,res) => {
+    res.render('user/signup')
 }
 
 
@@ -41,6 +45,7 @@ const emailValidation = async (req,res) => {
             Object.keys(validationErrors).forEach( key => {
                 req.flash('invalidCreds',validationErrors[key]);
             })
+            return res.status(402).redirect('/email_validation');
         }
         
         // check if the user already exists
@@ -105,7 +110,7 @@ const otpValidation = async (req,res) => {
         delete req.session.newEmail;
         delete req.session.newPhone;
         
-        return res.redirect(200,"/user_login")
+        return res.status(402).redirect("/user_signup")
         
     } catch (error) {
         req.flash("validationError","otp validation failed");
@@ -190,9 +195,10 @@ module.exports = {
     otpValidation,
     emailValidation,
     get_userLogin,
-    get_userSignup,
+    get_emailValidation,
     get_homepage,
-    get_verifyOtp
+    get_verifyOtp,
+    get_userSignup
 }
 
 

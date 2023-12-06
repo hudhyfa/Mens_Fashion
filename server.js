@@ -14,7 +14,9 @@ require('dotenv').config()
 // connect to mongoDB
 mongo.connectDB()
 
+// importing routes
 const user_route = require('./server/routes/user_route')
+const admin_route = require('./server/routes/admin_route')
 
 // While rendering
 app.set('view engine', 'ejs');
@@ -42,7 +44,10 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.use(cors());
 
+// setting routes
 app.use('/',user_route);
+app.use('/',admin_route);
+
 
 
 

@@ -88,7 +88,7 @@ const userSignup = async (req,res) => {
 
         const email = req.session.newEmail;
         const phone = req.session.newPhone;
-        const { first_name, last_name, profile_img, password } = req.body;
+        const { first_name, last_name, password } = req.body;
         
         const validatePassword = userValidator.secondary_validation(req.body);
 

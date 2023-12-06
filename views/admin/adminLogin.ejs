@@ -188,13 +188,24 @@
         <div class="login-form">
             <h2>Admin Login</h2>
             <form action="#" method="post">
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
+                <div class="form-group my-3">
+                    <label for="name">e-mail:</label>
+                    <input type="text" id="name" name="email" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required>
+                </div>
+                <div class="err_msg my-3">
+                    <% if(flash.invalidCreds) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.invalidCreds%></h6>
+                    <% }else if(flash.wrngCreds) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.wrngCreds%></h6>
+                    <% }else if(flash.wrngEmail) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.wrngEmail%></h6>
+                    <% }else if(flash.wrngPassword) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.wrngPassword%></h6>
+                    <% } %>
                 </div>
                 <div class="form-actions">
                     <button type="submit" class="submit-btn">Login</button>

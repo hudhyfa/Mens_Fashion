@@ -17,7 +17,6 @@ const primary_validation = function (data) {
     
     // phone validation
     if(!phone){
-        console.log("inside not phone");
         errors.phone = "please enter your phone number"
     }else if(!phonePattern.test(phone)){
         errors.phone = "enter a valid phone number"
@@ -27,6 +26,27 @@ const primary_validation = function (data) {
 
 }
 
+const secondary_validation = function (data) {
+    const { password, confirm_password} = data;
+    
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    const errors = {}
+
+    // password validation
+    if(!password || !confirm_password){
+        errors.password = "please enter your password"
+    }else if(!passwordPattern.test(password)){
+        errors.password = "password must include a number, capital letter and atleast 8 characters"
+    }else if(!passwordPattern.test(confirm_password)){
+        errors.password = "try again"
+    }
+
+    return errors;
+
+}
+
 module.exports = {
-    primary_validation
+    primary_validation,
+    secondary_validation
 }

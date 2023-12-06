@@ -28,6 +28,17 @@ const get_userSignup = async (req,res) => {
     res.render('user/signup')
 }
 
+const user_signup = async (req,res) => {
+    try {
+
+        const email = req.session.newEmail;
+        const phone = req.session.newPhone;
+        const { first_name, last_name, profile_img, password } = 
+
+    } catch (error) {
+        
+    }
+}
 
 const emailValidation = async (req,res) => {
 

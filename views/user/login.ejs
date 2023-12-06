@@ -200,6 +200,11 @@
                     <label for="password">Password:</label>
                     <input type="password" id="password" name="password" required>
                 </div>
+                <div class="err_msg my-3">
+                    <% if(flash.loginError) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.loginError%></h6>
+                    <% } %>
+                </div>
                 <div class="form-actions">
                     <button type="submit" class="submit-btn">Login</button>
                     <a href="#" class="forgot-password">Forgot Password?</a>

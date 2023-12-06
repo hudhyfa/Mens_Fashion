@@ -27,11 +27,25 @@ const primary_validation = function (data) {
 }
 
 const secondary_validation = function (data) {
-    const { password, confirm_password} = data;
+
+    const { first_name, last_name, profile_img, password, confirm_password} = data;
     
     const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/
 
     const errors = {}
+    
+    // username validation
+    if(!first_name || !last_name){
+        errors.username = "first and last name required"
+    }
+
+    // image url validation
+    // if(profile_img){
+    //     if(!urlPattern.test(profile_img)){
+    //         errors.profile_img = "enter a valid image url"
+    //     }
+    // }
 
     // password validation
     if(!password || !confirm_password){

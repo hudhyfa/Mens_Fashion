@@ -2,6 +2,7 @@
 const User = require('../modal/user');
 const Otp = require('../modal/otp')
 const userValidator = require('../../utils/user_validator')
+const bcrypt = require('bcrypt')
 const { transporter } = require('../../config/nodemailer');
 const { generateOtp } = require('../../utils/otpUtils');
 
@@ -28,15 +29,56 @@ const get_userSignup = async (req,res) => {
     res.render('user/signup')
 }
 
-const user_signup = async (req,res) => {
+//* user log in
+const userLogin = async (req,res) => {
+    try {
+        
+    } catch (error) {
+        req.flash("loginError","error while logging in");
+        return res.status(402).redirect('/user_login')
+    }
+}
+
+//* user sign in
+const userSignup = async (req,res) => {
     try {
 
         const email = req.session.newEmail;
         const phone = req.session.newPhone;
-        const { first_name, last_name, profile_img, password } = 
-
-    } catch (error) {
+        const { first_name, last_name, profile_img, password } = req.body;
         
+        const validatePassword = userValidator.secondary_validation(req.body);
+
+        if(Object.keys(validatePassword).length > 0){
+            Object.keys(validatePassword).forEach( key => {
+                req.flash('invalidCreds',validatePassword[key])
+            })
+            return res.status(402).redirect('/user_signup')
+        }
+
+        const user_name = first_name + ' ' + last_name;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        if(hashedPassword){
+            // create a new user
+            const newUser = await User.create({
+                email: email,
+                phone: phone,
+                password: hashedPassword,
+                username: user_name,
+                // userProfile: profile_img
+            })
+            newUser.save()
+            console.log(`user created: ${newUser.email}`)
+        }
+
+        delete req.session.newEmail;
+        delete req.session.newPhone;
+
+        res.status(200).redirect('/user_login');
+
+    } catch (error) {     
+        req.flash("signupError","error while signing up");
+        return res.status(402).redirect('/user_signup')
     }
 }
 
@@ -112,15 +154,7 @@ const otpValidation = async (req,res) => {
             return res.status(403).redirect("/otp_verification")
         }
 
-        // create a new user
-        const newUser = await User.create({email: email,phone: phone})
-        newUser.save()
-        console.log(`user created: ${newUser.email}`)
-
         await otpData.deleteOne();
-        delete req.session.newEmail;
-        delete req.session.newPhone;
-        
         return res.status(402).redirect("/user_signup")
         
     } catch (error) {
@@ -205,6 +239,7 @@ module.exports = {
     resendOtp,
     otpValidation,
     emailValidation,
+    userSignup,
     get_userLogin,
     get_emailValidation,
     get_homepage,

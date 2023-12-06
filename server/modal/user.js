@@ -29,10 +29,6 @@ const schema = new mongoose.Schema({
         type:Boolean,
         require:true,
         default:false
-    },
-    isEmailVerified:{
-        type:Boolean,
-        default:false
     }
 })
 

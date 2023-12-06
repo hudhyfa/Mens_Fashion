@@ -46,9 +46,15 @@ const adminLogin = async (req,res) => {
 
 }
 
+const adminLogout = async (req,res) => {
+    req.session.adminAuth = false;
+    res.status(200).redirect('/admin_login');
+}
+
 
 module.exports = {
     get_adminLogin,
     admin_dashboard,
-    adminLogin
+    adminLogin,
+    adminLogout
 }

@@ -62,12 +62,12 @@
     <li class="nav-item sidebar-actions">
       <div class="nav-link">
         <div class="mt-4">
-          <div class="border-none">
-            <p class="text-black">Notification</p>
-          </div>
-          <ul class="mt-4 pl-0">
+          <form class="mt-4 pl-0" action="/admin_logout" id="logoutLink" method="post">
+            <a style="font-size: large;" onclick="document.getElementById('logoutLink').submit()" >Sign out</a>
+          </form>
+          <!-- <ul class="mt-4 pl-0">
             <li>Sign Out</li>
-          </ul>
+          </ul> -->
         </div>
       </div>
     </li>

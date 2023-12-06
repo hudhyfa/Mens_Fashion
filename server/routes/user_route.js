@@ -9,6 +9,7 @@ const { userLoggedIn } = auth;
 user_route.get('/',userController.get_homepage)
 
 user_route.get('/user_login', userLoggedIn, userController.get_userLogin)
+user_route.post('/user_login',userController.userLogin)
 
 user_route.get('/email_validation',userController.get_emailValidation)
 user_route.post('/email_validation',userController.emailValidation)

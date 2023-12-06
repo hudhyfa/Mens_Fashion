@@ -35,12 +35,35 @@ const userLogin = async (req,res) => {
         
         const { email, password } = req.body;
 
+        // validating login credentials
         const validateCredentials = userValidator.login_validation(req.body);
 
         if(Object.keys(validateCredentials).length > 0){
             Object.keys(validateCredentials).forEach( key => {
                 req.flash('invalidCreds',validateCredentials[key])
             })
+            return res.status(402).redirect('/user_login')
+        }
+
+        // checking for the user in users collection
+        const user = await User.findOne({email: email})
+
+        // evaluating password
+        if(user){
+            const matchPassword = await bcrypt.compare(password, user.password);
+            if(matchPassword){
+                req.session.userAuth = true;
+                req.session.username = user.username;
+                req.session.userId = user._id;
+
+                // redirecting to home page
+                return res.status(200),redirect('/');
+            }else{
+                req.flash("errPass","invalid credentials");
+                return res.status(402).redirect('/user_login')
+            }
+        }else{
+            req.flash("errEmail","user does not exist");
             return res.status(402).redirect('/user_login')
         }
 
@@ -251,6 +274,7 @@ module.exports = {
     otpValidation,
     emailValidation,
     userSignup,
+    userLogin,
     get_userLogin,
     get_emailValidation,
     get_homepage,

@@ -73,6 +73,15 @@ const userLogin = async (req,res) => {
     }
 }
 
+//* user log out
+const userLogout = async (req,res) => {
+    req.session.userAuth = false;
+    delete req.session.userId;
+    delete req.session.username;
+    
+    res.status(200).redirect('/');
+}
+
 //* user sign in
 const userSignup = async (req,res) => {
     try {
@@ -275,6 +284,7 @@ module.exports = {
     emailValidation,
     userSignup,
     userLogin,
+    userLogout,
     get_userLogin,
     get_emailValidation,
     get_homepage,

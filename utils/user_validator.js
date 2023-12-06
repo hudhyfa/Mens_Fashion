@@ -60,7 +60,33 @@ const secondary_validation = function (data) {
 
 }
 
+const login_validation = function (data) {
+
+    const { email, password } = data;
+
+    const errors = {}
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if(!email){
+        errors.missEmail = "enter your email address"
+    }else if(!emailPattern.test(email)){
+        errors.errEmail = "invalid credentials"
+    }
+
+    if(!password){
+        errors.missPassword = "enter your password"
+    }else if(!passwordPattern.test(password)){
+        errors.errPassword = "invalid credentials"
+    }
+
+    return errors;
+    
+}
+
 module.exports = {
     primary_validation,
-    secondary_validation
+    secondary_validation,
+    login_validation
 }

@@ -33,6 +33,17 @@ const get_userSignup = async (req,res) => {
 const userLogin = async (req,res) => {
     try {
         
+        const { email, password } = req.body;
+
+        const validateCredentials = userValidator.login_validation(req.body);
+
+        if(Object.keys(validateCredentials).length > 0){
+            Object.keys(validateCredentials).forEach( key => {
+                req.flash('invalidCreds',validateCredentials[key])
+            })
+            return res.status(402).redirect('/user_login')
+        }
+
     } catch (error) {
         req.flash("loginError","error while logging in");
         return res.status(402).redirect('/user_login')

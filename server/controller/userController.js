@@ -9,24 +9,44 @@ const { generateOtp } = require('../../utils/otpUtils');
 
 
 const get_homepage = async (req,res) => {
-    res.render('user/home')
+    try {
+        res.render('user/home')
+    } catch (error) {
+        console.error("error rendering home page", error)
+    }
 }
 
 const get_userLogin = async (req,res) => {
-    // if user is not logged in
-    res.render('user/login');
+    try {
+        // if user is not logged in
+        res.render('user/login');
+    } catch (error) {
+        console.error("error rendering login page", error)
+    }
 }
 
 const get_emailValidation = async (req,res) => {
-    res.render('user/emailValidation')
+    try {
+        res.render('user/emailValidation')
+    } catch (error) {
+        console.error("error rendering email_validation page",error);
+    }
 }
 
 const get_verifyOtp = async (req,res) => {
-    res.render('user/otp')
+    try {
+        res.render('user/otp')
+    } catch (error) {
+        console.error("error rendering otp-verification page",error)
+    }
 }
 
 const get_userSignup = async (req,res) => {
-    res.render('user/signup')
+    try {
+        res.render('user/signup')
+    } catch (error) {
+        console.error("error rendering user signup page",error)
+    }
 }
 
 //* user log in

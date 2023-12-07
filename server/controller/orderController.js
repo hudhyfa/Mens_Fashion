@@ -1,5 +1,9 @@
 const get_orders = async (req,res) => {
-    res.render('admin/orders');
+    try {
+        res.render('admin/orders');
+    } catch (error) {
+        console.error("error rendering orders", error);
+    }
 }
 
 module.exports = {

@@ -60,28 +60,20 @@
                       </tr>
                     </thead>
                     <tbody>
+                      <% users.forEach(user => { %>
                       <tr>
                         <td class="py-1">
-                          <img src="https://png.pngtree.com/png-vector/20200706/ourlarge/pngtree-businessman-user-character-vector-illustration-png-image_2298565.jpg" alt="image" />
+                          <img src="<%=user.profileImg%>" alt="image" />
                         </td>
-                        <td>Hudyfa</td>
-                        <!-- <td>
-                          <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </td> -->
-                        <td>123@gmail.com</td>
-                        
-                        <td>8125687419</td>
-                        <td>unblocked</td>
+                        <td><%=user.username%></td>
+                        <td><%=user.email%></td>
+                        <td><%=user.phone%></td>
+                        <td><%= user.status ? 'blocked' : 'unblocked' %></td>
                         <td>
-                            <!-- List and Unlist buttons -->
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-danger" onclick="toggleButtons(this)">block</button>
-                                <button type="button" class="btn btn-primary" style="display:none;" onclick="toggleButtons(this)">Unblock</button>
-                            </div>
+                            <a href="/update_status/<%=user._id%>" class="btn btn-success"><%=user.status ? 'unblock' : 'block' %></a>
                         </td>
                       </tr>
+                      <% }) %>
                       
                     </tbody>
                   </table>
@@ -115,20 +107,6 @@
     <script src="/adminAssets/js/dashboard.js"></script>
     <!-- End custom js for this page -->
     <script>
-        const stockData = {
-            small: 10,
-            medium: 15,
-            large: 20
-        };
-        // Function to update stock display based on the selected size
-        function updateStock(selectElement) {
-            const stockDisplay = selectElement.closest('tr').querySelector('.stock-display');
-            const selectedSize = selectElement.value;
-
-            // Display stock for the selected size
-            stockDisplay.textContent = `Stock Available: ${stockData[selectedSize]}`;
-        }
-
         // Function to toggle between List and Unlist buttons
         function toggleButtons(clickedButton) {
             const buttonGroup = clickedButton.closest('.btn-group');

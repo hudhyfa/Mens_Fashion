@@ -21,4 +21,6 @@ admin_route.get('/categories',adminController.get_categories);
 
 admin_route.get('/sub_categories',adminController.get_subCategories);
 
+admin_route.get('/update_status/:id',adminController.update_status)
+
 module.exports = admin_route;

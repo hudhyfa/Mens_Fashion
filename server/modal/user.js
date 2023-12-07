@@ -29,6 +29,11 @@ const schema = new mongoose.Schema({
         type:Boolean,
         require:true,
         default:false
+    },
+    status:{
+        type:Boolean,
+        require:true,
+        default:false
     }
 })
 

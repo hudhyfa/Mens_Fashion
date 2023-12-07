@@ -96,10 +96,28 @@ const update_category_status = async (req,res) => {
     }
 }
 
+// * to get edit category page
+const get_edit_category = async (req,res) => {
+    try {
+        const id = req.params.id;
+
+        const category = await Category.findOne({_id:id});
+
+        if(category){
+            res.render('admin/editCategories',{category:category})
+        }else{
+            console.error("error occured while fetching category",error);
+        }
+    } catch (error) {
+        console.error("error category not found",error)
+    }
+}
+
 module.exports = {
     get_subCategories,
     get_categories,
     get_add_category,
     add_category,
-    update_category_status
+    update_category_status,
+    get_edit_category
 }

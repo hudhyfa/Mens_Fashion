@@ -76,10 +76,30 @@ const get_categories = async (req,res) => {
     }
 }
 
+// * to update status of category
+const update_category_status = async (req,res) => {
+    try {
+        const id = req.params.id;
+
+        const category = await Category.findOne({_id:id});
+
+        if(category){
+            category.listed = !category.listed;
+            await category.save();
+            return res.status(200).redirect('/categories');
+        }else{
+            console.error("error not found",error);
+        }
+
+    } catch (error) {
+        console.error("Error updating category status",error)
+    }
+}
 
 module.exports = {
     get_subCategories,
     get_categories,
     get_add_category,
     add_category,
+    update_category_status
 }

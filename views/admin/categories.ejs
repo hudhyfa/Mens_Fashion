@@ -69,7 +69,8 @@
                         <td><%=category.description%></td>
                         <td><%=category.listed ? "listed" : "unlisted"%></td>
                         <td>
-                            <button type="button" class="btn btn-primary" onclick="editItem()">Edit</button> 
+                            <a href="/edit_category/<%=category._id%>" class="btn btn-primary">Edit</a> 
+                            <a href="/update_category_status/<%=category._id%>" class="btn btn-danger"><%= category.listed ? "Unlist" : "List"%></a>
                         </td>
                       </tr> 
                       <% }) %> 

@@ -68,9 +68,9 @@
                         <td><%=user.username%></td>
                         <td><%=user.email%></td>
                         <td><%=user.phone%></td>
-                        <td><%= user.status ? 'blocked' : 'unblocked' %></td>
+                        <td><%= user.status ? 'unblocked' : 'blocked' %></td>
                         <td>
-                            <a href="/customer_status/<%=user._id%>" class="btn btn-success"><%=user.status ? 'unblock' : 'block' %></a>
+                            <a href="/customer_status/<%=user._id%>" class="btn btn-success"><%=user.status ? 'block' : 'unblock' %></a>
                         </td>
                       </tr>
                       <% }) %>

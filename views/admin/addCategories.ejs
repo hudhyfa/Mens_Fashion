@@ -84,25 +84,32 @@
             <div class="page-header flex-wrap">
               <h3 class="mb-0">welcome back admin! <span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Your Product management page.</span>
               </h3>
-              <div class="d-flex">
-                <button type="button" class="btn btn-sm ml-3 btn-success">Add product</button>
-              </div>
             </div>
         </div>
         <!-- table begins -->
         <div class="container form-container">
             <h2 class="mb-4">Add Categories</h2>
-            <form>
+            <form action="/add_category" method="post">
                 <div class="mb-3">
                     <label for="categoryName" class="form-label">Category Name</label>
-                    <input type="text" class="form-control" id="categoryName" required>
+                    <input type="text" class="form-control" id="categoryName" name="category_name">
                 </div>
     
                 <div class="mb-3">
                     <label for="categoryDescription" class="form-label">Category Description</label>
-                    <textarea class="form-control" id="categoryDescription" rows="4"></textarea>
+                    <textarea class="form-control" id="categoryDescription" rows="4" name="category_desc"></textarea>
                 </div>
-    
+                
+                <div id="errorMessages" class="my-3">
+                  <% if(flash.catExists) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.catExists%></h6>
+                  <% }else if(flash.errInput) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.errInput%></h6>
+                  <% }else if(flash.error) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.error%></h6>
+                  <% } %>
+                </div>
+                
                 <button type="submit" class="btn btn-sm btn-primary">Save</button>
             </form>
         </div>
@@ -131,25 +138,5 @@
     <!-- Custom js for this page -->
     <script src="/adminAssets/js/dashboard.js"></script>
     <!-- End custom js for this page -->
-    <script>
-        // Function to toggle between List and Unlist buttons
-        function toggleListUnlist() {
-            const listButton = document.querySelector('.btn-primary');
-            const unlistButton = document.querySelector('.btn-secondary');
-
-            // Toggle button visibility
-            listButton.style.display = listButton.style.display === 'none' ? 'inline-block' : 'none';
-            unlistButton.style.display = unlistButton.style.display === 'none' ? 'inline-block' : 'none';
-        }
-
-        // Function to delete the selected category
-        function deleteCategory() {
-            const categoryList = document.getElementById('categoryList');
-            const selectedCategory = categoryList.options[categoryList.selectedIndex].value;
-
-            // Implement deletion logic here
-            alert(`Delete category: ${selectedCategory}`);
-        }
-    </script>
   </body>
 </html>

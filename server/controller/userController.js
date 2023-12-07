@@ -75,11 +75,20 @@ const userLogin = async (req,res) => {
 
 //* user log out
 const userLogout = async (req,res) => {
-    req.session.userAuth = false;
-    delete req.session.userId;
-    delete req.session.username;
+
+    try {
+
+        req.session.userAuth = false;
+        delete req.session.userId;
+        delete req.session.username;
+        
+        return res.status(200).redirect('/'); 
+
+    } catch (error) {
+        console.error(error.message);
+    }
+
     
-    res.status(200).redirect('/');
 }
 
 //* user sign in

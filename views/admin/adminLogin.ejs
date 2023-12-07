@@ -205,6 +205,8 @@
                     <h6 style="color: #e74c3c;"><%=flash.wrngEmail%></h6>
                     <% }else if(flash.wrngPassword) { %>
                     <h6 style="color: #e74c3c;"><%=flash.wrngPassword%></h6>
+                    <% }else if(flash.error) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.error%></h6>
                     <% } %>
                 </div>
                 <div class="form-actions">

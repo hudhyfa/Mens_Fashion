@@ -1,12 +1,13 @@
 const Category = require('../modal/category')
 
-const get_categories = async(req,res) => {
-    try {
-        res.render('admin/categories')
-    } catch (error) {
-        console.error("Error rendering categories")
-    }
-}
+// const get_categories = async(req,res) => {
+//     try {
+//         res.render('admin/categories')
+//     } catch (error) {
+//         console.error("Error rendering categories")
+//     }
+// }
+
 const get_subCategories = async(req,res) => {
     try {        
         res.render('admin/subCategories')
@@ -15,6 +16,15 @@ const get_subCategories = async(req,res) => {
     }
 }
 
+const get_add_category = async(req,res) => {
+    try {
+       res.render('admin/addCategories') 
+    } catch (error) {
+        console.error("error rendering add categories")
+    }
+}
+
+// * to add a category
 const add_category = async (req,res) => {
     try {
 
@@ -50,9 +60,26 @@ const add_category = async (req,res) => {
     }
 }
 
+// * to show categories
+const get_categories = async (req,res) => {
+    try {
+        const categories = await Category.find();
+
+        if(categories){
+            res.render('admin/categories',{categories:categories})
+        }else{
+            console.error("couldnt fetch categories")
+        }
+
+    } catch (error) {
+        console.error("Error rendering categories page")
+    }
+}
+
 
 module.exports = {
     get_subCategories,
     get_categories,
-    add_category
+    get_add_category,
+    add_category,
 }

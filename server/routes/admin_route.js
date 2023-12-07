@@ -20,6 +20,7 @@ admin_route.get('/orders',orderController.get_orders);
 admin_route.get('/products',productController.get_products);
 
 admin_route.get('/categories',categoryController.get_categories);
+admin_route.get('/add_category',categoryController.get_add_category);
 admin_route.post('/add_category',categoryController.add_category);
 
 admin_route.get('/sub_categories',categoryController.get_subCategories);

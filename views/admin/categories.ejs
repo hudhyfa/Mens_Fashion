@@ -42,7 +42,9 @@
               <h3 class="mb-0">welcome back admin! <span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Your Category management page.</span>
               </h3>
               <div class="d-flex">
-                <button type="button" class="btn btn-sm ml-3 btn-success">Add Category</button>
+                <form action="/add_category">
+                  <button type="submit" class="btn btn-sm ml-3 btn-success">Add Category</button>
+                </form>
               </div>
             </div>
         </div>
@@ -56,19 +58,21 @@
                       <tr>
                         <th>Category Name</th>
                         <th>Description</th>
+                        <th>Status</th>
                         <th>Config</th>
                       </tr>
                     </thead>
                     <tbody>
+                      <% categories.forEach(category => { %>
                       <tr>
-                        <td>Tshirt</td>
-                        <td>tshirt is a simple to wear and removable clothing which is comfortable for all seasons.</td>
+                        <td><%=category.name%></td>
+                        <td><%=category.description%></td>
+                        <td><%=category.listed ? "listed" : "unlisted"%></td>
                         <td>
-                            <button type="button" class="btn btn-primary" onclick="editItem()">Edit</button>
-                            <button type="button" class="btn btn-success" onclick="toggleListUnlist(this)">List</button>
-                            <button type="button" class="btn btn-warning" style="display:none;" onclick="toggleListUnlist(this)">Unlist</button>
+                            <button type="button" class="btn btn-primary" onclick="editItem()">Edit</button> 
                         </td>
-                      </tr>  
+                      </tr> 
+                      <% }) %> 
                     </tbody>
                   </table>
                 </div>
@@ -100,22 +104,5 @@
     <!-- Custom js for this page -->
     <script src="/adminAssets/js/dashboard.js"></script>
     <!-- End custom js for this page -->
-    <script>
-        // Function to toggle List/Unlist buttons
-        function toggleListUnlist(button) {
-            const listButton = button.parentElement.querySelector('.btn-success');
-            const unlistButton = button.parentElement.querySelector('.btn-warning');
-
-            // Toggle button visibility
-            listButton.style.display = listButton.style.display === 'none' ? 'inline-block' : 'none';
-            unlistButton.style.display = unlistButton.style.display === 'none' ? 'inline-block' : 'none';
-        }
-
-        // Function to handle the edit action
-        function editItem() {
-            // Implement edit logic here
-            alert('Edit item clicked');
-        }
-    </script>
   </body>
 </html>

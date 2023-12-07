@@ -2,6 +2,9 @@ const express = require('express');
 const admin_route = express();
 const adminController = require('../controller/adminController')
 const customerController = require('../controller/customerController')
+const productController = require('../controller/productController');
+const categoryController = require('../controller/categoryController');
+const orderController = require('../controller/orderController');
 const auth = require('../../middlewares/admin/adminLogged')
 
 const { adminLoggedOut,isAdminLogged } = auth;
@@ -12,14 +15,13 @@ admin_route.get('/admin_login',isAdminLogged,adminController.get_adminLogin)
 admin_route.post('/admin_login',adminController.adminLogin)
 admin_route.post('/admin_logout',adminController.adminLogout)
 
-admin_route.get('/orders',adminController.get_orders);
+admin_route.get('/orders',orderController.get_orders);
 
 
-admin_route.get('/products',adminController.get_products);
+admin_route.get('/products',productController.get_products);
 
-admin_route.get('/categories',adminController.get_categories);
-
-admin_route.get('/sub_categories',adminController.get_subCategories);
+admin_route.get('/categories',categoryController.get_categories);
+admin_route.get('/sub_categories',categoryController.get_subCategories);
 
 admin_route.get('/customers',customerController.get_customers);
 admin_route.get('/customer_status/:id',customerController.update_status)

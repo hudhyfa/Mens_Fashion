@@ -48,16 +48,21 @@ const userLogin = async (req,res) => {
         // checking for the user in users collection
         const user = await User.findOne({email: email})
 
-        // evaluating password
+        // evaluating password and status
         if(user){
             const matchPassword = await bcrypt.compare(password, user.password);
             if(matchPassword){
-                req.session.userAuth = true;
-                req.session.username = user.username;
-                req.session.userId = user._id;
-
-                // redirecting to home page
-                return res.status(200),redirect('/');
+                if(user.status){
+                    req.session.userAuth = true;
+                    req.session.username = user.username;
+                    req.session.userId = user._id;
+    
+                    // redirecting to home page
+                    return res.status(200),redirect('/');
+                }else{
+                    req.flash("errStatus","your account is not active");
+                    return res.status(402).redirect('/user_login')
+                }
             }else{
                 req.flash("errPass","invalid credentials");
                 return res.status(402).redirect('/user_login')

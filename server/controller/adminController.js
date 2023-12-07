@@ -2,28 +2,20 @@ const User = require('../modal/user');
 const adminValidator = require('../../utils/user_validator')
 const bcrypt = require('bcrypt');
 
-const get_subCategories = async(req,res) => {
-    res.render('admin/subCategories')
-}
-
-const get_categories = async(req,res) => {
-    res.render('admin/categories')
-}
-
-const get_orders = async (req,res) => {
-    res.render('admin/orders');
-}
-
 const admin_dashboard = async (req, res) => {
-    res.render('admin/dashboard')
+    try {
+        res.render('admin/dashboard')
+    } catch (error) {
+        console.error("Error rendering admin dashboard")
+    }
 }
 
 const get_adminLogin = async (req, res) => {
-    res.render('admin/adminLogin')
-}
-
-const get_products = async (req,res) => {
-    res.render('admin/products')
+    try {
+        res.render('admin/adminLogin')
+    } catch (error) {
+        console.error("Error rendering admin login")
+    }
 }
 
 const adminLogin = async (req,res) => {
@@ -86,10 +78,6 @@ const adminLogout = async (req,res) => {
 
 
 module.exports = {
-    get_subCategories,
-    get_categories,
-    get_products,
-    get_orders,
     get_adminLogin,
     admin_dashboard,
     adminLogin,

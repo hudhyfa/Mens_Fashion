@@ -22,47 +22,8 @@ const get_adminLogin = async (req, res) => {
     res.render('admin/adminLogin')
 }
 
-// const get_customers = async (req,res) => {
-//     res.render('admin/users')
-// }
-
 const get_products = async (req,res) => {
     res.render('admin/products')
-}
-
-const update_status = async (req,res) => {
-    
-    const id = req.params.id;
-
-    const user = await User.findOne({_id:id})
-
-    if(user){
-        user.status = !user.status
-        await user.save()
-        
-        return res.status(200).redirect('/customers');
-    }else{
-        console.error("couldn't fetch user data")
-    }
-
-}
-
-const get_customers = async (req,res) => {
-    
-    try {
-        
-        const customers = await User.find();
-        if(customers){
-            res.render('admin/users',{ users:customers })
-        }else{
-            console.error("couldn't fetch users data")
-            return res.redirect('/admin')
-        }
-
-    } catch (error) {
-        console.error("error while getting customer list");
-    }
-
 }
 
 const adminLogin = async (req,res) => {
@@ -128,11 +89,9 @@ module.exports = {
     get_subCategories,
     get_categories,
     get_products,
-    get_customers,
     get_orders,
     get_adminLogin,
     admin_dashboard,
     adminLogin,
     adminLogout,
-    update_status
 }

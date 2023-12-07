@@ -70,7 +70,7 @@
                         <td><%=user.phone%></td>
                         <td><%= user.status ? 'blocked' : 'unblocked' %></td>
                         <td>
-                            <a href="/update_status/<%=user._id%>" class="btn btn-success"><%=user.status ? 'unblock' : 'block' %></a>
+                            <a href="/customer_status/<%=user._id%>" class="btn btn-success"><%=user.status ? 'unblock' : 'block' %></a>
                         </td>
                       </tr>
                       <% }) %>

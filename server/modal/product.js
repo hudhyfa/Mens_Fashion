@@ -40,6 +40,10 @@ const schema = new mongoose.Schema({
     image:{
         type:Array,
         required:true,
+    },
+    created_on:{
+        type:Date,
+        required:true,
     }
 })
 

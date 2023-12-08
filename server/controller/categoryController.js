@@ -1,13 +1,5 @@
 const Category = require('../modal/category')
 
-// const get_categories = async(req,res) => {
-//     try {
-//         res.render('admin/categories')
-//     } catch (error) {
-//         console.error("Error rendering categories")
-//     }
-// }
-
 const get_subCategories = async(req,res) => {
     try {        
         res.render('admin/subCategories')

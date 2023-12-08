@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session')
 const flash = require('connect-flash')
 const cors = require('cors')
+const multer = require('multer');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongo = require('./config/db')
@@ -43,6 +44,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 app.use(cors());
+
+// multer config
+app.use('uploads/',express.static('uploads'));
+const storage = multer.diskStorage({
+    destination:function (req,file,cb){
+        cb(null,'uploads/')
+    },
+    filename:function (req,file,cb){
+        cb(null,file.originalname)
+    }
+})
+const upload = multer({storage:storage})
 
 // setting routes
 app.use('/',user_route);

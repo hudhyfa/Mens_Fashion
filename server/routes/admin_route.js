@@ -1,5 +1,7 @@
 const express = require('express');
 const admin_route = express();
+const multer = require('multer');
+const upload = multer({dest:'uploads/'})
 const adminController = require('../controller/adminController')
 const customerController = require('../controller/customerController')
 const productController = require('../controller/productController');
@@ -18,6 +20,7 @@ admin_route.post('/admin_logout',adminController.adminLogout)
 admin_route.get('/orders',orderController.get_orders);
 
 admin_route.get('/products',productController.get_products);
+admin_route.get('/add_product',productController.get_add_product)
 
 admin_route.get('/categories',categoryController.get_categories);
 admin_route.get('/add_category',categoryController.get_add_category);

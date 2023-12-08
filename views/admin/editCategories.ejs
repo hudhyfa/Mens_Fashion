@@ -89,18 +89,30 @@
         <!-- table begins -->
         <div class="container form-container">
             <h2 class="mb-4">Edit Category</h2>
-            <form action="" method="post">
+            <form action="/edit_category/<%=category._id%>" method="post" id="edit_cat">
                 <div class="mb-3">
                     <label for="categoryName" class="form-label">Category Name</label>
-                    <input type="text" class="form-control" id="categoryName" placeholder="<%=category.name%>">
+                    <input type="text" class="form-control" id="categoryName" placeholder="<%=category.name%>" name="name">
                 </div>
     
                 <div class="mb-3">
                     <label for="categoryDescription" class="form-label">Category Description</label>
-                    <textarea class="form-control" id="categoryDescription" rows="4" placeholder="<%=category.description%>"></textarea>
+                    <textarea class="form-control" id="categoryDescription" rows="4"  placeholder="<%=category.description%>" name="description"></textarea>
+                </div>
+
+                <div id="errorMessages" class="my-3">
+                  <% if(flash.errNothing) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.errNothing%></h6>
+                  <% } %>
                 </div>
     
-                <button type="submit" class="btn btn-sm btn-primary">update</button>
+                <div class="d-flex">
+                  <a href="/categories" class="btn btn-sm btn-dark">Go back</a>
+                  <a class="btn btn-sm btn-success mx-2" onclick="document.getElementById('edit_cat').submit()">Update</a>
+                </div>
+
+
+
             </form>
         </div>
         <!-- table ends -->

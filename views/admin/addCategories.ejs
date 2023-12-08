@@ -101,8 +101,8 @@
                 </div>
                 
                 <div id="errorMessages" class="my-3">
-                  <% if(flash.catExists) { %>
-                    <h6 style="color: #e74c3c;"><%=flash.catExists%></h6>
+                  <% if(flash.errNothing) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.errNothing%></h6>
                   <% }else if(flash.errInput) { %>
                     <h6 style="color: #e74c3c;"><%=flash.errInput%></h6>
                   <% }else if(flash.error) { %>

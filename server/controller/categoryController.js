@@ -109,7 +109,28 @@ const get_edit_category = async (req,res) => {
             console.error("error occured while fetching category",error);
         }
     } catch (error) {
-        console.error("error category not found",error)
+        console.error(" category not found",error)
+    }
+}
+
+// * to update a category
+const update_category = async (req,res) => {
+    try {
+        const id = req.params.id;
+        const { name, description } = req.body;
+
+        if(!name || !description) {
+            req.flash('errNothing',"Edit the category name and description to update")
+            return res.status(402).redirect(`/edit_category/${id}`);
+        }
+
+        const category = await Category.findOneAndUpdate({_id:id},{name:name,description:description},{new:true});
+        await category.save();
+        return res.status(200).redirect('/categories')
+
+    } catch (error) {
+        req.flash('errUpdating',"error occured while updating category",error);
+        return res.status(402).redirect(`/edit_category/${id}`);
     }
 }
 
@@ -119,5 +140,6 @@ module.exports = {
     get_add_category,
     add_category,
     update_category_status,
-    get_edit_category
+    get_edit_category,
+    update_category
 }

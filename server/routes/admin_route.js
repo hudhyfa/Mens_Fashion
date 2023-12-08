@@ -24,6 +24,7 @@ admin_route.get('/add_category',categoryController.get_add_category);
 admin_route.post('/add_category',categoryController.add_category);
 admin_route.get('/update_category_status/:id',categoryController.update_category_status);
 admin_route.get('/edit_category/:id',categoryController.get_edit_category)
+admin_route.post('/edit_category/:id',categoryController.update_category);
 
 admin_route.get('/sub_categories',categoryController.get_subCategories);
 

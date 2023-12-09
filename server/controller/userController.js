@@ -3,9 +3,11 @@ const User = require('../modal/user');
 const Otp = require('../modal/otp')
 const userValidator = require('../../utils/user_validator')
 const bcrypt = require('bcrypt')
+const nodemailer = require('nodemailer');
 const { transporter } = require('../../config/nodemailer');
 const { generateOtp } = require('../../utils/otpUtils');
 
+require('dotenv').config()
 
 
 const get_homepage = async (req,res) => {

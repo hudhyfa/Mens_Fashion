@@ -19,20 +19,14 @@ const schema = new mongoose.Schema({
         type:Number,
         required:false,
     },
-    quantity:[{
-        small:{
-            type:Number,
-            required:true,
-        },
-        medium:{
-            type:Number,
-            required:true
-        },
-        large:{
-            type:Number,
-            required:true
-        }
-    }],
+    quantity:{
+        type:Number,
+        required:true,
+    },
+    size:{
+        type:String,
+        required:true,
+    },
     description:{
         type:String,
         required:true,
@@ -44,6 +38,11 @@ const schema = new mongoose.Schema({
     created_on:{
         type:Date,
         required:true,
+    },
+    status:{
+        type:Boolean,
+        required:false,
+        default:true,
     }
 })
 

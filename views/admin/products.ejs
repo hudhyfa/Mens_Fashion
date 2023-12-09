@@ -48,58 +48,55 @@
         </div>
         <!-- table begins -->
         <div class="col-lg-12 grid-margin stretch-card">
-            <div class="card">
-              <div class="card-body">
-                <div class="table-responsive">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                  <% if(products) { %>
                   <table class="table table-striped">
                     <thead>
                       <tr>
                         <th>Product Img</th>
                         <th>Product Name</th>
-                        <th>Quantity</th>
                         <th>Category</th>
+                        <th>Size</th>
+                        <th>Quantity</th>
                         <!-- <th>SubCategory</th> -->
                         <th>Price</th>
                         <th>Offer Price</th>
+                        <th>Status</th>
                         <th>Config</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
+                      <% products.forEach((product,index) => { %>
+                        <tr>
                         <td class="py-1">
-                          <img src="https://www.creativeideas.store/media/catalog/product/cache/f7fe0c39a88bd276837542f863d0cbe2/o/v/oversize-tshirt-back_2.jpg" alt="image" />
+                          <img src="<%=product.image[3]%>" alt="image" />
                         </td>
-                        <td>T-shirt</td>
-                        <td>
-                            <!-- Product Size Selection Form -->
-                            <div class="mb-3">
-                                <select class="form-select" onchange="updateStock(this)">
-                                    <option value="small">Small</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="large">Large</option>
-                                </select>
-                                <p class="stock-display">Select a size to see stock availability.</p>
-                            </div>
-                        </td>
-                        
-                        <td>Mens</td>
+                        <td><%=product.name%></td>
+                        <td><%=product.category.name%></td>
+                        <td><%=product.size%></td>
+                        <td><%=product.quantity%></td> 
                         <!-- <td>Casual</td> -->
-                        <td>$ 77.99</td>
-                        <td>$ 69.99</td>
+                        <td>$ <%=product.price%></td>
+                        <td>$ <%=product.offer_price%></td>
+                        <td><%=product.status?"listed":"unlisted"%></td>
                         <td>
+                            <a href="/update_status/<%=product._id%>" class="btn btn-primary btn-sm me-2 mb-2"><%=product.status?"unlist":"list"%></a>
                             <a href="#" class="btn btn-primary btn-sm me-2 mb-2">edit</a>
-                            <div class="btn-group" role="group">
-                                <button type="button" class="btn btn-sm me-2 mb-2 btn-success" onclick="toggleButtons(this)">List</button>
-                                <button type="button" class="btn btn-sm me-2 mb-2 btn-danger" style="display:none;" onclick="toggleButtons(this)">Unlist</button>
-                            </div>
                         </td>
                       </tr> 
+                      <% })%>
                     </tbody>
                   </table>
+                  <% } else { %>
+                  <p class="text-center">No products found.</p>
+                  <% } %>
                 </div>
               </div>
             </div>
           </div>
+
         <!-- table ends -->
         <%-include('_footer')-%>
     </div>
@@ -125,31 +122,5 @@
     <!-- Custom js for this page -->
     <script src="/adminAssets/js/dashboard.js"></script>
     <!-- End custom js for this page -->
-    <script>
-        const stockData = {
-            small: 10,
-            medium: 15,
-            large: 20
-        };
-        // Function to update stock display based on the selected size
-        function updateStock(selectElement) {
-            const stockDisplay = selectElement.closest('tr').querySelector('.stock-display');
-            const selectedSize = selectElement.value;
-
-            // Display stock for the selected size
-            stockDisplay.textContent = `Stock Available: ${stockData[selectedSize]}`;
-        }
-
-        // Function to toggle between List and Unlist buttons
-        function toggleButtons(clickedButton) {
-            const buttonGroup = clickedButton.closest('.btn-group');
-            const listButton = buttonGroup.querySelector('.btn-success');
-            const unlistButton = buttonGroup.querySelector('.btn-danger');
-
-            // Toggle button visibility
-            listButton.style.display = listButton.style.display === 'none' ? 'inline-block' : 'none';
-            unlistButton.style.display = unlistButton.style.display === 'none' ? 'inline-block' : 'none';
-        }
-    </script>
   </body>
 </html>

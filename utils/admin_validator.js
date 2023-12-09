@@ -1,19 +1,17 @@
 const product_validator = function(body){
     const { 
-        images,
         name,
         category,
         price,
         offerPrice,
-        q_small,
-        q_medium,
-        q_large,
+        quantity,
+        size,
         description
     } = body;
 
     const errors = {};
 
-    if(!name||!category||!price||!offerPrice||!q_small||!q_medium||!q_large||!description) {
+    if(!name||!category||!price||!offerPrice||!description||!quantity||!size) {
         errors.blank = "fields should not be empty";
     }
 

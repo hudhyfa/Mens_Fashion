@@ -40,16 +40,16 @@ app.use((req,res,next)=>{
     next();
 })
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended:true}));
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 
 app.use(cors());
 
 // multer config
-app.use('uploads/',express.static('uploads'));
+app.use('/uploads/',express.static('uploads'));
 const storage = multer.diskStorage({
     destination:function (req,file,cb){
-        cb(null,'uploads/')
+        cb(null,'/uploads')
     },
     filename:function (req,file,cb){
         cb(null,file.originalname)

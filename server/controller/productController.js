@@ -4,9 +4,15 @@ const validator = require('../../utils/admin_validator')
 
 const get_products = async (req,res) => {
     try {
-        res.render('admin/products')        
+        const products = await Product.find().populate({path:"category",select:"name"});
+        // console.log('hhh',products[0].image[0]);
+        if(products){
+            res.render('admin/products',{products:products});        
+        }else{
+            return res.status(404).redirect('/admin');
+        }
     } catch (error) {
-        console.error("Error rendering products page")
+        console.error("Error rendering products page",error)
     }
 }
 
@@ -21,7 +27,7 @@ const get_add_product = async (req,res) => {
 
 const add_product = async (req,res) => {
     try {
-        const { name,category,price,offerPrice,q_small,q_medium,q_large,description } = req.body;
+        const { name,category,price,offerPrice,quantity,size,description } = req.body;
 
         const validate_product = validator(req.body);
 
@@ -37,11 +43,8 @@ const add_product = async (req,res) => {
             category:category,
             price:price,
             offer_price:offerPrice,
-            quantity:[{
-                small:q_small,
-                medium:q_medium,
-                large:q_large,
-            }],
+            quantity:quantity,
+            size:size,
             description:description,
             image: req.files.map(file=>file.path),
             created_on:Date.now()
@@ -60,8 +63,25 @@ const add_product = async (req,res) => {
     }
 }
 
+const update_status = async (req,res) => {
+    try {
+        const id = req.params.id;
+        const product = await Product.findOne({_id:id})
+        if(product){
+            product.status =!product.status;
+            await product.save();
+            return res.status(204).redirect('/products')
+        }
+    } catch (error) {
+        console.error("something happend while updating product status",error)
+    }
+}
+
+
+
 module.exports ={
     get_products,
     get_add_product,
-    add_product
+    add_product,
+    update_status
 }

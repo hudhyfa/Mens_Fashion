@@ -19,14 +19,18 @@ const schema = new mongoose.Schema({
         type:Number,
         required:false,
     },
-    quantity:{
-        type:Number,
-        required:true,
-    },
-    size:{
-        type:String,
-        required:true,
-    },
+    stock:[
+        {
+            size:{
+                type:String,
+                required:true,
+            },
+            quantity:{
+                type:Number,
+                required:true,
+            }
+        }
+    ],
     description:{
         type:String,
         required:true,

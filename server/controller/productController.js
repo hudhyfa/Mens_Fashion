@@ -27,7 +27,19 @@ const get_add_product = async (req,res) => {
 
 const add_product = async (req,res) => {
     try {
-        const { name,category,price,offerPrice,quantity,size,description } = req.body;
+        const { 
+            name,
+            category,
+            price,
+            offerPrice,
+            description,
+            quantityXS,
+            quantityS,
+            quantityM,
+            quantityL,
+            quantityXL,
+            quantityXXL
+        } = req.body;
 
         const validate_product = validator(req.body);
 
@@ -43,8 +55,32 @@ const add_product = async (req,res) => {
             category:category,
             price:price,
             offer_price:offerPrice,
-            quantity:quantity,
-            size:size,
+            stock:[
+                {
+                    size:'XS',
+                    quantity:quantityXS
+                },
+                {
+                    size:'S',
+                    quantity:quantityS
+                },
+                {
+                    size:'M',
+                    quantity:quantityM
+                },
+                {
+                    size:'L',
+                    quantity:quantityL
+                },
+                {
+                    size:'XL',
+                    quantity:quantityXL
+                },
+                {
+                    size:'XXL',
+                    quantity:quantityXXL
+                }
+            ],
             description:description,
             image: req.files.map(file=>file.path),
             created_on:Date.now()

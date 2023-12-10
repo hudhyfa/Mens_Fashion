@@ -58,8 +58,7 @@
                         <th>Product Img</th>
                         <th>Product Name</th>
                         <th>Category</th>
-                        <th>Size</th>
-                        <th>Quantity</th>
+                        <th>Stock</th>
                         <!-- <th>SubCategory</th> -->
                         <th>Price</th>
                         <th>Offer Price</th>
@@ -68,15 +67,22 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <% products.forEach((product,index) => { %>
+                      <% products.forEach((product) => { %>
                         <tr>
                         <td class="py-1">
                           <img src="<%=product.image[3]%>" alt="image" />
                         </td>
                         <td><%=product.name%></td>
                         <td><%=product.category.name%></td>
-                        <td><%=product.size%></td>
-                        <td><%=product.quantity%></td> 
+                        <td>
+                          <select class="form-select" onchange="updateStock(this, '<%= product.stock %>')">
+                              <option value="" selected disabled>Select a size</option>
+                              <% product.stock.forEach((size) => { %>
+                                  <option value="<%= size.size %>"><%= size.size %></option>
+                              <% }) %>
+                          </select>
+                          <p class="stock-display">Select a size to see stock availability.</p>
+                        </td>
                         <!-- <td>Casual</td> -->
                         <td>$ <%=product.price%></td>
                         <td>$ <%=product.offer_price%></td>
@@ -100,6 +106,25 @@
         <!-- table ends -->
         <%-include('_footer')-%>
     </div>
+    <script>
+      function updateStock(selectedSize, stockData) {
+        console.log("Stock")
+          const selectedSizeValue = selectedSize.value;
+          const parsedStockData = JSON.parse(stockData);
+          const quantityDisplay = selectedSize.parentElement.querySelector('.stock-display');
+  
+          // Find the selected size in the stock data
+          const selectedSizeInfo = parsedStockData.find(sizeInfo => sizeInfo.size === selectedSizeValue);
+  
+          // Display stock quantity for the selected size
+          if (selectedSizeInfo) {
+              quantityDisplay.textContent = `Stock Available: ${selectedSizeInfo.quantity}`;
+          } else {
+              quantityDisplay.textContent = 'Select a size to see stock availability.';
+          }
+      }
+  </script>
+  
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="/adminAssets/vendors/js/vendor.bundle.base.js"></script>

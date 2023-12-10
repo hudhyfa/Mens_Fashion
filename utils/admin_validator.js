@@ -4,14 +4,29 @@ const product_validator = function(body){
         category,
         price,
         offerPrice,
-        quantity,
-        size,
-        description
+        description,
+        quantityXS,
+        quantityS,
+        quantityM,
+        quantityL,
+        quantityXL,
+        quantityXXL
     } = body;
 
     const errors = {};
 
-    if(!name||!category||!price||!offerPrice||!description||!quantity||!size) {
+    if(!name||
+       !category||
+       !price||
+       !offerPrice||
+       !description||
+       !quantityXS||
+       !quantityS||
+       !quantityM||
+       !quantityL||
+       !quantityXL||
+       !quantityXXL
+       ) {
         errors.blank = "fields should not be empty";
     }
 

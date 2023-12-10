@@ -146,9 +146,9 @@
                 </div>
                 <div class="err_msg my-3">
                     <% if(flash.invalidOtp){ %>
-                    <h6 style="color: #e74c3c;"><%=flash.invalidCreds%></h6>
+                    <h6 style="color: #e74c3c;"><%=flash.invalidOtp%></h6>
                     <% }else if(flash.validationError){ %>
-                    <h6 style="color: #e74c3c;"><%=flash.invalidCreds%></h6>
+                    <h6 style="color: #e74c3c;"><%=flash.validationError%></h6>
                     <% }else if(flash.expiredOtp){ %>
                     <h6 style="color: #e74c3c;"><%=flash.expiredOtp%></h6>
                     <% }else if(flash.otpInfo){ %>

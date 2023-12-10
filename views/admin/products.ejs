@@ -70,12 +70,12 @@
                       <% products.forEach((product) => { %>
                         <tr>
                         <td class="py-1">
-                          <img src="<%=product.image[3]%>" alt="image" />
+                          <img src="<%=product.image[0]%>" alt="image" />
                         </td>
                         <td><%=product.name%></td>
                         <td><%=product.category.name%></td>
                         <td>
-                          <select class="form-select" onchange="updateStock(this, '<%= product.stock %>')">
+                          <select class="form-select" onchange="updateStock(this, '<%= JSON.stringify(product.stock) %>')">
                               <option value="" selected disabled>Select a size</option>
                               <% product.stock.forEach((size) => { %>
                                   <option value="<%= size.size %>"><%= size.size %></option>

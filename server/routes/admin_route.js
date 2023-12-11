@@ -23,6 +23,7 @@ admin_route.get('/products',productController.get_products);
 admin_route.get('/add_product',productController.get_add_product)
 admin_route.post('/add_product',upload.array('images'),productController.add_product);
 admin_route.get('/update_status/:id',productController.update_status)
+admin_route.get('/edit-product/:id')
 
 admin_route.get('/categories',categoryController.get_categories);
 admin_route.get('/add_category',categoryController.get_add_category);

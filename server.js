@@ -3,14 +3,12 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const cors = require('cors')
 const multer = require('multer');
-const bodyParser = require('body-parser');
 const path = require('path');
 const mongo = require('./config/db')
 
 const app = express();
 
-require('dotenv').config()
-// const PORT = process.env.PORT;
+require('dotenv').config();
 
 // connect to mongoDB
 mongo.connectDB()
@@ -49,7 +47,7 @@ app.use(cors());
 app.use('/uploads/',express.static('uploads'));
 const storage = multer.diskStorage({
     destination:function (req,file,cb){
-        cb(null,'/uploads')
+        cb(null,'uploads/')
     },
     filename:function (req,file,cb){
         cb(null,file.originalname)

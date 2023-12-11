@@ -43,6 +43,10 @@ const schema = new mongoose.Schema({
         type:Date,
         required:true,
     },
+    updated_on:{
+        type:Date,
+        required:false,
+    },
     status:{
         type:Boolean,
         required:false,

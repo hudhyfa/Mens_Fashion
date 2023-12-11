@@ -5,8 +5,7 @@ const killPort = require('kill-port');
 
 const get_products = async (req,res) => {
     try {
-        const products = await Product.find().populate({path:"category",select:"name"});
-        // console.log('hhh',products[0].image[0]);
+        const products = await Product.find().populate({path:"category",select:["name"]});
         if(products){
             res.render('admin/products',{products:products});        
         }else{

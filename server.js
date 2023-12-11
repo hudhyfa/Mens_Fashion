@@ -59,6 +59,10 @@ const upload = multer({storage:storage})
 app.use('/',user_route);
 app.use('/',admin_route);
 
+app.get('/shop',(req,res)=>{
+    res.render('user/shop');
+})
+
 
 
 

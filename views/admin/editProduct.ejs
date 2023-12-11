@@ -78,36 +78,42 @@
         </div>
         <!-- table begins -->
         <div class="container form-container">
-            <h2 class="mb-4">Edit Product</h2>
-            <form>
+          <h2 class="mb-4">Edit Product</h2>
+          <% if(product) { %>
+            <form action="/edit-product" method="post" enctype="multipart/form-data"> 
                 <div class="mb-3">
                     <label for="productImage" class="form-label">Product Image</label>
-                    <input type="file" class="form-control" id="productImage">
+                    <input type="file" class="form-control" id="newImages" name="newImages" >
                 </div>
     
                 <div class="mb-3">
                     <label for="productName" class="form-label">Product Name</label>
-                    <input type="text" class="form-control" id="productName" required>
+                    <input type="text" class="form-control" id="productName" name="name" value="<%=product.name%>">
                 </div>
     
                 <div class="mb-3">
                     <label for="category" class="form-label">Category</label>
-                    <input type="text" class="form-control" id="category" required>
+                    <select name="category" id="">
+                      <option value="">Select a category</option>
+                      <% categories.filter(category => category.listed === true).forEach(category => { %>
+                        <option value="<%= category.id %>"><%= category.name %></option>
+                      <% }) %>
+                    </select>
                 </div>
     
-                <div class="mb-3">
+                <!-- <div class="mb-3">
                     <label for="subCategory" class="form-label">Subcategory</label>
                     <input type="text" class="form-control" id="subCategory" required>
-                </div>
+                </div> -->
     
                 <div class="mb-3">
                     <label for="price" class="form-label">Price</label>
-                    <input type="number" class="form-control" id="price" required>
+                    <input type="number" class="form-control" id="price" name="price" required>
                 </div>
     
                 <div class="mb-3">
                     <label for="offerPrice" class="form-label">Offer Price</label>
-                    <input type="number" class="form-control" id="offerPrice">
+                    <input type="number" class="form-control" name="offerPrice" id="offerPrice">
                 </div>
     
                 <div class="mb-3">
@@ -142,11 +148,22 @@
     
                 <div class="mb-3">
                     <label for="productDescription" class="form-label">Product Description</label>
-                    <textarea class="form-control" id="productDescription" rows="4" required></textarea>
+                    <textarea class="form-control" id="productDescription" rows="4" name="description" required></textarea>
+                </div>
+
+                <div id="errorMessages" class="my-3">
+                  <% if(flash.errMissingFields) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.errMissingFields%></h6>
+                  <% }else if(flash.errEdit) { %>
+                    <h6 style="color: #e74c3c;"><%=flash.errEdit%></h6>
+                  <% } %>
                 </div>
     
                 <button type="submit" class="btn btn-primary">Update product</button>
             </form>
+            <% } else { %>
+              <h2>product not found</h2>
+            <% } %>
         </div>
         <!-- table ends -->
         <%-include('_footer')-%>

@@ -1,6 +1,7 @@
 const Product = require('../modal/product');
 const Category = require('../modal/category');
-const validator = require('../../utils/admin_validator')
+const validator = require('../../utils/admin_validator');
+const killPort = require('kill-port');
 
 const get_products = async (req,res) => {
     try {
@@ -22,6 +23,22 @@ const get_add_product = async (req,res) => {
         res.render('admin/addProduct',{categories:categories})  
     } catch (error) {
         console.error("Error rendering addProduct page")
+    }
+}
+
+const get_edit_product = async (req,res) => {
+    try {
+        const id = req.params.id;
+
+        const [product, categories] = await Promise.all([
+            Product.findOne({ id: id }),
+            Category.find()
+        ]);
+
+        res.render('admin/editProduct',{product:product,categories:categories})
+
+    } catch (error) {
+        throw new Error("error occured while editing:",error.message)
     }
 }
 
@@ -118,12 +135,8 @@ const update_status = async (req,res) => {
 
 const edit_product = async (req,res) => {
     try {
-        const id = req.parmas.id;
-        const product = await Product.findOne({_id:id})
 
-        if(!product){
-            throw new Error("Product not found")
-        }
+        const id = req.parmas.id;
 
         const { 
             name,
@@ -182,12 +195,22 @@ const edit_product = async (req,res) => {
                 }
             ],
             description:description,
-            image: req.files.map(file=>file.path),
             updated_on:Date.now()
         }
-        const update_product = await product.updateOne(
-            {_id:id},
-        )
+
+        if(req.files && req.files.newImages){
+            update_body.image = req.files.newImages.map(file=>file.path);
+        }
+
+        const update_product = await Product.updateOne({_id:id},{$set:update_body})
+
+        if(update_product.nModified === 0){
+            req.flash('errEdit',"error while updating product :",error)
+            return res.status(402).redirect(`/edit-product/${id}`)
+        }
+
+        return res.status(200).redirect('/products');
+
     } catch (error) {
         throw new Error(`Error occured while editing the product: ${error}`)
     }
@@ -200,5 +223,6 @@ module.exports ={
     get_add_product,
     add_product,
     update_status,
-    edit_product
+    edit_product,
+    get_edit_product
 }

@@ -80,7 +80,7 @@
         <div class="container form-container">
           <h2 class="mb-4">Edit Product</h2>
           <% if(product) { %>
-            <form action="/edit-product" method="post" enctype="multipart/form-data"> 
+            <form action="/edit-product/<%=product._id%>" method="post" enctype="multipart/form-data"> 
                 <div class="mb-3">
                     <label for="productImage" class="form-label">Product Image</label>
                     <input type="file" class="form-control" id="newImages" name="newImages" >
@@ -108,47 +108,29 @@
     
                 <div class="mb-3">
                     <label for="price" class="form-label">Price</label>
-                    <input type="number" class="form-control" id="price" name="price" required>
+                    <input type="number" class="form-control" id="price" name="price" value="<%=product.price%>" required>
                 </div>
     
                 <div class="mb-3">
                     <label for="offerPrice" class="form-label">Offer Price</label>
-                    <input type="number" class="form-control" name="offerPrice" id="offerPrice">
+                    <input type="number" class="form-control" name="offerPrice" id="offerPrice" value="<%=product.offer_price%>">
                 </div>
     
                 <div class="mb-3">
                   <label for="quantity" class="form-label">Quantity:</label>
                   <div class="row">
-                      <div class="col-md-2">
-                          <label for="quantityXS" class="form-label">XS</label>
-                          <input type="number" class="form-control" id="quantityXS" name="quantityXS" required>
-                      </div>
-                      <div class="col-md-2">
-                          <label for="quantityS" class="form-label">S</label>
-                          <input type="number" class="form-control" id="quantityS" name="quantityS" required>
-                      </div>
-                      <div class="col-md-2">
-                          <label for="quantityM" class="form-label">M</label>
-                          <input type="number" class="form-control" id="quantityM" name="quantityM" required>
-                      </div>
-                      <div class="col-md-2">
-                          <label for="quantityL" class="form-label">L</label>
-                          <input type="number" class="form-control" id="quantityL" name="quantityL" required>
-                      </div>
-                      <div class="col-md-2">
-                          <label for="quantityXL" class="form-label">XL</label>
-                          <input type="number" class="form-control" id="quantityXL" name="quantityXL" required>
-                      </div>
-                      <div class="col-md-2">
-                          <label for="quantityXXL" class="form-label">XXL</label>
-                          <input type="number" class="form-control" id="quantityXXL" name="quantityXXL" required>
+                    <div class="col-md-2">
+                        <% product.stock.forEach(item => { %>
+                          <label for="quantityXS" class="form-label"><%= item.size %></label>
+                          <input type="number" class="form-control" id="quantityXS" name="quantity<%= item.size %>" value="<%=item.quantity%>" required>
+                          <% }) %>
                       </div>
                   </div>
                 </div>
     
                 <div class="mb-3">
                     <label for="productDescription" class="form-label">Product Description</label>
-                    <textarea class="form-control" id="productDescription" rows="4" name="description" required></textarea>
+                    <textarea class="form-control" id="productDescription" rows="4" name="description" placeholder="<%=product.description%>" required></textarea>
                 </div>
 
                 <div id="errorMessages" class="my-3">

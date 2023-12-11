@@ -35,8 +35,6 @@ const get_edit_product = async (req,res) => {
             Category.find()
         ]);
 
-        console.log(product)
-
         res.render('admin/editProduct',{product:product,categories:categories})
 
     } catch (error) {
@@ -138,7 +136,7 @@ const update_status = async (req,res) => {
 const edit_product = async (req,res) => {
     try {
 
-        const id = req.parmas.id;
+        const id = req.params.id;
 
         const { 
             name,
@@ -154,6 +152,8 @@ const edit_product = async (req,res) => {
             quantityXXL
         } = req.body;
 
+        console.log(req.body)
+
         const validate_product = validator(req.body);
 
         if(Object.keys(validate_product).length>0){
@@ -163,7 +163,7 @@ const edit_product = async (req,res) => {
             return res.status(402).redirect(`/edit-product/${id}`)
         }
 
-        console.log(req.files)
+        // console.log(req.files)
         const update_body =
         {
             name:name,

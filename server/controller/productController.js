@@ -31,9 +31,11 @@ const get_edit_product = async (req,res) => {
         const id = req.params.id;
 
         const [product, categories] = await Promise.all([
-            Product.findOne({ id: id }),
+            Product.findById({ _id: id }),
             Category.find()
         ]);
+
+        console.log(product)
 
         res.render('admin/editProduct',{product:product,categories:categories})
 

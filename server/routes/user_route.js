@@ -1,6 +1,7 @@
 const express = require('express');
 const user_route = express();
 const userController = require('../controller/userController')
+const shopController = require('../controller/shopController');
 const auth = require('../../middlewares/user/userLogged')
 
 
@@ -21,5 +22,7 @@ user_route.post('/otp_resent',userController.resendOtp)
 
 user_route.get('/user_signup',userController.get_userSignup)
 user_route.post('/user_signup',userController.userSignup)
+
+user_route.get('/shop-products',shopController.shop_products);
 
 module.exports = user_route;

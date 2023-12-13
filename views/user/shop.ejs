@@ -144,13 +144,13 @@
                         </div>
                     </div>
                     <div class="row">
-                        <% products.forEach(product => { %>
+                        <% products.filter(product => product.status === true).forEach(product => { %>
                         <div class="col-lg-4 col-md-6 col-sm-6">
                             <div class="product__item">
                                 <div class="product__item__pic set-bg" data-setbg="<%= product.image[0]%>">
                                     <ul class="product__hover">
                                         <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                        <li><a href="#"><img src="img/icon/search.png" alt=""></a></li>
+                                        <li><a href="/view-product/<%=product._id%>"><img src="img/icon/search.png" alt=""></a></li>
                                     </ul>
                                 </div>
                                 <div class="product__item__text">

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <style>
+        body {
+            height: 100%;
+            font-family: "Nunito Sans", sans-serif;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            background-color: #000;
+            color: #fff;
+            padding: 20px;
+            min-width: 200px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            transition: 0.5s;
+        }
+
+        .profile-icon {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-list {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+
+        .sidebar-list a {
+            text-decoration: none;
+            color: #fff;
+            padding: 10px;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar-list a:hover {
+            background-color: #333;
+        }
+
+        .hamburger-menu {
+            display: none;
+            cursor: pointer;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            transition: 0.5s;
+        }
+
+        .hamburger-menu div {
+            width: 30px;
+            height: 3px;
+            background-color: #1e1d1d;
+            margin: 4px 2px;
+            transition: 0.4s;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .hamburger-menu {
+                display: block;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+
+            .hamburger-menu.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+                background-color: #e53637;
+            }
+
+            .hamburger-menu.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger-menu.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+                background-color: #e53637;
+            }
+
+            .sidebar.active {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #000;
+                z-index: 998;
+            }
+        }
+    </style>
+
+    <div class="hamburger-menu" onclick="toggleSidebar()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+    <div class="container">
+        <div class="sidebar" id="sidebar">
+            <div class="profile-icon"><i class="fas fa-user"></i></div>
+            <ul class="sidebar-list">
+                <li><a href="#profile" onclick="changeContent('Profile')"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="#valet" onclick="changeContent('Valet')"><i class="fas fa-wallet"></i> Valet</a></li>
+                <li><a href="#coupon" onclick="changeContent('Coupon')"><i class="fas fa-tag"></i> Coupon</a></li>
+                <li><a href="#addresses" onclick="changeContent('Addresses')"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
+                <li><a href="#security" onclick="changeContent('Security')"><i class="fas fa-lock"></i> Security</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+            <!-- Display the current page name -->
+            <h1 id="pageTitle">Welcome to the User Profile Page</h1>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+            const hamburgerMenu = document.querySelector('.hamburger-menu');
+            hamburgerMenu.classList.toggle('active');
+        }
+
+        function changeContent(page) {
+            const pageTitle = document.getElementById("pageTitle");
+            pageTitle.textContent = `Welcome to the ${page} Page`;
+            toggleSidebar(); // Hide the sidebar after clicking a link
+        }
+    </script>
+</body>
+</html>

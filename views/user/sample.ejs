@@ -1,12 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
+<%-include('userNavbar')%>
 <body>
     <style>
         body {
@@ -16,26 +8,52 @@
             margin: 0;
         }
 
-        .container {
+        .box {
+            width: 100%;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 70vh;
         }
+
+        #userContainer {
+            width: 90%;
+            display: flex;
+            border: 1px solid black;
+            border-radius: 15px;
+            height: 80%;
+        }
+
 
         .sidebar {
             background-color: #000;
             color: #fff;
             padding: 20px;
             min-width: 200px;
-            height: 100vh;
+            height: 100%;
+            /* height: 50%; */
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
             transition: 0.5s;
+            margin-left: -15px;
+            border-bottom-left-radius: 15px;
+            border-top-left-radius: 15px;
         }
 
         .profile-icon {
-            font-size: 36px;
+            width: 100px;
+            height: 100px;
+            border: 1px solid red;
+            border-radius: 50%;
             margin-bottom: 20px;
+        }
+
+        .profile-icon img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
         }
 
         .sidebar-list {
@@ -87,6 +105,17 @@
                 margin-left: 0;
             }
 
+            .box {
+                height: auto;
+                margin-bottom: 20px;
+            }
+
+            #userContainer {
+                flex-direction: column;
+                height: auto;
+                width: 96%;
+            }
+
             .hamburger-menu.active div:nth-child(1) {
                 transform: rotate(-45deg) translate(-5px, 6px);
                 background-color: #e53637;
@@ -116,30 +145,35 @@
         }
     </style>
 
-    <div class="hamburger-menu" onclick="toggleSidebar()">
-        <div></div>
-        <div></div>
-        <div></div>
+    <div class="box">
+        <div class="hamburger-menu" onclick="toggleSidebar()">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    
+        <div class="container" id="userContainer">
+            <div class="sidebar" id="sidebar">
+                <div class="profile-icon">
+                    <img src="https://previews.123rf.com/images/asmati/asmati1706/asmati170606229/80944205-user-avatar-illustration-anonymous-sign-vector-white-icon-with-soft-shadow-on-transparent-background.jpg" alt="">
+                </div>
+                <ul class="sidebar-list">
+                    <li><a href="#profile" onclick="changeContent('Profile')"><i class="fas fa-user"></i> Profile</a></li>
+                    <li><a href="#valet" onclick="changeContent('Valet')"><i class="fas fa-wallet"></i> Valet</a></li>
+                    <li><a href="#coupon" onclick="changeContent('Coupon')"><i class="fas fa-tag"></i> Coupon</a></li>
+                    <li><a href="#addresses" onclick="changeContent('Addresses')"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
+                    <li><a href="#security" onclick="changeContent('Security')"><i class="fas fa-lock"></i> Security</a></li>
+                </ul>
+            </div>
+    
+            <div class="content">
+                <!-- Display the current page name -->
+                <h1 id="pageTitle">Welcome to the User Profile Page</h1>
+            </div>
+    
+        </div>
     </div>
 
-    <div class="container">
-        <div class="sidebar" id="sidebar">
-            <div class="profile-icon"><i class="fas fa-user"></i></div>
-            <ul class="sidebar-list">
-                <li><a href="#profile" onclick="changeContent('Profile')"><i class="fas fa-user"></i> Profile</a></li>
-                <li><a href="#valet" onclick="changeContent('Valet')"><i class="fas fa-wallet"></i> Valet</a></li>
-                <li><a href="#coupon" onclick="changeContent('Coupon')"><i class="fas fa-tag"></i> Coupon</a></li>
-                <li><a href="#addresses" onclick="changeContent('Addresses')"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
-                <li><a href="#security" onclick="changeContent('Security')"><i class="fas fa-lock"></i> Security</a></li>
-            </ul>
-        </div>
-
-        <div class="content">
-            <!-- Display the current page name -->
-            <h1 id="pageTitle">Welcome to the User Profile Page</h1>
-        </div>
-
-    </div>
 
     <script>
         function toggleSidebar() {
@@ -153,7 +187,10 @@
             const pageTitle = document.getElementById("pageTitle");
             pageTitle.textContent = `Welcome to the ${page} Page`;
             toggleSidebar(); // Hide the sidebar after clicking a link
+            event.preventDefault(); // to prevent the default action
         }
     </script>
+
+    <%-include('userFooter')%>
 </body>
 </html>

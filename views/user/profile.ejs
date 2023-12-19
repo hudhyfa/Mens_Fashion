@@ -74,6 +74,11 @@
             background-color: #333;
         }
 
+        .sidebar-list a.active {
+            background-color: #e53637;
+            color: #fff;
+        }
+
         .hamburger-menu {
             display: none;
             cursor: pointer;
@@ -92,6 +97,49 @@
             transition: 0.4s;
         }
 
+        .profile-welcome {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        
+        /* .edit-profile-image {
+            border: 2px solid #e53637;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        } */
+
+        .content {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .content p {
+            margin-bottom: 15px;
+        }
+
+        .edit-profile-image {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .edit-profile-image input {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 80%;
+        }
+
+        .edit-profile-image button {
+            padding: 8px;
+            background-color: #e53637;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
         @media only screen and (max-width: 768px) {
             .sidebar {
                 display: none;
@@ -102,7 +150,7 @@
             }
 
             .content {
-                margin-left: 0;
+                padding: 10px;
             }
 
             .box {
@@ -142,6 +190,11 @@
                 background: #000;
                 z-index: 998;
             }
+
+            .edit-profile-image input,
+            .edit-profile-image button {
+                width: 100%;
+            }
         }
     </style>
 
@@ -153,22 +206,32 @@
         </div>
     
         <div class="container" id="userContainer">
-            <div class="sidebar" id="sidebar">
-                <div class="profile-icon">
-                    <img src="https://previews.123rf.com/images/asmati/asmati1706/asmati170606229/80944205-user-avatar-illustration-anonymous-sign-vector-white-icon-with-soft-shadow-on-transparent-background.jpg" alt="">
+                <div class="sidebar" id="sidebar">
+                    <div class="profile-icon">
+                        <img src="https://previews.123rf.com/images/asmati/asmati1706/asmati170606229/80944205-user-avatar-illustration-anonymous-sign-vector-white-icon-with-soft-shadow-on-transparent-background.jpg" alt="">
+                    </div>
+                    <ul class="sidebar-list">
+                        <li><a href="#profile" onclick="changeContent('Profile')"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="#valet" onclick="changeContent('Valet')"><i class="fas fa-wallet"></i> Valet</a></li>
+                        <li><a href="#coupon" onclick="changeContent('Coupon')"><i class="fas fa-tag"></i> Coupon</a></li>
+                        <li><a href="#addresses" onclick="changeContent('Addresses')"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
+                        <li><a href="#security" onclick="changeContent('Security')"><i class="fas fa-lock"></i> Security</a></li>
+                    </ul>
                 </div>
-                <ul class="sidebar-list">
-                    <li><a href="#profile" onclick="changeContent('Profile')"><i class="fas fa-user"></i> Profile</a></li>
-                    <li><a href="#valet" onclick="changeContent('Valet')"><i class="fas fa-wallet"></i> Valet</a></li>
-                    <li><a href="#coupon" onclick="changeContent('Coupon')"><i class="fas fa-tag"></i> Coupon</a></li>
-                    <li><a href="#addresses" onclick="changeContent('Addresses')"><i class="fas fa-map-marker-alt"></i> Addresses</a></li>
-                    <li><a href="#security" onclick="changeContent('Security')"><i class="fas fa-lock"></i> Security</a></li>
-                </ul>
-            </div>
     
-            <div class="content">
-                <!-- Display the current page name -->
-                <h1 id="pageTitle">Welcome to the User Profile Page</h1>
+                <div class="content">
+                    <div class="content">
+                        <h1 id="pageTitle">Welcome to the Profile Page</h1>
+                        <p class="profile-welcome">Hello, [UserFirstName] [UserLastName]!</p>
+                        <p>This is your profile page. You can edit your profile information here.</p>
+                        <div class="edit-profile-image">
+                            <input type="text" placeholder="Enter Image URL">
+                            <input type="file">
+                            <button>Update Profile Image</button>
+                        </div>
+                        <a href="" class="btn btn-danger">Go back</a>
+                    </div>
+                </div>
             </div>
     
         </div>
@@ -189,6 +252,11 @@
             toggleSidebar(); // Hide the sidebar after clicking a link
             event.preventDefault(); // to prevent the default action
         }
+
+        const links = document.querySelectorAll('.sidebar-list a');
+        links.forEach(link => link.classList.remove('active'));
+        event.target.classList.add('active');
+
     </script>
 
     <%-include('userFooter')%>

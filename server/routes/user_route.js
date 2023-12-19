@@ -24,6 +24,8 @@ user_route.get('/user_signup',userController.get_userSignup)
 user_route.post('/user_signup',userController.userSignup)
 
 user_route.get('/shop-products',shopController.shop_products);
-user_route.get('/view-product/:id',shopController.view_product)
+user_route.get('/view-product/:id',shopController.view_product);
+
+user_route.get('/user-profile',userController.get_userProfile)
 
 module.exports = user_route;

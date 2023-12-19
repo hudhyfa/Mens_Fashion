@@ -59,9 +59,6 @@ const upload = multer({storage:storage})
 app.use('/',user_route);
 app.use('/',admin_route);
 
-app.get('/sample',(req,res) => {
-    res.render('user/sample')
-})
 
 
 app.listen(process.env.PORT,()=>console.log(`connection on port ${process.env.PORT}`));

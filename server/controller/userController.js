@@ -17,10 +17,22 @@ const get_homepage = async (req,res) => {
     }
 }
 
+const get_userProfile = async (req,res) => {
+    try {
+        res.render('user/profile')
+    } catch (error) {
+        throw new Error("error rendering sample page: \n", error)
+    }
+}
+
 const get_userLogin = async (req,res) => {
     try {
-        // if user is not logged in
-        res.render('user/login');
+        if(req.session.userAuth){
+            return res.status(200).redirect('/user-profile')
+        }else{
+            // if user is not logged in
+            res.render('user/login');
+        }
     } catch (error) {
         console.error("error rendering login page", error)
     }
@@ -75,11 +87,13 @@ const userLogin = async (req,res) => {
             if(matchPassword){
                 if(user.status){
                     req.session.userAuth = true;
+                    console.log(req.session.userAuth)
                     req.session.username = user.username;
+                    console.log(req.session.username)
                     req.session.userId = user._id;
-    
-                    // redirecting to home page
-                    return res.status(200),redirect('/');
+                    console.log(req.session.userId);
+                    // redirecting to profile page
+                    return res.status(200).redirect('/user-profile');
                 }else{
                     req.flash("errStatus","your account is not active");
                     return res.status(402).redirect('/user_login')
@@ -152,7 +166,7 @@ const userSignup = async (req,res) => {
         delete req.session.newEmail;
         delete req.session.newPhone;
 
-        res.status(200).redirect('/user_login');
+        return res.status(200).redirect('/user_login');
 
     } catch (error) {     
         req.flash("signupError","error while signing up");
@@ -324,7 +338,8 @@ module.exports = {
     get_emailValidation,
     get_homepage,
     get_verifyOtp,
-    get_userSignup
+    get_userSignup,
+    get_userProfile
 }
 
 

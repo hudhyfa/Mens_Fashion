@@ -17,13 +17,6 @@ const get_homepage = async (req,res) => {
     }
 }
 
-const get_userProfile = async (req,res) => {
-    try {
-        res.render('user/profile')
-    } catch (error) {
-        throw new Error("error rendering sample page: \n", error)
-    }
-}
 
 const get_userLogin = async (req,res) => {
     try {
@@ -93,7 +86,7 @@ const userLogin = async (req,res) => {
                     req.session.userId = user._id;
                     console.log(req.session.userId);
                     // redirecting to profile page
-                    return res.status(200).redirect('/user-profile');
+                    return res.status(200).redirect(`/user-profile/${user._id}`);
                 }else{
                     req.flash("errStatus","your account is not active");
                     return res.status(402).redirect('/user_login')
@@ -339,7 +332,6 @@ module.exports = {
     get_homepage,
     get_verifyOtp,
     get_userSignup,
-    get_userProfile
 }
 
 

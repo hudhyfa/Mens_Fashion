@@ -1,7 +1,8 @@
 const express = require('express');
 const user_route = express();
 const userController = require('../controller/userController')
-const shopController = require('../controller/shopController');
+const shopController = require('../controller/shopController')
+const profileController = require('../controller/profileController')
 const auth = require('../../middlewares/user/userLogged')
 
 
@@ -26,6 +27,6 @@ user_route.post('/user_signup',userController.userSignup)
 user_route.get('/shop-products',shopController.shop_products);
 user_route.get('/view-product/:id',shopController.view_product);
 
-user_route.get('/user-profile',userController.get_userProfile)
+user_route.get('/user-profile/:id',profileController.get_userProfile)
 
 module.exports = user_route;

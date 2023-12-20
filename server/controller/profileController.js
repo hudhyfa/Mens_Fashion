@@ -12,6 +12,18 @@ const get_userProfile = async (req,res) => {
     }
 }
 
+const get_valet = async (req,res) => {
+    try {
+        console.log("in valet")
+        const id = req.params.id;
+        const user = await User.findById({_id:id});
+        res.render('user/valet',{user:user})
+    } catch (error) {
+       throw new Error("error rendering valet page: \n", error) 
+    }
+}
+
 module.exports = {
-    get_userProfile
+    get_userProfile,
+    get_valet
 }

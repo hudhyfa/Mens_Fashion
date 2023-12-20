@@ -12,7 +12,7 @@ const get_userProfile = async (req,res) => {
     }
 }
 
-const get_valet = async (req,res) => {
+const get_wallet = async (req,res) => {
     try {
         console.log("in valet")
         const id = req.params.id;
@@ -25,5 +25,5 @@ const get_valet = async (req,res) => {
 
 module.exports = {
     get_userProfile,
-    get_valet
+    get_wallet
 }

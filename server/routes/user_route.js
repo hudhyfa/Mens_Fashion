@@ -30,6 +30,6 @@ user_route.get('/view-product/:id',shopController.view_product);
 
 user_route.get('/user-profile/:id',profileController.get_userProfile)
 
-user_route.get('/valet/:id',profileController.get_valet);
+user_route.get('/wallet/:id',profileController.get_wallet);
 
 module.exports = user_route;

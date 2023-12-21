@@ -53,11 +53,22 @@ const get_edit_address = async (req,res) => {
     }
 }
 
+const get_security = async (req,res) => {
+    try {
+        const id = req.params.id;
+        const user = await User.findById({_id:id});
+        res.render('user/security',{user:user});
+    } catch (error) {
+        throw new Error("error rendering security page: \n", error)
+    }
+}
+
 
 module.exports = {
     get_userProfile,
     get_wallet,
     get_address,
     get_add_address,
-    get_edit_address
+    get_edit_address,
+    get_security
 }

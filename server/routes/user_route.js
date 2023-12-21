@@ -35,5 +35,6 @@ user_route.get('/wallet/:id',profileController.get_wallet);
 user_route.get('/address/:id',profileController.get_address);
 user_route.get('/add-address/:id',profileController.get_add_address);
 user_route.get('/edit-address/:id',profileController.get_edit_address);
+user_route.get('/security/:id',profileController.get_security);
 
 module.exports = user_route;

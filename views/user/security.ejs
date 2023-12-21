@@ -2,7 +2,7 @@
 <body>
     <style>
         body {
-            height: auto;
+            height: 100%;
             font-family: "Nunito Sans", sans-serif;
             -webkit-font-smoothing: antialiased;
             margin: 0;
@@ -13,8 +13,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: auto;
-            margin-bottom: 30px;
+            height: 70vh;
         }
 
         #userContainer {
@@ -22,7 +21,7 @@
             display: flex;
             border: 1px solid black;
             border-radius: 15px;
-            height: auto;
+            height: 80%;
         }
 
         .sidebar {
@@ -109,33 +108,34 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             position: relative;
+            margin: auto;
         }
 
         .content p {
             margin-bottom: 15px;
         }
 
-        .add-address-form {
+        .security-form {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        .add-address-form label {
+        .security-form label {
             margin-bottom: 10px;
             font-weight: bold;
         }
 
-        .add-address-form input {
+        .security-form input {
             padding: 8px;
             margin-bottom: 20px;
-            width: 60%;
+            width: 80%;
             box-sizing: border-box;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
 
-        .update-address-button {
+        .change-password-button {
             background-color: #e53637;
             color: #fff;
             padding: 10px 20px;
@@ -145,16 +145,22 @@
             transition: background-color 0.3s;
         }
 
-        .update-address-button:hover {
+        .change-password-button:hover {
             background-color: #c32434;
         }
 
-        .box-buttons {
-            width: 50%;
-            margin: auto;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+        .go-back-button {
+            background-color: #1e1d1d;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .go-back-button:hover {
+            background-color: #000;
         }
 
         @media only screen and (max-width: 768px) {
@@ -210,69 +216,51 @@
         }
     </style>
 
-
-
     <div class="box">
         <div class="hamburger-menu" onclick="toggleSidebar()">
             <div></div>
             <div></div>
             <div></div>
         </div>
-        <% if(user) { %>
-        <div class="container" id="userContainer">
-            <div class="sidebar" id="sidebar">
-                <div class="profile-icon">
-                    <img src="<%=user.userProfile%>" alt="profile img">
+        <% if (user) { %>
+            <div class="container" id="userContainer">
+                <div class="sidebar" id="sidebar">
+                    <div class="profile-icon">
+                        <img src="<%= user.userProfile %>" alt="profile img">
+                    </div>
+                    <ul class="sidebar-list">
+                        <li><a href="/user-profile/<%=user._id%>"><i class="fa-regular fa-address-card" style="color: #f7f9fc;margin-right: 6px;"></i> Profile</a></li>
+                        <li><a href="/wallet/<%=user._id%>"><i class="fa-regular fa-credit-card" style="color: #ffffff; margin-right: 6px;"></i> Wallet</a></li>
+                        <li><a href="#coupon"><i class="fa-solid fa-ticket" style="color: #ffffff;margin-right: 6px;"></i> Coupon</a></li>
+                        <li><a href="/address/<%=user._id%>"><i class="fa-solid fa-map-location-dot" style="color: #ffffff;margin-right: 6px;"></i> Addresses</a></li>
+                        <li><a href="/security/<%=user._id%>"><i class="fa-solid fa-key" style="color: #ffffff;margin-right: 6px;"></i> Security</a></li>
+                        <li><a href="#security"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ffffff;margin-right: 6px;"></i> Logout</a></li>
+                    </ul>
                 </div>
-                <ul class="sidebar-list">
-                    <li><a href="/user-profile/<%=user._id%>"><i class="fa-regular fa-address-card" style="color: #f7f9fc;margin-right: 6px;"></i> Profile</a></li>
-                    <li><a href="/wallet/<%=user._id%>"><i class="fa-regular fa-credit-card" style="color: #ffffff; margin-right: 6px;"></i> Wallet</a></li>
-                    <li><a href="#coupon"><i class="fa-solid fa-ticket" style="color: #ffffff;margin-right: 6px;"></i> Coupon</a></li>
-                    <li><a href="/address/<%=user._id%>"><i class="fa-solid fa-map-location-dot" style="color: #ffffff;margin-right: 6px;"></i> Addresses</a></li>
-                    <li><a href="/security/<%=user._id%>"><i class="fa-solid fa-key" style="color: #ffffff;margin-right: 6px;"></i> Security</a></li>
-                    <li><a href="#security"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ffffff;margin-right: 6px;"></i> Logout</a></li>
-                </ul>
-            </div>
 
-            <div class="content">
-                <h1 id="pageTitle">Welcome to the Edit Address Page</h1>
-                <p class="profile-welcome">Hello, <%= user.username %>!</p>
-                <div class="add-address-form">
-                    <label for="houseNo">House No or Name:</label>
-                    <input type="text" id="houseNo" placeholder="Enter house no or name">
-
-                    <label for="state">State:</label>
-                    <input type="text" id="state" placeholder="Enter state">
-
-                    <label for="country">Country:</label>
-                    <input type="text" id="country" placeholder="Enter country">
-
-                    <label for="pincode">Pincode:</label>
-                    <input type="text" id="pincode" placeholder="Enter pincode">
-
-                    <label for="landmark">Landmark:</label>
-                    <input type="text" id="landmark" placeholder="Enter landmark">
-
-                    <label for="saveas">Save as:</label>
-                    <input type="text" id="landmark" placeholder="Save as">
-
-                </div>
-                <div class="box-buttons">
-                    <button class="update-address-button" onclick="addAddress()">Update Address</button>
-                    <a href="/" class="btn btn-danger">Go back</a>
+                <div class="content">
+                    <h1 id="pageTitle">Security Settings</h1>
+                    <div class="security-form">
+                        <form action="">
+                            <label for="currentPassword">Current Password:</label><br>
+                            <input type="password" id="currentPassword" placeholder="Enter current password"><br>
+    
+                            <label for="newPassword">New Password:</label><br>
+                            <input type="password" id="newPassword" placeholder="Enter new password"><br>
+    
+                            <label for="confirmNewPassword">Confirm New Password:</label><br>
+                            <input type="password" id="confirmNewPassword" placeholder="Confirm new password"><br>
+    
+                            <button class="change-password-button" onclick="changePassword()">Change Password</button>
+                            <a href="/" class="go-back-button">Go Back</a>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
-
-            <% } else { %>
-                <h2>user not found</h2>
-            <% } %>
-            </div>
-        </div>
+        <% } else { %>
+            <h2>User not found</h2>
+        <% } %>
     </div>
-
-
-
 
     <script>
         function toggleSidebar() {
@@ -282,10 +270,11 @@
             hamburgerMenu.classList.toggle('active');
         }
 
-        const links = document.querySelectorAll('.sidebar-list a');
-        links.forEach(link => link.classList.remove('active'));
-        event.target.classList.add('active');
-
+        function changePassword() {
+            // Add logic to handle changing password
+            // You can use AJAX to send a request to the server
+            // and update the user's password
+        }
     </script>
 
     <%-include('userFooter')%>

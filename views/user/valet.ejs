@@ -218,12 +218,14 @@
                 <h1 id="pageTitle">Welcome to the MXF Wallet</h1>
                 <p class="profile-welcome">Hello, <%= user.username %>!</p>
                 <div class="valet-balance">
-                    Wallet Balance: $ 29999
+                    Wallet Balance: $ <%= user.wallet %>
                 </div>
                 <div class="add-valet-money">
-                    <label for="addValetMoney">Add Wallet Money:</label>
-                    <input type="text" id="addValetMoney" placeholder="Enter amount">
-                    <button onclick="addValetMoney()">Add Money</button>
+                    <form action="/wallet-add-money/<%=user._id%>" method="post">
+                        <label for="addValetMoney">Add Wallet Money:</label>
+                        <input type="number" id="addValetMoney" placeholder="Enter amount" name="bucks">
+                        <button type="submit" class="btn btn-sm btn-dark">Add Money</button>
+                    </form>
                 </div>
                 <table class="table table-hover" id="transaction-table">
                     <tr>

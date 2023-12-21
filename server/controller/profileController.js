@@ -14,7 +14,6 @@ const get_userProfile = async (req,res) => {
 
 const get_wallet = async (req,res) => {
     try {
-        console.log("in valet")
         const id = req.params.id;
         const user = await User.findById({_id:id});
         res.render('user/valet',{user:user})
@@ -73,6 +72,27 @@ const get_coupon = async (req,res) => {
     }
 }
 
+const add_wallet = async (req,res) => {
+    try {
+        const id = req.params.id;
+        const credit_wallet = req.body.bucks;
+
+
+        //* add money to user's wallet
+        console.log("before updating wallet")
+        const update_wallet = await User.findOneAndUpdate({_id:id},{$inc:{wallet:credit_wallet}},{new:true});
+        if(update_wallet){
+            console.log("after updating wallet")
+            return res.status(200).redirect(`/wallet/${id}`);
+        }else{
+            console.error("Error updating wallet",error)  
+        }
+
+    } catch (error) {
+        throw new Error("error adding wallet: \n", error)
+    }
+}
+
 module.exports = {
     get_userProfile,
     get_wallet,
@@ -80,5 +100,6 @@ module.exports = {
     get_add_address,
     get_edit_address,
     get_security,
-    get_coupon
+    get_coupon,
+    add_wallet
 }

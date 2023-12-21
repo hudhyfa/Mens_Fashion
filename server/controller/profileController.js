@@ -43,10 +43,21 @@ const get_add_address = async (req,res) => {
     }
 }
 
+const get_edit_address = async (req,res) => {
+    try {
+        const id = req.params.id;
+        const user = await User.findById({_id:id});
+        res.render('user/edit-address',{user:user})
+    } catch (error) {
+        throw new Error("error rendering edit address page: \n", error)
+    }
+}
+
 
 module.exports = {
     get_userProfile,
     get_wallet,
     get_address,
-    get_add_address
+    get_add_address,
+    get_edit_address
 }

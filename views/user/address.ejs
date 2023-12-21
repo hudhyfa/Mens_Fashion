@@ -149,12 +149,35 @@
             background-color: #c32434;
         }
 
-        .box-buttons {
-            width: 50%;
-            margin: auto;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+        .address-card {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            background-color: #f9f9f9;
+        }
+
+        .save-address-input {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 60%;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .save-address-button {
+            background-color: #e53637;
+            color: #fff;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .save-address-button:hover {
+            background-color: #c32434;
         }
 
         @media only screen and (max-width: 768px) {
@@ -210,69 +233,50 @@
         }
     </style>
 
-
-
     <div class="box">
         <div class="hamburger-menu" onclick="toggleSidebar()">
             <div></div>
             <div></div>
             <div></div>
         </div>
-        <% if(user) { %>
-        <div class="container" id="userContainer">
-            <div class="sidebar" id="sidebar">
-                <div class="profile-icon">
-                    <img src="<%=user.userProfile%>" alt="profile img">
+        <% if (user) { %>
+            <div class="container" id="userContainer">
+                <div class="sidebar" id="sidebar">
+                    <div class="profile-icon">
+                        <img src="<%= user.userProfile %>" alt="profile img">
+                    </div>
+                    <ul class="sidebar-list">
+                        <li><a href="/user-profile/<%=user._id%>"><i class="fa-regular fa-address-card" style="color: #f7f9fc;margin-right: 6px;"></i> Profile</a></li>
+                        <li><a href="/wallet/<%=user._id%>"><i class="fa-regular fa-credit-card" style="color: #ffffff; margin-right: 6px;"></i> Wallet</a></li>
+                        <li><a href="#coupon"><i class="fa-solid fa-ticket" style="color: #ffffff;margin-right: 6px;"></i> Coupon</a></li>
+                        <li><a href="/address/<%=user.id%>"><i class="fa-solid fa-map-location-dot" style="color: #ffffff;margin-right: 6px;"></i> Addresses</a></li>
+                        <li><a href="#security"><i class="fa-solid fa-key" style="color: #ffffff;margin-right: 6px;"></i> Security</a></li>
+                        <li><a href="#security"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ffffff;margin-right: 6px;"></i> Logout</a></li>
+                    </ul>
                 </div>
-                <ul class="sidebar-list">
-                    <li><a href="/user-profile/<%=user._id%>"><i class="fa-regular fa-address-card" style="color: #f7f9fc;margin-right: 6px;"></i> Profile</a></li>
-                    <li><a href="/wallet/<%=user._id%>"><i class="fa-regular fa-credit-card" style="color: #ffffff; margin-right: 6px;"></i> Wallet</a></li>
-                    <li><a href="#coupon"><i class="fa-solid fa-ticket" style="color: #ffffff;margin-right: 6px;"></i> Coupon</a></li>
-                    <li><a href="/address/<%=user.id%>"><i class="fa-solid fa-map-location-dot" style="color: #ffffff;margin-right: 6px;"></i> Addresses</a></li>
-                    <li><a href="#security"><i class="fa-solid fa-key" style="color: #ffffff;margin-right: 6px;"></i> Security</a></li>
-                    <li><a href="#security"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ffffff;margin-right: 6px;"></i> Logout</a></li>
-                </ul>
-            </div>
 
-            <div class="content">
-                <h1 id="pageTitle">Welcome to the Addresses Page</h1>
-                <p class="profile-welcome">Hello, <%= user.username %>!</p>
-                <div class="add-address-form">
-                    <label for="houseNo">House No or Name:</label>
-                    <input type="text" id="houseNo" placeholder="Enter house no or name">
-
-                    <label for="state">State:</label>
-                    <input type="text" id="state" placeholder="Enter state">
-
-                    <label for="country">Country:</label>
-                    <input type="text" id="country" placeholder="Enter country">
-
-                    <label for="pincode">Pincode:</label>
-                    <input type="text" id="pincode" placeholder="Enter pincode">
-
-                    <label for="landmark">Landmark:</label>
-                    <input type="text" id="landmark" placeholder="Enter landmark">
-
-                    <label for="saveas">Save as:</label>
-                    <input type="text" id="landmark" placeholder="Save as">
-
-                </div>
-                <div class="box-buttons">
-                    <button class="add-address-button" onclick="addAddress()">Add Address</button>
-                    <a href="/" class="btn btn-danger">Go back</a>
+                <div class="content">
+                    <h1 id="pageTitle">Welcome to the Addresses Page</h1>
+                            <div class="address-card">
+                                <h3>Home</h3>
+                                <p><strong>House No/Name:</strong>House name</p>
+                                <p><strong>State:</strong>Riyadh</p>
+                                <p><strong>Country:</strong> KSA</p>
+                                <p><strong>Pincode:</strong> 45839</p>
+                                <p><strong>Landmark:</strong> near appolo hospital</p>
+                                <button class="edit-address-button">Edit Address</button>
+                                <button class="edit-address-button">Delete Address</button>
+                            </div>
+                    <div class="box-buttons">
+                        <a href="/" class="btn btn-danger">Go back</a>
+                        <a href="/add-address/<%=user._id%>" class="btn btn-danger">Add address</a>
+                    </div>
                 </div>
             </div>
-        </div>
-
-            <% } else { %>
-                <h2>user not found</h2>
-            <% } %>
-            </div>
-        </div>
+        <% } else { %>
+            <h2>User not found</h2>
+        <% } %>
     </div>
-
-
-
 
     <script>
         function toggleSidebar() {
@@ -282,10 +286,11 @@
             hamburgerMenu.classList.toggle('active');
         }
 
-        const links = document.querySelectorAll('.sidebar-list a');
-        links.forEach(link => link.classList.remove('active'));
-        event.target.classList.add('active');
-
+        function addAddress() {
+            // Add logic to handle adding address
+            // You can use AJAX to send a request to the server
+            // and update the user's address list
+        }
     </script>
 
     <%-include('userFooter')%>

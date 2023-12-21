@@ -63,6 +63,15 @@ const get_security = async (req,res) => {
     }
 }
 
+const get_coupon = async (req,res) => {
+    try {
+       const id = req.params.id;
+       const user = await User.findById({_id:id});
+       res.render('user/coupon',{user:user})
+    } catch (error) {
+        throw new Error("error rendering coupon page: \n", error)
+    }
+}
 
 module.exports = {
     get_userProfile,
@@ -70,5 +79,6 @@ module.exports = {
     get_address,
     get_add_address,
     get_edit_address,
-    get_security
+    get_security,
+    get_coupon
 }

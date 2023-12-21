@@ -103,40 +103,47 @@
         .content {
             text-align: center;
             padding: 20px;
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
         }
 
         .content p {
             margin-bottom: 15px;
         }
 
-        .valet-balance {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
-
-        .add-valet-money {
-            margin-bottom: 20px;
-        }
-
-        #transaction-table {
-            width: 100%;
-            border-collapse: collapse;
+        .coupons-container {
             margin-top: 20px;
         }
 
-        #transaction-table th, #transaction-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
+        .coupon {
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        #transaction-table th {
-            background-color: #f2f2f2;
+        .coupon-name {
+            font-weight: bold;
         }
 
-        .box-buttons {
-            margin: 10px;
-            float: right;
+        .add-coupon-button {
+            background-color: #e53637;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-coupon-button:hover {
+            background-color: #c32434;
         }
 
         @media only screen and (max-width: 768px) {
@@ -189,19 +196,8 @@
                 background: #000;
                 z-index: 998;
             }
-
-            .image-box{
-                display: flex;
-                flex-direction: column;
-            }
-
-            #username{
-                width: auto;
-            }
-
         }
     </style>
-
 
     <div class="box">
         <div class="hamburger-menu" onclick="toggleSidebar()">
@@ -209,64 +205,40 @@
             <div></div>
             <div></div>
         </div>
-        <% if(user) { %>
-        <div class="container" id="userContainer">
-            <div class="sidebar" id="sidebar">
-                <div class="profile-icon">
-                    <img src="<%=user.userProfile%>" alt="profile img">
+        <% if (user) { %>
+            <div class="container" id="userContainer">
+                <div class="sidebar" id="sidebar">
+                    <div class="profile-icon">
+                        <img src="<%= user.userProfile %>" alt="profile img">
+                    </div>
+                    <ul class="sidebar-list">
+                        <li><a href="/user-profile/<%=user._id%>"><i class="fa-regular fa-address-card" style="color: #f7f9fc;margin-right: 6px;"></i> Profile</a></li>
+                        <li><a href="/wallet/<%=user._id%>"><i class="fa-regular fa-credit-card" style="color: #ffffff; margin-right: 6px;"></i> Wallet</a></li>
+                        <li><a href="/coupon/<%=user._id%>"><i class="fa-solid fa-ticket" style="color: #ffffff;margin-right: 6px;"></i> Coupon</a></li>
+                        <li><a href="/address/<%=user._id%>"><i class="fa-solid fa-map-location-dot" style="color: #ffffff;margin-right: 6px;"></i> Addresses</a></li>
+                        <li><a href="/security/<%=user._id%>"><i class="fa-solid fa-key" style="color: #ffffff;margin-right: 6px;"></i> Security</a></li>
+                        <li><a href="/user_logout"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ffffff;margin-right: 6px;"></i> Logout</a></li>
+                    </ul>
                 </div>
-                <ul class="sidebar-list">
-                    <li><a href="/user-profile/<%=user._id%>"><i class="fa-regular fa-address-card" style="color: #f7f9fc;margin-right: 6px;"></i> Profile</a></li>
-                    <li><a href="/wallet/<%=user._id%>"><i class="fa-regular fa-credit-card" style="color: #ffffff; margin-right: 6px;"></i> Wallet</a></li>
-                    <li><a href="/coupon/<%=user._id%>"><i class="fa-solid fa-ticket" style="color: #ffffff;margin-right: 6px;"></i> Coupon</a></li>
-                    <li><a href="/address/<%=user._id%>"><i class="fa-solid fa-map-location-dot" style="color: #ffffff;margin-right: 6px;"></i> Addresses</a></li>
-                    <li><a href="/security/<%=user._id%>"><i class="fa-solid fa-key" style="color: #ffffff;margin-right: 6px;"></i> Security</a></li>
-                    <li><a href="/user_logout"><i class="fa-solid fa-arrow-right-from-bracket" style="color: #ffffff;margin-right: 6px;"></i> Logout</a></li>
-                </ul>
-            </div>
 
-            <div class="content">
-                <h1 id="pageTitle">Welcome to the MXF Wallet</h1>
-                <p class="profile-welcome">Hello, <%= user.username %>!</p>
-                <div class="valet-balance">
-                    Wallet Balance: $ 29999
-                </div>
-                <div class="add-valet-money">
-                    <label for="addValetMoney">Add Wallet Money:</label>
-                    <input type="text" id="addValetMoney" placeholder="Enter amount">
-                    <button onclick="addValetMoney()">Add Money</button>
-                </div>
-                <table class="table table-hover" id="transaction-table">
-                    <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                    </tr>
-                    <tr>
-                        <td>20 Dec 2023</td>
-                        <td>599</td>
-                        <td>Credited</td>
-                    </tr>
-                    <tr>
-                        <td>20 Dec 2023</td>
-                        <td>599</td>
-                        <td>Credited</td>
-                    </tr>
-                </table>
-                <div class="box-buttons">
-                    <a href="/" class="btn btn-danger">Go back</a>
+                <div class="content">
+                    <h1 id="pageTitle">Coupons</h1>
+                    <div class="coupons-container">
+                                <div class="coupon">
+                                    <div class="coupon-details">
+                                        <p class="coupon-name">coupon-name</p>
+                                        <p>coupon-description</p>
+                                    </div>
+                                    <button class="btn btn-danger">Delete</button>
+                                </div>
+                    </div>
+                    <button class="add-coupon-button">Add Coupon</button>
                 </div>
             </div>
-
-            <% } else { %>
-                <h2>user not found</h2>
-            <% } %>
-            </div>
-        </div>
+        <% } else { %>
+            <h2>User not found</h2>
+        <% } %>
     </div>
-
-
-
 
     <script>
         function toggleSidebar() {
@@ -275,11 +247,6 @@
             const hamburgerMenu = document.querySelector('.hamburger-menu');
             hamburgerMenu.classList.toggle('active');
         }
-
-        const links = document.querySelectorAll('.sidebar-list a');
-        links.forEach(link => link.classList.remove('active'));
-        event.target.classList.add('active');
-
     </script>
 
     <%-include('userFooter')%>

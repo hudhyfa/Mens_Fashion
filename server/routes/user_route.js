@@ -42,3 +42,4 @@ user_route.get('/security/:id',profileController.get_security);
 user_route.get('/coupon/:id',profileController.get_coupon)
 
 module.exports = user_route;
+

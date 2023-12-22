@@ -220,36 +220,38 @@
         </div>
         <% if(user) { %>
         <div class="container" id="userContainer">
-            
+
             <%- include('profile-sidebar') %>
 
             <div class="content">
                 <h1 id="pageTitle">Welcome to the Addresses Page</h1>
                 <p class="profile-welcome">Hello, <%= user.username %>!</p>
-                <div class="add-address-form">
-                    <label for="houseNo">House No or Name:</label>
-                    <input type="text" id="houseNo" placeholder="Enter house no or name">
-
-                    <label for="state">State:</label>
-                    <input type="text" id="state" placeholder="Enter state">
-
-                    <label for="country">Country:</label>
-                    <input type="text" id="country" placeholder="Enter country">
-
-                    <label for="pincode">Pincode:</label>
-                    <input type="text" id="pincode" placeholder="Enter pincode">
-
-                    <label for="landmark">Landmark:</label>
-                    <input type="text" id="landmark" placeholder="Enter landmark">
-
-                    <label for="saveas">Save as:</label>
-                    <input type="text" id="landmark" placeholder="Save as">
-
-                </div>
-                <div class="box-buttons">
-                    <button class="add-address-button" onclick="addAddress()">Add Address</button>
-                    <a href="/" class="btn btn-danger">Go back</a>
-                </div>
+                <form action="" method="post">
+                    <div class="add-address-form">
+                        <label for="houseNo">House No or Name:</label>
+                        <input type="text" id="houseNo" placeholder="Enter house no or name">
+    
+                        <label for="state">State:</label>
+                        <input type="text" id="state" placeholder="Enter state">
+    
+                        <label for="country">Country:</label>
+                        <input type="text" id="country" placeholder="Enter country">
+    
+                        <label for="pincode">Pincode:</label>
+                        <input type="text" id="pincode" placeholder="Enter pincode">
+    
+                        <label for="landmark">Landmark:</label>
+                        <input type="text" id="landmark" placeholder="Enter landmark">
+    
+                        <label for="saveas">Save as:</label>
+                        <input type="text" id="landmark" placeholder="Save as">
+    
+                    </div>
+                    <div class="box-buttons">
+                        <button class="add-address-button" onclick="addAddress()">Add Address</button>
+                        <a href="/" class="btn btn-danger">Go back</a>
+                    </div>
+                </form>
             </div>
         </div>
 

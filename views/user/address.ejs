@@ -247,16 +247,22 @@
 
                 <div class="content">
                     <h1 id="pageTitle">Welcome to the Addresses Page</h1>
+                    <% if(address) { %>
+                        <% address.forEach((address) => { %>
                             <div class="address-card">
-                                <h3>Home</h3>
-                                <p><strong>House No/Name:</strong>House name</p>
-                                <p><strong>State:</strong>Riyadh</p>
-                                <p><strong>Country:</strong> KSA</p>
-                                <p><strong>Pincode:</strong> 45839</p>
-                                <p><strong>Landmark:</strong> near appolo hospital</p>
+                                <h3><%=address.name%></h3>
+                                <p><strong>House No/Name:</strong><%=address.house_name%></p>
+                                <p><strong>State:</strong><%=address.state%></p>
+                                <p><strong>Country:</strong> <%=address.country%></p>
+                                <p><strong>Pincode:</strong> <%=address.pincode%></p>
+                                <p><strong>Landmark:</strong> <%=address.landmark%></p>
                                 <a class="btn btn-outline-dark" href="/edit-address/<%=user._id%>">Edit Address</a>
                                 <a class="btn btn-dark text-light">Delete Address</a>
                             </div>
+                        <% }) %>
+                    <% } else { %>
+                            <h4>no address found. Add new address.</h4>
+                    <% } %>
                     <div class="box-buttons">
                         <a href="/" class="btn btn-danger">Go back</a>
                         <a href="/add-address/<%=user._id%>" class="btn btn-danger">Add address</a>

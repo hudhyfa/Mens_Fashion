@@ -240,14 +240,11 @@
             <div></div>
         </div>
         <% if (user) { %>
-            <div class="container" id="userContainer">
-                
+            <div class="container" id="userContainer">               
             <%- include('profile-sidebar') %>
-
-
                 <div class="content">
                     <h1 id="pageTitle">Welcome to the Addresses Page</h1>
-                    <% if(address) { %>
+                    <% if(address && address.length > 0) { %>
                         <% address.forEach((address) => { %>
                             <div class="address-card">
                                 <h3><%=address.name%></h3>

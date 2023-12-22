@@ -1,4 +1,5 @@
 const User = require('../modal/user')
+const Address = require('../modal/address')
 
 const get_userProfile = async (req,res) => {
     try {
@@ -25,10 +26,16 @@ const get_wallet = async (req,res) => {
 const get_address = async (req,res) => {
     try {
         const id = req.params.id;
-        const user = await User.findById({_id:id});
-        res.render('user/address',{user:user})
-    } catch (error) {
         
+        // * get all addresses from address collection using user's id.
+        const [user, address] = await Promise.all([
+            User.findById({_id:id}),
+            Address.find({user_id:id})
+        ])
+
+        res.render('user/address',{user:user,address:address})
+    } catch (error) {
+        throw new Error("error rendering address page: \n", error)
     }
 }
 
@@ -92,6 +99,7 @@ const add_wallet = async (req,res) => {
         throw new Error("error adding wallet: \n", error)
     }
 }
+
 
 module.exports = {
     get_userProfile,

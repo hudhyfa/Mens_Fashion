@@ -105,9 +105,9 @@ const add_wallet = async (req,res) => {
 const add_address = async (req,res) => {
     try {
         const id = req.params.id;
-
+        
         const check_info = profileValidator.address_validator(req.body);
-
+        
         if(Object.keys(check_info).length > 0){
             Object.keys(check_info).forEach(key => {
                 req.flash('errMissingDetails',check_info[key])
@@ -123,7 +123,7 @@ const add_address = async (req,res) => {
             landmark,
             title
         } = req.body;
-
+        
         const create_address = await Address.create({
             user_id: id,
             name: title,
@@ -133,18 +133,17 @@ const add_address = async (req,res) => {
             pincode: pincode,
             landmark: landmark,
         })
-
+        
         if(create_address){
-            return res.status(200).redirect(`address/${id}`)
+            return res.status(200).redirect(`/address/${id}`)
         }else{
             req.flash("errCreatingAddress","couldn't create address try again")
             return res.status(403).redirect(`/add-address/${id}`);
         }
 
-
-
     } catch (error) {
-      throw new Error("error adding address: \n", error)  
+    //   throw new Error("error adding address: \n", error) 
+        console.error("error adding address: \n", error) 
     }
 }
 

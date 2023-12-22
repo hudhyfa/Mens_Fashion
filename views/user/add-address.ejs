@@ -247,6 +247,14 @@
                         <input type="text" id="saveus" name="title" placeholder="Save as">
     
                     </div>
+                    <div class="err_msg my-3">
+                        <% if(flash.errMissingDetails) { %>
+                            <h6 style="color: #e74c3c;"><%=flash.errMissingDetails%></h6>
+                        <% } else if(flash.errCreatingAddress) { %>
+                            <h6 style="color: #e74c3c;"><%=flash.errCreatingAddress%></h6>
+                        <% } %>
+
+                    </div>
                     <div class="box-buttons">
                         <button class="add-address-button" type="submit">Add Address</button>
                         <a href="/" class="btn btn-danger">Go back</a>

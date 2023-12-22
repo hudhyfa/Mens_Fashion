@@ -1,5 +1,7 @@
 const User = require('../modal/user')
 const Address = require('../modal/address')
+const profileValidator = require('../../utils/profile_validator')
+
 
 const get_userProfile = async (req,res) => {
     try {
@@ -26,7 +28,7 @@ const get_wallet = async (req,res) => {
 const get_address = async (req,res) => {
     try {
         const id = req.params.id;
-        
+
         // * get all addresses from address collection using user's id.
         const [user, address] = await Promise.all([
             User.findById({_id:id}),
@@ -100,6 +102,19 @@ const add_wallet = async (req,res) => {
     }
 }
 
+const add_address = async (req,res) => {
+    try {
+        const id = req.params.id;
+
+        const check_info = profileValidator.address_validator(req.body);
+
+        
+
+    } catch (error) {
+      throw new Error("error adding address: \n", error)  
+    }
+}
+
 
 module.exports = {
     get_userProfile,
@@ -109,5 +124,6 @@ module.exports = {
     get_edit_address,
     get_security,
     get_coupon,
-    add_wallet
+    add_wallet,
+    add_address
 }

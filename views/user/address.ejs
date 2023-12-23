@@ -254,7 +254,7 @@
                                 <p><strong>Pincode:</strong> <%=address.pincode%></p>
                                 <p><strong>Landmark:</strong> <%=address.landmark%></p>
                                 <form action="/delete-address/<%=address._id%>" method="post">
-                                    <a class="btn btn-outline-dark" href="/edit-address/<%=user._id%>">Edit Address</a>
+                                    <a class="btn btn-outline-dark" href="/edit-address/<%=address._id%>">Edit Address</a>
                                     <input type="text" name="userId" value="<%=user._id%>" hidden>
                                     <button type="submit" class="btn btn-dark text-light">Delete Address</button>
                                 </form>

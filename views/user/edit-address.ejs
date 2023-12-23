@@ -226,30 +226,42 @@
             <div class="content">
                 <h1 id="pageTitle">Welcome to the Edit Address Page</h1>
                 <p class="profile-welcome">Hello, <%= user.username %>!</p>
-                <div class="add-address-form">
-                    <label for="houseNo">House No or Name:</label>
-                    <input type="text" id="houseNo" placeholder="Enter house no or name">
+                <% if(address) { %>
+                    <form action="/edit-address/<%=address._id%>" method="post">
 
-                    <label for="state">State:</label>
-                    <input type="text" id="state" placeholder="Enter state">
-
-                    <label for="country">Country:</label>
-                    <input type="text" id="country" placeholder="Enter country">
-
-                    <label for="pincode">Pincode:</label>
-                    <input type="text" id="pincode" placeholder="Enter pincode">
-
-                    <label for="landmark">Landmark:</label>
-                    <input type="text" id="landmark" placeholder="Enter landmark">
-
-                    <label for="saveas">Save as:</label>
-                    <input type="text" id="landmark" placeholder="Save as">
-
-                </div>
-                <div class="box-buttons">
-                    <button class="update-address-button" onclick="addAddress()">Update Address</button>
-                    <a href="/" class="btn btn-danger">Go back</a>
-                </div>
+                        <div class="add-address-form">
+                            <label for="houseNo">House No or Name:</label>
+                            <input type="text" name="name" id="houseNo" value="<%=address.house_name%>" placeholder="Enter house no or name">
+        
+                            <label for="state">State:</label>
+                            <input type="text" name="state" id="state" value="<%=address.state%>" placeholder="Enter state">
+        
+                            <label for="country">Country:</label>
+                            <input type="text" name="country" id="country" value="<%=address.country%>" placeholder="Enter country">
+        
+                            <label for="pincode">Pincode:</label>
+                            <input type="text" name="pincode" id="pincode" value="<%=address.pincode%>" placeholder="Enter pincode">
+        
+                            <label for="landmark">Landmark:</label>
+                            <input type="text" name="landmark" id="landmark" value="<%=address.landmark%>" placeholder="Enter landmark">
+        
+                            <label for="saveas">Save as:</label>
+                            <input type="text" name="title" id="landmark" value="<%=address.name%>" placeholder="Save as">
+        
+                        </div>
+                        <div class="err_msg my-3">
+                            <% if(flash.errMissingDetails) { %>
+                                <h6 style="color: #e74c3c;"><%=flash.errMissingDetails%></h6>
+                            <% } else if(flash.errCreatingAddress) { %>
+                                <h6 style="color: #e74c3c;"><%=flash.errCreatingAddress%></h6>
+                            <% } %>
+                        </div>
+                        <div class="box-buttons">
+                            <button type="submit" class="update-address-button" >Update Address</button>
+                            <a href="/" class="btn btn-danger">Go back</a>
+                        </div>
+                    </form>
+                <% } %>
             </div>
         </div>
 

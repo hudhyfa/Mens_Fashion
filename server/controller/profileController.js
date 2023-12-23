@@ -54,9 +54,15 @@ const get_add_address = async (req,res) => {
 const get_edit_address = async (req,res) => {
     try {
         const id = req.params.id;
-        const user = await User.findById({_id:id});
-        res.render('user/edit-address',{user:user})
+        console.log(req.session.userId);
+        const [user,address] = await Promise.all([
+            User.findById({_id:req.session.userId}),
+            Address.findById({_id:id})
+        ])
+        // const user = await User.findById({_id:id});
+        res.render('user/edit-address',{user:user,address:address})
     } catch (error) {
+        console.error(error.message)
         throw new Error("error rendering edit address page: \n", error)
     }
 }
@@ -167,6 +173,45 @@ const delete_address = async (req,res) => {
     }
 }
 
+const edit_address = async (req,res) => {
+    try {
+       const id = req.params.id;
+
+       const { title, name, state, country, pincode, landmark} = req.body;
+
+       const check_info = profileValidator.address_validator(req.body);
+       if(Object.keys(check_info).length > 0){
+        Object.keys(check_info).forEach(key => {
+            req.flash("errMissingDetails","fill all the details.")
+        })
+        return res.status(403).redirect(`/edit-address/${req.session.userId}`);
+       }
+
+        const updated_address = {
+            user_id: req.session.userId,
+            name: title,
+            house_name: name,
+            state: state,
+            country: country,
+            pincode: pincode,
+            landmark: landmark,
+        }
+
+       const update_address = await Address.updateOne({_id:id},{$set:updated_address});
+
+       if(update_address){
+            return res.status(200).redirect(`/address/${req.session.userId}`);
+       }else{
+         req.flash("errUpdatingAddress","Error updating address, try again")
+            return res.status(403).redirect(`/edit-address/${id}`)
+       }
+
+    } catch (error) {
+        console.error("error editing address",error)
+        throw new Error("error editing address",error)
+    }
+}
+
 module.exports = {
     get_userProfile,
     get_wallet,
@@ -177,5 +222,6 @@ module.exports = {
     get_coupon,
     add_wallet,
     add_address,
+    edit_address,
     delete_address,
 }

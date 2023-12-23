@@ -147,6 +147,25 @@ const add_address = async (req,res) => {
     }
 }
 
+const delete_address = async (req,res) => {
+    try {
+        const address_id = req.params.id;
+        const user_id = req.body.userId;
+
+        const del_address = await Address.deleteOne({_id:address_id});
+
+        if(del_address){
+            res.status(200).redirect(`/address/${user_id}`);
+        }else{
+            console.error("error occured while deleting address: \n",error)
+            res.status(402).redirect(`/address/${user_id}`);
+        }
+
+    } catch (error) {
+        console.error("error deleting address",error) 
+        throw new Error("error deleting address",error)
+    }
+}
 
 module.exports = {
     get_userProfile,
@@ -157,5 +176,6 @@ module.exports = {
     get_security,
     get_coupon,
     add_wallet,
-    add_address
+    add_address,
+    delete_address,
 }

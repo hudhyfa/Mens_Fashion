@@ -223,25 +223,36 @@
             <div></div>
         </div>
         <% if (user) { %>
-            <div class="container" id="userContainer">
-                
+            <div class="container" id="userContainer">         
             <%- include('profile-sidebar') %>
-
-
                 <div class="content">
                     <h1 id="pageTitle">Security Settings</h1>
                     <div class="security-form">
-                        <form action="">
+                        <form action="/security/<%=user._id%>" method="post">
                             <label for="currentPassword">Current Password:</label><br>
-                            <input type="password" id="currentPassword" placeholder="Enter current password"><br>
+                            <input type="password" name="currentPass" id="currentPassword" placeholder="Enter current password"><br>
     
                             <label for="newPassword">New Password:</label><br>
-                            <input type="password" id="newPassword" placeholder="Enter new password"><br>
+                            <input type="password" name="newPass" id="newPassword" placeholder="Enter new password"><br>
     
                             <label for="confirmNewPassword">Confirm New Password:</label><br>
-                            <input type="password" id="confirmNewPassword" placeholder="Confirm new password"><br>
+                            <input type="password" name="confirmNewPass" id="confirmNewPassword" placeholder="Confirm new password"><br>
+
+                            <div class="err_msg my-3">
+                                <% if(flash.missingField) { %>
+                                    <h6 style="color: #e74c3c;"><%=flash.missingField%></h6>
+                                <% } else if(flash.invalidCurrentPassword) { %>
+                                    <h6 style="color: #e74c3c;"><%=flash.invalidCurrentPassword%></h6>
+                                <% } else if(flash.invalidNewPassword) { %>
+                                    <h6 style="color: #e74c3c;"><%=flash.invalidNewPassword%></h6>
+                                <% } else if(flash.errUpdatingPassword) { %>
+                                    <h6 style="color: #e74c3c;"><%=flash.errUpdatingPassword%></h6>
+                                <% } else if(flash.invalidFormat) { %>
+                                    <h6 style="color: #e74c3c;"><%=flash.invalidFormat%></h6>
+                                <% } %>
+                            </div>
     
-                            <button class="change-password-button" onclick="changePassword()">Change Password</button>
+                            <button class="change-password-button" type="submit">Change Password</button>
                             <a href="/" class="go-back-button">Go Back</a>
                         </form>
                     </div>

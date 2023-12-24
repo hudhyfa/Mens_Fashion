@@ -15,4 +15,23 @@ const address_validator = function (body) {
 
 }
 
-module.exports = { address_validator }
+const password_validator = function (body) {
+
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    const errors = {};
+
+    const {newPass, confirmNewPass} = body;
+
+    if(!passwordPattern.test(newPass) || !passwordPattern.test(confirmNewPass)){
+        errors.invalid_format = "password must be at least 8 characters witha uppercase letter and numbers."
+    }
+
+    return errors;
+
+}
+
+module.exports = { 
+    address_validator,
+    password_validator
+ }

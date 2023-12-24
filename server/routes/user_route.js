@@ -41,6 +41,7 @@ user_route.post('/edit-address/:id',profileController.edit_address);
 user_route.post('/delete-address/:id',profileController.delete_address);
 
 user_route.get('/security/:id',profileController.get_security);
+user_route.post('/security/:id',profileController.change_password);
 
 user_route.get('/coupon/:id',profileController.get_coupon)
 

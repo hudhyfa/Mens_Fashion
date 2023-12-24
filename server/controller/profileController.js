@@ -1,6 +1,7 @@
 const User = require('../modal/user')
 const Address = require('../modal/address')
 const profileValidator = require('../../utils/profile_validator')
+const bcrypt = require('bcrypt');
 
 
 const get_userProfile = async (req,res) => {
@@ -182,7 +183,7 @@ const edit_address = async (req,res) => {
        const check_info = profileValidator.address_validator(req.body);
        if(Object.keys(check_info).length > 0){
         Object.keys(check_info).forEach(key => {
-            req.flash("errMissingDetails","fill all the details.")
+            req.flash("errMissingDetails", check_info[key])
         })
         return res.status(403).redirect(`/edit-address/${req.session.userId}`);
        }
@@ -212,6 +213,58 @@ const edit_address = async (req,res) => {
     }
 }
 
+const change_password = async (req, res) => {
+
+    const id = req.params.id;
+    const user = await User.findById({_id:id})
+    const user_password = user.password;
+
+    const { currentPass, newPass, confirmNewPass } = req.body;
+
+    if(!currentPass || !newPass || !confirmNewPass){
+        req.flash("missingField","missing details, try again");
+        return res.status(403).redirect(`/security/${id}`)
+    } 
+
+    const check_current_password = await bcrypt.compare(currentPass, user_password);
+    if(check_current_password){
+
+        const check_passwords = profileValidator.password_validator(req.body);
+        if(Object.keys(check_passwords).length > 0){
+            Object.keys(check_passwords).forEach(key => {
+                req.flash("invalidFormat", check_passwords[key])
+            })
+            return res.status(403).redirect(`/security/${id}`);
+        }
+
+            if(newPass === confirmNewPass){
+
+                const new_password = await bcrypt.hash(newPass, 10);
+                const update_password = await User.updateOne({_id:id},{$set:{password:new_password}});
+
+                if(update_password){
+
+                    req.session.userAuth = false;
+                    delete req.session.userId;
+                    delete req.session.username;
+
+                    return res.status(200).redirect('/user_login');
+
+                }else{
+                    req.flash("errUpdatingPassword","couldn't update password retry.")
+                    return res.status(402).redirect(`security/${id}`)
+                }
+            }else{
+                req.flash("invalidNewPassword","new password and confim password should be same !");
+                return res.status(403).redirect(`security/${id}`)
+            }
+    }else{
+        req.flash("invalidCurrentPassword","invalid password");
+        return res.status(403).redirect(`security/${id}`);
+    }
+
+}
+
 module.exports = {
     get_userProfile,
     get_wallet,
@@ -224,4 +277,5 @@ module.exports = {
     add_address,
     edit_address,
     delete_address,
+    change_password
 }

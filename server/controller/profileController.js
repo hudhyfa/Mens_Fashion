@@ -252,15 +252,15 @@ const change_password = async (req, res) => {
 
                 }else{
                     req.flash("errUpdatingPassword","couldn't update password retry.")
-                    return res.status(402).redirect(`security/${id}`)
+                    return res.status(402).redirect(`/security/${id}`)
                 }
             }else{
                 req.flash("invalidNewPassword","new password and confim password should be same !");
-                return res.status(403).redirect(`security/${id}`)
+                return res.status(403).redirect(`/security/${id}`)
             }
     }else{
         req.flash("invalidCurrentPassword","invalid password");
-        return res.status(403).redirect(`security/${id}`);
+        return res.status(403).redirect(`/security/${id}`);
     }
 
 }

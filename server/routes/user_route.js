@@ -4,7 +4,6 @@ const userController = require('../controller/userController')
 const shopController = require('../controller/shopController')
 const profileController = require('../controller/profileController')
 const auth = require('../../middlewares/user/userLogged');
-const user = require('../modal/user');
 
 
 const { userLoggedIn } = auth;

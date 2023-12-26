@@ -8,7 +8,7 @@
                     <div class="breadcrumb__text">
                         <h4>Shop</h4>
                         <div class="breadcrumb__links">
-                            <a href="./index.html">Home</a>
+                            <a href="/">Home</a>
                             <span>Shop</span>
                         </div>
                     </div>
@@ -168,11 +168,13 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="product__pagination">
-                                <a class="active" href="#">1</a>
-                                <a href="#">2</a>
-                                <a href="#">3</a>
-                                <span>...</span>
-                                <a href="#">21</a>
+                                <% if(currentPage > 1) { %>
+                                    <a href="/shop-products?page=<%= currentPage - 1 %>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a>
+                                <% } %>
+                                    <a class="active" href="/shop-products?page=<%= currentPage %>"><%= currentPage %></a>
+                                <% if(currentPage < totalPages) { %>
+                                    <a href="/shop-products?page=<%= currentPage + 1 %>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a>
+                                <% } %>
                             </div>
                         </div>
                     </div>

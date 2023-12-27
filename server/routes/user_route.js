@@ -6,7 +6,7 @@ const profileController = require('../controller/profileController')
 const auth = require('../../middlewares/user/userLogged');
 
 
-const { userLoggedIn } = auth;
+const { userLoggedIn,validUser } = auth;
 
 user_route.get('/',userController.get_homepage)
 
@@ -27,7 +27,7 @@ user_route.post('/user_signup',userController.userSignup)
 user_route.get('/shop-products',shopController.shop_products);
 user_route.get('/view-product/:id',shopController.view_product);
 
-user_route.get('/user-profile/:id',profileController.get_userProfile)
+user_route.get('/user-profile/:id',validUser,profileController.get_userProfile)
 
 user_route.get('/wallet/:id',profileController.get_wallet);
 user_route.post('/wallet-add-money/:id',profileController.add_wallet)

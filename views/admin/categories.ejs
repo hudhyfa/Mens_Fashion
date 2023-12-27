@@ -74,13 +74,22 @@
                         </td>
                       </tr> 
                       <% }) %> 
+                      
                     </tbody>
                   </table>
                 </div>
+                <% if(currentPage > 1) { %>
+                <a href="/categories?page= <%=currentPage - 1 %>">previous</a>
+                <% } %>
+                <a href="/categories?page=<%=currentPage%>"> <%=currentPage%> </a>
+                <% if(currentPage < totalPage) { %>
+                  <a href="/categories?page= <%=currentPage + 1 %>">next</a>
+                <% } %>
               </div>
             </div>
           </div>
         <!-- table ends -->
+      
         <%-include('_footer')-%>
     </div>
     <!-- container-scroller -->

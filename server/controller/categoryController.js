@@ -54,10 +54,16 @@ const add_category = async (req,res) => {
 // * to show categories
 const get_categories = async (req,res) => {
     try {
-        const categories = await Category.find();
+        const page = parseInt(req.query.page) || 1;
+        const limit = 2;
+        const skip = (page - 1) * limit;
+        const count = await Category.countDocuments();
+        const totalPages = count/limit;
+
+        const categories = await Category.find().limit(limit).skip(skip);
 
         if(categories){
-            res.render('admin/categories',{categories:categories})
+            res.render('admin/categories',{categories:categories,currentPage:page,totalPage:totalPages})
         }else{
             console.error("couldnt fetch categories")
         }

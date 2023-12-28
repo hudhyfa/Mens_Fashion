@@ -2,20 +2,36 @@ const Product = require('../modal/product')
 
 const shop_products = async (req,res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
+
+        let page = parseInt(req.body.currentPage) || 1;
         const limit = 1;
+        const action = req.body.action;
+        if(action){
+            page += action;
+        }
         const skip = (page - 1)*limit;
 
         const products = await Product.find()
             .populate({path:"category",select:"name"})
             .limit(limit)
             .skip(skip)
+        console.log(products);
 
         const totalProducts = await Product.countDocuments(); // count of products
 
         const totalPages = Math.ceil(totalProducts / limit); // total number of pages
+        
+        if(req.body.currentPage){
+            res.json({
+                success:true,
+                products,
+                page,
+                totalPages
+            })
+        }else{
+            await res.render('user/shop',{products, currentPage:page, totalPages:totalPages})
+        }
 
-        res.render('user/shop',{products:products, currentPage:page, totalPages})
 
     } catch (error) {
         throw new Error('error while rendering shopping page: ' + error)

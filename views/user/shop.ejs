@@ -1,4 +1,5 @@
    <%- include("userNavbar") %>
+   
 
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-option">
@@ -25,8 +26,8 @@
                 <div class="col-lg-3">
                     <div class="shop__sidebar">
                         <div class="shop__sidebar__search">
-                            <form action="#">
-                                <input type="text" placeholder="Search...">
+                            <form action="/search-product" method="post">
+                                <input type="text" placeholder="Search..." name="productname">
                                 <button type="submit"><span class="icon_search"></span></button>
                             </form>
                         </div>
@@ -143,37 +144,38 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <% products.filter(product => product.status === true).forEach(product => { %>
-                        <div class="col-lg-4 col-md-6 col-sm-6">
-                            <div class="product__item">
-                                <div class="product__item__pic set-bg" data-setbg="<%= product.image[0]%>">
-                                    <ul class="product__hover">
-                                        <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
-                                        <li><a href="/view-product/<%=product._id%>"><img src="img/icon/search.png" alt=""></a></li>
-                                    </ul>
-                                </div>
-                                <div class="product__item__text">
-                                    <h6><%= product.name %></h6>
-                                    <a href="#" class="add-cart">+ Add To Cart</a>
-                                    <div class="d-flex">
-                                        <h5>$ <%= product.price %></h5>
-                                        <h6 class="mx-2"><del>$ <%= product.offer_price %></del></h6>
+                    <div class="row" id="product-container">
+                    
+                            <% products.filter(product => product.status === true).forEach(product => { %>
+                            <div class="col-lg-4 col-md-6 col-sm-6">
+                                <div class="product__item">
+                                    <div class="product__item__pic set-bg" data-setbg="<%= product.image[0]%>">
+                                        <ul class="product__hover">
+                                            <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
+                                            <li><a href="/view-product/<%=product._id%>"><img src="img/icon/search.png" alt=""></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="product__item__text">
+                                        <h6><%= product.name %></h6>
+                                        <a href="#" class="add-cart">+ Add To Cart</a>
+                                        <div class="d-flex">
+                                            <h5>$ <%= product.price %></h5>
+                                            <h6 class="mx-2"><del>$ <%= product.offer_price %></del></h6>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <% }) %>
+                            <% }) %>
                     </div>
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="product__pagination">
+                            <div class="product__pagination" id="product-pagination">
                                 <% if(currentPage > 1) { %>
-                                    <a href="/shop-products?page=<%= currentPage - 1 %>"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a>
+                                    <a onclick="pagination(-1,'<%= currentPage %>')" style="cursor:pointer;"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a>
                                 <% } %>
-                                    <a class="active" href="/shop-products?page=<%= currentPage %>"><%= currentPage %></a>
+                                    <a class="active"><%= currentPage %></a>
                                 <% if(currentPage < totalPages) { %>
-                                    <a href="/shop-products?page=<%= currentPage + 1 %>"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a>
+                                    <a onclick="pagination(1,'<%= currentPage %>')" style="cursor:pointer;"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a>
                                 <% } %>
                             </div>
                         </div>
@@ -261,6 +263,93 @@
         </div>
     </div>
     <!-- Search End -->
+
+    <!-- pagination function starts -->
+    <script>
+        async function pagination(action,currentPage){
+            try {
+                const response = await fetch('/shop-products',{
+                    method:'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        currentPage,
+                        action
+                    }),
+                })
+                const data = await response.json();
+                if(data.success)
+                {
+                    updateProductContainer(data.products);
+                    updatePaginationContainer(data.page,data.totalPages);
+                }
+
+            } catch (error) {
+                
+            }
+        }
+
+        function updateProductContainer(data) {
+        const productContainer = document.getElementById('product-container');
+        productContainer.innerHTML = ''
+        const products = data;
+        // Iterate through products and construct HTML content
+            products.filter(product => product.status === true).forEach(product => {
+                const productHTML = `
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="product__item">
+                            
+                            <div class="product__item__pic set-bg" data-setbg="${product.image[0]}" style="background-image: url('${product.image[0]}');">
+
+
+                                <ul class="product__hover">
+                                    <li><a href="#"><img src="img/icon/heart.png" alt=""></a></li>
+                                    <li><a href="/view-product/${product._id}"><img src="img/icon/search.png" alt=""></a></li>
+                                </ul>
+                            </div>
+                            <div class="product__item__text">
+                                <h6>${product.name}</h6>
+                                <a href="#" class="add-cart">+ Add To Cart</a>
+                                <div class="d-flex">
+                                    <h5>$ ${product.price}</h5>
+                                    <h6 class="mx-2"><del>$ ${product.offer_price}</del></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+            // Append each product HTML to the container
+            productContainer.innerHTML += productHTML;
+            });
+        
+        }
+
+        function updatePaginationContainer(currentPage, totalPages) {
+            const paginationContainer = document.getElementById('product-pagination');
+            paginationContainer.innerHTML = '';
+
+            const leftArrow = currentPage > 1
+                ? `<a onclick="pagination(-1, '${currentPage}')" style="cursor:pointer;"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a>`
+                : '';
+
+            const rightArrow = currentPage < totalPages
+                ? `<a onclick="pagination(1, '${currentPage}')" style="cursor:pointer;"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a>`
+                : '';
+
+            const paginationHTML = `
+                <div class="product__pagination" id="product-pagination">
+                    ${leftArrow}
+                    <a class="active">${currentPage}</a>
+                    ${rightArrow}
+                </div>
+            `;
+
+            paginationContainer.innerHTML = paginationHTML;
+        }
+
+    </script>
 
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>

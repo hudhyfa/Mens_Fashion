@@ -4,12 +4,14 @@ const shop_products = async (req,res) => {
     try {
 
         let page = parseInt(req.body.currentPage) || 1;
-        const limit = 1;
+        const limit = 2;
         const action = req.body.action;
         if(action){
             page += action;
         }
         const skip = (page - 1)*limit;
+        const from = skip + 1;
+        const to = skip + limit;
 
         const products = await Product.find()
             .populate({path:"category",select:"name"})
@@ -26,10 +28,13 @@ const shop_products = async (req,res) => {
                 success:true,
                 products,
                 page,
-                totalPages
+                totalPages,
+                from,
+                to,
+                totalProducts
             })
         }else{
-            await res.render('user/shop',{products, currentPage:page, totalPages:totalPages})
+            await res.render('user/shop',{products, currentPage:page, totalPages:totalPages, totalProducts, from, to})
         }
 
 

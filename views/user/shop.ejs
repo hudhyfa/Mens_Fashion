@@ -128,8 +128,8 @@
                     <div class="shop__product__option">
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6">
-                                <div class="shop__product__option__left">
-                                    <p>Showing 1–12 of 126 results</p>
+                                <div class="shop__product__option__left" id="product-count-info">
+                                    <p>Showing <%= from %>-<%= to %> of <%= totalProducts %> results</p>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
@@ -283,6 +283,7 @@
                 {
                     updateProductContainer(data.products);
                     updatePaginationContainer(data.page,data.totalPages);
+                    updateProductCountInfo(data.from,data.to,data.totalProducts);
                 }
 
             } catch (error) {
@@ -347,6 +348,16 @@
             `;
 
             paginationContainer.innerHTML = paginationHTML;
+        }
+
+        function updateProductCountInfo(from, to, totalProducts){
+            const counterContainer = document.getElementById('product-count-info');
+            counterContainer.innerHTML = '';
+
+            const updatedCounter = `
+                <p>Showing ${from}-${to} of ${totalProducts} results</p> 
+            `
+            counterContainer.innerHTML += updatedCounter
         }
 
     </script>

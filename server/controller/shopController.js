@@ -1,4 +1,6 @@
-const Product = require('../modal/product')
+const Product = require('../modal/product');
+const Category = require('../modal/category')
+const { request } = require('../routes/user_route');
 
 const shop_products = async (req,res) => {
     try {
@@ -62,7 +64,50 @@ const view_product = async (req,res) => {
     }
 }
 
+const search_product = async (req,res) => {
+    try {
+
+        const searched_product = req.body.product;
+
+        //! if user doesnt enter a product name and search..
+        if(!searched_product || searched_product === ''){
+            const invalidProduct = "enter a valid product"
+            res.json({
+                success:false,
+                invalidProduct
+            })
+        }
+
+        // * first look for the searched name in both category and products. 
+        const regex = new RegExp(searched_product, 'i')        
+        const [category, products_by_name] = await Promise.all([
+            Category.findOne({name:searched_product}),
+            Product.find({name:{$regex:regex}})
+        ])
+
+        //* if name mathes category return all products in that category.
+        //* else if name matches a product return that or all products with that name.
+        if(category){
+            const products_by_category = Product.find({category:category._id});
+            res.json({
+                success:true,
+                products_by_category
+            }) 
+        }else{
+            res.json({
+                success:true,
+                products_by_name
+            })
+        }
+
+    } catch (error) {
+        console.error(error);
+        throw new Error('error while searching product',error)
+    }
+}
+
 module.exports = {
     shop_products,
-    view_product
+    view_product,
+    search_product
 }

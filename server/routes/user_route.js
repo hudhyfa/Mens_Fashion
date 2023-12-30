@@ -27,6 +27,7 @@ user_route.post('/user_signup',userController.userSignup)
 user_route.get('/shop-products',shopController.shop_products);
 user_route.post('/shop-products',shopController.shop_products);
 user_route.get('/view-product/:id',shopController.view_product);
+user_route.post('/search-product',shopController.search_product)
 
 user_route.get('/user-profile/:id',profileController.get_userProfile)
 

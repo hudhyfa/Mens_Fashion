@@ -286,7 +286,6 @@
             console.log("inside search function")
             try {
                 const product = document.getElementById('product-name').value.trim();
-                console.log(product);
                 const response = await fetch('/search-product',{
                     method:'POST',
                     headers:{
@@ -356,11 +355,35 @@
         }
 
         // filter products by price
-        function filterPrice(from,to){
+        async function filterPrice(from,to){
+
             try {
+
+                const response = await fetch('/filter-price',{
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        from,
+                        to
+                    })
+                })
+
+                const data = await response.json();
+
+                if(data){
+                    if(data.filtered_products.length > 0){
+                        updateProductContainer(data.filtered_products)
+                    }else{
+                        const productContainer = document.getElementById('product-container');
+                        productContainer.innerHTML = ''
+                        productContainer.innerHTML += `Products are out of stock`
+                    }
+                }
                 
             } catch (error) {
-                
+                console.error("error while filtering products by price",error)
             }
         }
 

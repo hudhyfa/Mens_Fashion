@@ -136,9 +136,31 @@ const filter_products_by_category = async (req, res) => {
 
 }
 
+const filter_products_by_price = async (req, res) => {
+    
+    try {
+        const from = req.body.from;
+        const to = req.body.to;
+
+        const filtered_products = await Product.find({price:{$gte:from,$lte:to}})
+
+        if(filtered_products){
+            res.json({
+                success:true,
+                filtered_products
+            })
+        }
+
+    } catch (error) {
+        console.error("error while filtering products by price",error)
+        throw new Error('error while filtering products by price',error)
+    }
+}
+
 module.exports = {
     shop_products,
     view_product,
     search_product,
-    filter_products_by_category
+    filter_products_by_category,
+    filter_products_by_price
 }

@@ -157,10 +157,36 @@ const filter_products_by_price = async (req, res) => {
     }
 }
 
+const sort_products = async (req,res) => {
+    try {
+        const order = req.body.Order;
+        console.log(order);
+        const products = await Product.find()
+
+        let sorted_products;
+
+        if(order === "ascending"){
+            sorted_products = products.sort((a,b) => a.price - b.price);
+        }else{
+            sorted_products = products.sort((a,b) => b.price - a.price);
+        }
+       
+        res.json({
+            success:true,
+            sorted_products
+        })
+
+    } catch (error) {
+        console.error("error while sorting products",error)
+        throw new Error('error while sorting products',error)
+    }
+}
+
 module.exports = {
     shop_products,
     view_product,
     search_product,
     filter_products_by_category,
-    filter_products_by_price
+    filter_products_by_price,
+    sort_products
 }

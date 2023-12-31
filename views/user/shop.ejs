@@ -62,11 +62,11 @@
                                         <div class="card-body">
                                             <div class="shop__sidebar__price">
                                                 <ul>
-                                                    <li><a onclick="filterPrice(0,500)">$0.00 - $500.00</a></li>
-                                                    <li><a onclick="filterPrice(500,1000)">$500.00 - $1000.00</a></li>
-                                                    <li><a onclick="filterPrice(1000,5000)">$1000.00 - $5000.00</a></li>
-                                                    <li><a onclick="filterPrice(5000,15000)">$5000.00 - $15000.00</a></li>
-                                                    <li><a onclick="filterPrice(15000,100000)">15000.00+</a></li>
+                                                    <li><a  style="cursor: pointer;" onclick="filterPrice(0,500)">$0.00 - $500.00</a></li>
+                                                    <li><a  style="cursor: pointer;" onclick="filterPrice(500,1000)">$500.00 - $1000.00</a></li>
+                                                    <li><a  style="cursor: pointer;" onclick="filterPrice(1000,5000)">$1000.00 - $5000.00</a></li>
+                                                    <li><a  style="cursor: pointer;" onclick="filterPrice(5000,15000)">$5000.00 - $15000.00</a></li>
+                                                    <li><a  style="cursor: pointer;" onclick="filterPrice(15000,100000)">15000.00+</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -116,9 +116,9 @@
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="shop__product__option__right">
                                     <p>Sort by Price:</p>
-                                    <select>
-                                        <option value="">Low To High</option>
-                                        <option value="">High To Low</option>
+                                    <select onchange="sort(this)">
+                                        <option value="ascending">Low To High</option>
+                                        <option value="descending">High To Low</option>
                                     </select>
                                 </div>
                             </div>
@@ -252,7 +252,7 @@
 
    
 
-    <!-- pagination,search,filter function starts -->
+    <!-- pagination,search,filter,sort function starts -->
     <script>
         // pagination
         async function pagination(action,currentPage){
@@ -387,6 +387,32 @@
             }
         }
 
+        // sort the products by price
+        async function sort(order){
+            const Order = order.value
+            console.log(Order);
+            try {
+               const response = await fetch('/sort-products',{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    Order
+                })
+               }) 
+
+               const data = await response.json();
+
+               if(data){
+                updateProductContainer(data.sorted_products);
+               }
+
+            } catch (error) {
+                console.error("error while sorting products")
+            }
+        }
+
         function showSearchError(invalidProduct){
 
             let errMsg = document.getElementById('search-error');
@@ -466,7 +492,7 @@
         }
 
     </script>
-    <!-- pagination,search,filter functions ends -->
+    <!-- pagination,search,filter,sort functions ends -->
 
     
 

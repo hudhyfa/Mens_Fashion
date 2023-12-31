@@ -29,7 +29,8 @@ user_route.post('/shop-products',shopController.shop_products);
 user_route.get('/view-product/:id',shopController.view_product);
 user_route.post('/search-product',shopController.search_product);
 user_route.post('/filter-category',shopController.filter_products_by_category);
-user_route.post('/filter-price',shopController.filter_products_by_price)
+user_route.post('/filter-price',shopController.filter_products_by_price);
+user_route.post('/sort-products',shopController.sort_products);
 
 user_route.get('/user-profile/:id',profileController.get_userProfile)
 

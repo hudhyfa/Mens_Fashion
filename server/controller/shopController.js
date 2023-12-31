@@ -73,7 +73,7 @@ const search_product = async (req,res) => {
         //! if user doesnt enter a product name and search..
         if(!searched_product || searched_product === ''){
             const invalidProduct = "enter a valid product"
-             res.json({
+            return res.json({
                 success:false,
                 invalidProduct
             })
@@ -91,12 +91,12 @@ const search_product = async (req,res) => {
         //* else if name matches a product return that or all products with that name.
         if(category){
             const products_by_category = Product.find({category:category._id});
-             res.json({
+            return res.json({
                 success:true,
                 products_by_category
             }) 
         }else if(products_by_name){
-             res.json({
+            return res.json({
                 success:true,
                 products_by_name
             })

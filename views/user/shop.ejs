@@ -27,8 +27,8 @@
                     <div class="shop__sidebar">
                         <div class="shop__sidebar__search">
                             <div>
-                                <input value="" type="text" placeholder="Search..." id="product-name" name="productname">
-                                <button type="submit" onclick="search()"><span class="icon_search"></span></button>
+                                <input value="" type="text" placeholder="Search..." id="product-name" name="productname" style="color: #b7b7b7;border: 1px solid #e5e5e5;">
+                                <button type="submit" onclick="search()" style="border: 1px solid #e5e5e5;background: none;"><span class="icon_search" style="color: #b7b7b7;"></span></button>
                             </div>
                             <p class="text text-danger" id="search-error"></p>
                         </div>
@@ -246,6 +246,12 @@
         </div>
     </div>
     <!-- Search End -->
+    <style>
+        ::placeholder{
+            color: #b7b7b7;
+            padding: 10px;
+        }
+    </style>
 
    
 
@@ -320,9 +326,9 @@
         function showSearchError(invalidProduct){
 
             let errMsg = document.getElementById('search-error');
-           
+            errMsg.innerHTML += invalidProduct;
             setTimeout(() => {
-                errMsg.innerHTML += invalidProduct;
+                errMsg.innerHTML = ''
             }, 3000);
         }
 

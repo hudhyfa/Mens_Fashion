@@ -1,6 +1,6 @@
 const Product = require('../modal/product');
 const Category = require('../modal/category')
-const { request } = require('../routes/user_route');
+// const { request } = require('../routes/user_route');
 
 const shop_products = async (req,res) => {
     try {
@@ -19,7 +19,6 @@ const shop_products = async (req,res) => {
             .populate({path:"category",select:"name"})
             .limit(limit)
             .skip(skip)
-        console.log(products);
 
         const totalProducts = await Product.countDocuments(); // count of products
 
@@ -66,13 +65,15 @@ const view_product = async (req,res) => {
 
 const search_product = async (req,res) => {
     try {
-
+        console.log("insode logins")
+        console.log(req.body.product)
         const searched_product = req.body.product;
+        
 
         //! if user doesnt enter a product name and search..
         if(!searched_product || searched_product === ''){
             const invalidProduct = "enter a valid product"
-            res.json({
+             res.json({
                 success:false,
                 invalidProduct
             })
@@ -84,19 +85,26 @@ const search_product = async (req,res) => {
             Category.findOne({name:searched_product}),
             Product.find({name:{$regex:regex}})
         ])
+        console.log("asdf",category, products_by_name);
 
         //* if name mathes category return all products in that category.
         //* else if name matches a product return that or all products with that name.
         if(category){
             const products_by_category = Product.find({category:category._id});
-            res.json({
+             res.json({
                 success:true,
                 products_by_category
             }) 
-        }else{
-            res.json({
+        }else if(products_by_name){
+             res.json({
                 success:true,
                 products_by_name
+            })
+        }else{
+            const invalidProduct = "product not found"
+             res.json({
+                success:false,
+                invalidProduct
             })
         }
 

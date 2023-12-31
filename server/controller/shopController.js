@@ -20,6 +20,8 @@ const shop_products = async (req,res) => {
             .limit(limit)
             .skip(skip)
 
+        const categories = await Category.find();
+
         const totalProducts = await Product.countDocuments(); // count of products
 
         const totalPages = Math.ceil(totalProducts / limit); // total number of pages
@@ -35,7 +37,7 @@ const shop_products = async (req,res) => {
                 totalProducts
             })
         }else{
-            await res.render('user/shop',{products, currentPage:page, totalPages:totalPages, totalProducts, from, to})
+            await res.render('user/shop',{products, categories, currentPage:page, totalPages:totalPages, totalProducts, from, to})
         }
 
 
@@ -85,7 +87,6 @@ const search_product = async (req,res) => {
             Category.findOne({name:searched_product}),
             Product.find({name:{$regex:regex}})
         ])
-        console.log("asdf",category, products_by_name);
 
         //* if name mathes category return all products in that category.
         //* else if name matches a product return that or all products with that name.
@@ -101,10 +102,10 @@ const search_product = async (req,res) => {
                 products_by_name
             })
         }else{
-            const invalidProduct = "product not found"
+            const noProduct = "product not found"
              res.json({
                 success:false,
-                invalidProduct
+                noProduct
             })
         }
 
@@ -114,8 +115,30 @@ const search_product = async (req,res) => {
     }
 }
 
+const filter_products_by_category = async (req, res) => {
+
+    try {
+        const category_id = req.body.categoryId;
+        
+        const filtered_products = await Product.find({category:category_id});
+    
+        if(filtered_products){
+            res.json({
+                success:true,
+                filtered_products
+            })
+        }
+
+    } catch (error) {
+        console.error(error);
+        throw new Error('error while filtering products by category',error)
+    }
+
+}
+
 module.exports = {
     shop_products,
     view_product,
-    search_product
+    search_product,
+    filter_products_by_category
 }

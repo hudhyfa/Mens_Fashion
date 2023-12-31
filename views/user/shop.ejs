@@ -42,15 +42,13 @@
                                         <div class="card-body">
                                             <div class="shop__sidebar__categories">
                                                 <ul class="nice-scroll">
-                                                    <li><a href="#">Men (20)</a></li>
-                                                    <li><a href="#">Women (20)</a></li>
-                                                    <li><a href="#">Bags (20)</a></li>
-                                                    <li><a href="#">Clothing (20)</a></li>
-                                                    <li><a href="#">Shoes (20)</a></li>
-                                                    <li><a href="#">Accessories (20)</a></li>
-                                                    <li><a href="#">Kids (20)</a></li>
-                                                    <li><a href="#">Kids (20)</a></li>
-                                                    <li><a href="#">Kids (20)</a></li>
+                                                   <% if(categories) { %> 
+                                                        <% categories.filter(category => category.listed === true).forEach(category => { %> 
+                                                    <li><a onclick="filterCategory('<%=category._id%>')" style="cursor:pointer;"><%=category.name%> (20)</a></li>
+                                                        <% }) %>
+                                                    <% } else { %>
+                                                        <p>categories not found</p>
+                                                    <% } %>
                                                 </ul>
                                             </div>
                                         </div>
@@ -64,12 +62,11 @@
                                         <div class="card-body">
                                             <div class="shop__sidebar__price">
                                                 <ul>
-                                                    <li><a href="#">$0.00 - $50.00</a></li>
-                                                    <li><a href="#">$50.00 - $100.00</a></li>
-                                                    <li><a href="#">$100.00 - $150.00</a></li>
-                                                    <li><a href="#">$150.00 - $200.00</a></li>
-                                                    <li><a href="#">$200.00 - $250.00</a></li>
-                                                    <li><a href="#">250.00+</a></li>
+                                                    <li><a onclick="filterPrice(0,500)">$0.00 - $500.00</a></li>
+                                                    <li><a onclick="filterPrice(500,1000)">$500.00 - $1000.00</a></li>
+                                                    <li><a onclick="filterPrice(1000,5000)">$1000.00 - $5000.00</a></li>
+                                                    <li><a onclick="filterPrice(5000,15000)">$5000.00 - $15000.00</a></li>
+                                                    <li><a onclick="filterPrice(15000,100000)">15000.00+</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -255,8 +252,9 @@
 
    
 
-    <!-- pagination,search function starts -->
+    <!-- pagination,search,filter function starts -->
     <script>
+        // pagination
         async function pagination(action,currentPage){
             try {
                 const response = await fetch('/shop-products',{
@@ -283,6 +281,7 @@
             }
         }
 
+        // search product
         async function search(){
             console.log("inside search function")
             try {
@@ -300,7 +299,7 @@
 
                 
                 const data = await response.json();
-                console.log(data);
+                console.log("Data",data);
                 if(data){
                     if(!data.success){
                         console.log("error search");
@@ -309,17 +308,59 @@
                         updateProductContainer(data.products_by_category)
                     }else if(data.success && data.products_by_name){
                         updateProductContainer(data.products_by_name)
+                    }else if(!data.success && data.noProduct){
+                        const productContainer = document.getElementById('product-container');
+                        productContainer.innerHTML = ''
+                        productContainer.innerHTML += "Product not found"
                     }
                 }else{
                     console.error('Server error:', response.status);
                 }
-                console.log("asdf",data);
-
-
-
+                
             } catch (error) {
                 console.error(error);
                 throw new Error("error while fetching searched product",error);
+            }
+        }
+
+        // filter products by category
+        async function filterCategory(categoryId){
+            
+            try {
+                const response = await fetch('/filter-category',{
+                    method: 'POST',
+                    headers:{
+                         'Content-Type' : 'application/json'
+                    },
+                    body: JSON.stringify({
+                        categoryId
+                    })
+                })
+
+                const data = await response.json();
+                if(data && data.success){
+                    products = data.filtered_products
+                    if(products.length > 0){
+                        updateProductContainer(products);
+                    }else{
+                        const productContainer = document.getElementById('product-container');
+                        productContainer.innerHTML = ''
+                        productContainer.innerHTML += `Products are out of stock`
+                    }
+                }
+
+            } catch (error) {
+                console.error(error);
+                throw new Error("error while filtering products by category",error);
+            }
+        }
+
+        // filter products by price
+        function filterPrice(from,to){
+            try {
+                
+            } catch (error) {
+                
             }
         }
 
@@ -402,7 +443,7 @@
         }
 
     </script>
-    <!-- pagination,search functions ends -->
+    <!-- pagination,search,filter functions ends -->
 
     
 

@@ -3,6 +3,7 @@ const user_route = express();
 const userController = require('../controller/userController')
 const shopController = require('../controller/shopController')
 const profileController = require('../controller/profileController')
+const cartController = require('../controller/ cartController');
 const auth = require('../../middlewares/user/userLogged');
 
 
@@ -32,7 +33,9 @@ user_route.post('/filter-category',shopController.filter_products_by_category);
 user_route.post('/filter-price',shopController.filter_products_by_price);
 user_route.post('/sort-products',shopController.sort_products);
 
-user_route.get('/user-profile/:id',profileController.get_userProfile)
+user_route.post('/add-to-cart',cartController.add_to_cart);
+
+user_route.get('/user-profile/:id', validUser, profileController.get_userProfile)
 
 user_route.get('/wallet/:id',profileController.get_wallet);
 user_route.post('/wallet-add-money/:id',profileController.add_wallet)

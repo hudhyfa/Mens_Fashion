@@ -32,7 +32,7 @@ const validUser = async (req,res,next) => {
     
         }else{
             console.log("in else");
-            return res.status(403)
+            return res.status(403).redirect('/user_login');
         }
     } catch (error) {
         console.error(error);

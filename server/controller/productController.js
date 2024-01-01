@@ -37,8 +37,10 @@ const get_edit_product = async (req,res) => {
             Product.findOne({_id:new ObjectId(id)}),
             Category.find()
         ]);
-
-        res.render('admin/editProduct',{product:product,categories:categories})
+        
+        const category = await Category.findOne({_id:product.category})
+        console.log(category);
+        res.render('admin/editProduct',{product:product,categories:categories,category:category})
 
     } catch (error) {
         console.error("Error rendering editProduct page",error)
@@ -202,6 +204,7 @@ const edit_product = async (req,res) => {
             ],
             description:description,
             image : [
+
                 ...req.files.map(file=>file.path)
             ],
             updated_on:Date.now()

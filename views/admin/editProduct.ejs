@@ -106,7 +106,7 @@
                 <div class="mb-3">
                     <label for="category" class="form-label">Category</label>
                     <select name="category" id="">
-                      <option value="">Select a category</option>
+                      <option value="<%=category._id%>"><%=category.name%></option>
                       <% categories.filter(category => category.listed === true).forEach(category => { %>
                         <option value="<%= category.id %>"><%= category.name %></option>
                       <% }) %>

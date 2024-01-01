@@ -33,7 +33,8 @@ user_route.post('/filter-category',shopController.filter_products_by_category);
 user_route.post('/filter-price',shopController.filter_products_by_price);
 user_route.post('/sort-products',shopController.sort_products);
 
-user_route.post('/add-to-cart',cartController.add_to_cart);
+user_route.get('/get-cart', validUser, cartController.get_cart);
+user_route.post('/add-to-cart/:id', validUser, cartController.add_to_cart);
 
 user_route.get('/user-profile/:id', validUser, profileController.get_userProfile)
 

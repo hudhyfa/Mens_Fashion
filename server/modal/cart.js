@@ -18,6 +18,10 @@ const schema = new Schema({
                 type:Number,
                 required:true
             },
+            size:{
+                type:String,
+                required:true
+            },
             product_total:{
                 type:Number,
                 required:true

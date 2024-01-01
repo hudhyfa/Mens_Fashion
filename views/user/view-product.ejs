@@ -79,40 +79,36 @@
                 <div class="row d-flex justify-content-center">
                     <div class="col-lg-8">
                         <div class="product__details__text">
+                        <form method="post" action="/add-to-cart/<%=product._id%>" id="product-form">
                             <h4><%=product.name%></h4>
                             <h3><%=product.price%> <span><%=product.offer_price%></span></h3>
+                            <input type="hidden" value="<%=product.price%>" name="price">
                             <p><%=product.description%></p>
                             <div class="product__details__option">
                                 <div class="product__details__option__size">
                                     <span>Size:</span>
-                                    <label for="xxl">xxl
-                                        <input type="radio" id="xxl">
-                                    </label>
-                                    <label class="active" for="xl">xl
-                                        <input type="radio" id="xl">
-                                    </label>
-                                    <label for="l">l
-                                        <input type="radio" id="l">
-                                    </label>
-                                    <label for="m">m
-                                        <input type="radio" id="m">
-                                    </label>
-                                    <label for="s">s
-                                        <input type="radio" id="s">
-                                    </label>
-                                    <label for="xs">xs
-                                        <input type="radio" id="xs">
-                                    </label>
+                                    <% product.stock.forEach(unit => { %>
+                                        <%if(unit.quantity > 0) { %>
+                                            <label ><%=unit.size%>
+                                                <input type="radio" value="<%=unit.size%>" name="size">
+                                            </label>
+                                            <% } else { %>
+                                            <label style="background-color: lightgray;"><%=unit.size%>
+                                                <input type="radio" readonly>
+                                            </label>
+                                        <% } %>
+                                    <% }) %>    
                                 </div>
                             </div>
                             <div class="product__details__cart__option">
                                 <div class="quantity">
-                                    <div class="pro-qty">
-                                        <input type="text" value="1">
-                                    </div>
+                                    <!-- <div class="pro-qty">
+                                        <input type="number" value="1" name="product_quantity">
+                                    </div> -->
                                 </div>
-                                <a href="#" class="primary-btn">add to cart</a>
+                                <a onclick="document.getElementById('product-form').submit()" class="primary-btn" style="color: white;">add to cart</a>
                             </div>
+                        </form>
                             <div class="product__details__btns__option">
                                 <a href="#"><i class="fa fa-heart"></i> add to wishlist</a>
                             </div>

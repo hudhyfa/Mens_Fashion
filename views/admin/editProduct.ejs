@@ -19,7 +19,7 @@
         }
 
         .form-container {
-            max-width: 600px;
+            max-width: 630px;
             margin: 50px auto;
             background-color: white;
             padding: 20px;
@@ -81,6 +81,18 @@
           <h2 class="mb-4">Edit Product</h2>
           <% if(product) { %>
             <form action="/edit-product/<%=product._id%>" method="post" enctype="multipart/form-data"> 
+
+                <div class="mb-3 d-flex flex-wrap justify-content-between">
+                  <% product.image.forEach(img => { %>
+                  <div class="card my-1" style="width: 18rem;">
+                    <img src="/<%=img%>" class="card-img-top" alt="product-image">
+                    <div class="card-body d-flex flex-row">
+                      <a href="/delete-image?path=<%=img%>&&id=<%=product._id%>" class="btn btn-danger btn-sm mx-2">Delete</a>
+                    </div>
+                  </div>
+                  <% }) %>
+                </div>
+
                 <div class="mb-3">
                     <label for="productImage" class="form-label">Product Image</label>
                     <input type="file" class="form-control" id="newImages" name="newImages" >
@@ -100,11 +112,7 @@
                       <% }) %>
                     </select>
                 </div>
-    
-                <!-- <div class="mb-3">
-                    <label for="subCategory" class="form-label">Subcategory</label>
-                    <input type="text" class="form-control" id="subCategory" required>
-                </div> -->
+
     
                 <div class="mb-3">
                     <label for="price" class="form-label">Price</label>

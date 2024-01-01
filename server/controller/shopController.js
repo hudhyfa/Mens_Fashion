@@ -6,7 +6,7 @@ const shop_products = async (req,res) => {
     try {
 
         let page = parseInt(req.body.currentPage) || 1;
-        const limit = 2;
+        const limit = 1;
         const action = req.body.action;
         if(action){
             page += action;

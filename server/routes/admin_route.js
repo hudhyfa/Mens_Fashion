@@ -25,6 +25,7 @@ admin_route.post('/add_product',upload.array('images'),productController.add_pro
 admin_route.get('/update_status/:id',productController.update_status)
 admin_route.get('/edit-product/:id',productController.get_edit_product);
 admin_route.post('/edit-product/:id',upload.array('newImages'),productController.edit_product)
+admin_route.get('/delete-image',productController.delete_image);
 
 admin_route.get('/categories',categoryController.get_categories);
 admin_route.get('/add_category',categoryController.get_add_category);

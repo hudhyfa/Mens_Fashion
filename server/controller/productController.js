@@ -1,7 +1,8 @@
 const Product = require('../modal/product');
 const Category = require('../modal/category');
 const validator = require('../../utils/admin_validator');
-const killPort = require('kill-port');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 const get_products = async (req,res) => {
     try {
@@ -29,14 +30,18 @@ const get_edit_product = async (req,res) => {
     try {
         const id = req.params.id;
 
+        if (!ObjectId.isValid(id)) {
+            return res.status(400).json({ error: 'Invalid product ID' });
+        }
         const [product, categories] = await Promise.all([
-            Product.findById({ _id: id }),
+            Product.findOne({_id:new ObjectId(id)}),
             Category.find()
         ]);
 
         res.render('admin/editProduct',{product:product,categories:categories})
 
     } catch (error) {
+        console.error("Error rendering editProduct page",error)
         throw new Error("error occured while editing:",error.message)
     }
 }
@@ -217,6 +222,25 @@ const edit_product = async (req,res) => {
     }
 }
 
+const delete_image = async (req, res) => {
+    try {
+        const image_path = req.query.path;
+        const product_id = req.query.id;
+
+        if(image_path && product_id) {
+            const product = await Product.findOneAndUpdate({_id:product_id},{$pull:{image:image_path}})
+            if(product) {
+                console.log("image deleted successfully");
+                res.status(200).redirect(`/edit-product/${product_id}`)
+            }
+        }
+
+    } catch (error) {
+        console.error('error while deleting image:',error);
+        throw new Error(`Error occured while deleting image`)
+    }
+}
+
 
 
 module.exports ={
@@ -225,5 +249,6 @@ module.exports ={
     add_product,
     update_status,
     edit_product,
-    get_edit_product
+    get_edit_product,
+    delete_image
 }

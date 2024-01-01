@@ -201,12 +201,12 @@ const edit_product = async (req,res) => {
                 }
             ],
             description:description,
+            image : [
+                ...req.files.map(file=>file.path)
+            ],
             updated_on:Date.now()
         }
-
-        if(req.files && req.files.newImages){
-            update_body.image = req.files.newImages.map(file=>file.path);
-        }
+        
 
         const update_product = await Product.updateOne({_id:id},{$set:update_body})
 

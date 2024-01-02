@@ -30,7 +30,10 @@ const add_to_cart = async (req,res) => {
 
         if(user_id){
 
-            const cart = await Cart.findOne({user_id: user_id});
+            const [cart,product] = await Promise.all([
+                Cart.findOne({user_id: user_id}),
+                Product.findOne({product_id: product_id})
+            ])
 
             if(!cart){
                 console.log("creating new cart and adding to cart");
@@ -49,24 +52,63 @@ const add_to_cart = async (req,res) => {
 
             }else{
                 console.log("cart already exists");
-                const productIndexWithSize = cart.products.findIndex(p => p.product_id === product_id && p.size === size);
+                // const productIndexWithSize = cart.products.findIndex(p => p.product_id === product_id && p.size === size);
             
-                if(productIndexWithSize !== -1){
-                    console.log("item exist in the cart with same size");
-                    await Cart.updateOne(
-                        {
-                            _id:user_id,
-                            'products.product_id':product_id,
-                            'products.$.size':size
-                        },
-                        {
-                            $inc:{
-                                'products.$.quantity': 1,
-                                 cart_total: price
+                // if(productIndexWithSize !== -1){
+                //     console.log("item exist in the cart with same size");
+                    // const check_stock = product.stock.find(s => s.size === size);
+                    // if(check_stock && check_stock.quantity > 0){
+                    //     await Cart.updateOne(
+                    //         {
+                    //             _id:user_id,
+                    //             'products.product_id':product_id,
+                    //             'products.$.size':size
+                    //         },
+                    //         {
+                    //             $inc:{
+                    //                 'products.$.quantity': 1,
+                    //                  cart_total: price
+                    //             }
+                    //         }
+                    //     )
+                    //     console.log("quantity updated and cart_total too");
+                    // }
+                const { matchedIndex, cart } = await Cart.findOneAndUpdate(
+                    {
+                        _id: user_id,
+                        "products.product_id": product_id,
+                        "products.size": size
+                    },
+                    {
+                        $inc: {
+                            // Check stock using check_stock variable
+                            "products.$.quantity": {
+                                $cond: {
+                                    if: { $gt: [check_stock.quantity, 0] }, // Use check_stock.quantity
+                                    then: 1,
+                                    else: 0
+                                }
+                            },
+                            cart_total: {
+                                $cond: {
+                                    if: { $gt: [check_stock.quantity, 0] }, // Use check_stock.quantity
+                                    then: price,
+                                    else: 0
+                                }
                             }
                         }
-                    )
-                    console.log("quantity updated and cart_total too");
+                    },
+                    {
+                        new: true
+                    }
+                );
+
+                if(matchedIndex !== -1){
+                    if(cart.products[matchedIndex].quantity > 0){
+                        console.log("updated quantity and cart_total for existing item");
+                    }else{
+                        console.log("stock unavailable for the size or item");
+                    }
                 }else{
                     console.log("item doesn't exist adding new");
                     const new_cart_item = {
@@ -76,8 +118,17 @@ const add_to_cart = async (req,res) => {
                         product_total: price
                     }
 
-                    cart.products.push(new_cart_item);
-                    cart.cart_total += new_cart_item.product_total;
+                    await Cart.updateOne(
+                        {user_id:user_id},
+                        {
+                            $push:{
+                                products:new_cart_item
+                            },
+                            $inc:{
+                                cart_total:price
+                            }
+                        }
+                    )
                     
                     await cart.save();
                     console.log("added new item to cart and updated cart total");

@@ -6,7 +6,26 @@ const get_cart = async (req,res) => {
         const user_id = req.session.userId;
         const cart = await Cart.findOne({user_id: user_id})
 
-        res.render('user/shopping-cart',{cart});
+        if(cart){
+            const productIds = cart.products.map(product => product.product_id);
+            const products = await Product.find({_id:{$in:productIds}});
+    
+            const enrichedCartData = cart.products.map(cartProduct => {
+                const product = products.find(p => p._id.equals(cartProduct.product_id));
+                return {
+                    ...cartProduct,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image[0]
+                }
+            })
+
+            console.log(enrichedCartData);
+    
+            res.render('user/shopping-cart',{cart:cart,cartItems:enrichedCartData});
+        }else{
+            res.render('user/shopping-cart',{cart:cart})
+        }
 
     } catch (error) {
         console.error("error rendering cart page",error);
@@ -62,7 +81,8 @@ const add_to_cart = async (req, res) => {
             {
               $inc: {
                 "products.$.quantity": 1,
-                cart_total: price
+                cart_total: price,
+                'products.$.product_total':price
               }
             },
             {

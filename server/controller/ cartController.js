@@ -19,8 +19,6 @@ const get_cart = async (req,res) => {
                     image: product.image[0]
                 }
             })
-
-            console.log(enrichedCartData);
     
             res.render('user/shopping-cart',{cart:cart,cartItems:enrichedCartData});
         }else{
@@ -63,13 +61,12 @@ const add_to_cart = async (req, res) => {
         });
         await new_cart.save();
         console.log("created and added cart item");
-        res.status(200).redirect(`/view-product/${product_id}`);
+        res.status(200).redirect(`/get-cart`);
       } else {
         // Cart exists, check for product and stock
         const check_stock = product.stock.find(s => s.size === size);
         const productIndexWithSize = cart.products.findIndex(p => p.product_id.equals(product_id) && p.size === size);
-        console.log(cart.products)
-        console.log("index",productIndexWithSize)
+      
         if (check_stock.quantity > 0 && productIndexWithSize !== -1) {
           // Increment quantity of existing item
           await Cart.findOneAndUpdate(
@@ -91,7 +88,7 @@ const add_to_cart = async (req, res) => {
           );
   
           console.log("quantity of the item updated in the cart");
-          res.status(200).redirect(`/view-product/${product_id}`);
+          res.status(200).redirect(`/get-cart`);
         } else if (check_stock.quantity > 0) {
           // Add new item to cart
           const new_cart_item = {
@@ -114,7 +111,7 @@ const add_to_cart = async (req, res) => {
           );
   
           console.log("added new item to cart and updated cart total");
-          res.status(200).redirect(`/view-product/${product_id}`);
+          res.status(200).redirect(`/get-cart`);
         } else {
           // Item out of stock
           console.log("item out of stock");
@@ -126,9 +123,50 @@ const add_to_cart = async (req, res) => {
       res.status(500).send("error adding item to cart");
     }
   };
+
+const remove_from_cart = async (req, res) => {
+  try {
+    console.log("inside remove from cart");
+    const user_id = req.session.userId;
+    const cart_item_id = req.params.id;
+
+    await Cart.findOneAndUpdate(
+        {user_id:user_id},
+        {$pull:{products:{_id:cart_item_id}}},
+        {new:true}
+    )
+
+    res.status(200).redirect('/get-cart');
+
+    // const cart = await Cart.findOne({user_id:user_id})
+
+    // const productIds = cart.products.map(product => product.product_id);
+    // const products = await Product.find({_id:{$in:productIds}});
+
+    // const enrichedCartData = cart.products.map(cartProduct => {
+    //     const product = products.find(p => p._id.equals(cartProduct.product_id));
+    //     return {
+    //         ...cartProduct,
+    //         name: product.name,
+    //         price: product.price,
+    //         image: product.image[0]
+    //     }
+    // })
+
+    // return res.json({
+    //   success:true,
+    //   enrichedCartData
+    // })
+
+  } catch (error) {
+    console.error("error removing item from cart", error);
+    res.status(403).send("error removing item from cart");
+  }
+}
   
 
 module.exports = {
     get_cart,
-    add_to_cart
+    add_to_cart,
+    remove_from_cart
 }

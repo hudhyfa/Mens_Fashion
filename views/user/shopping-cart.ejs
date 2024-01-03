@@ -36,7 +36,7 @@
                                     <th></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="cart-container">
                                 <% for (const item of cartItems) {%>
                                 <tr>
                                     <td class="product__cart__item">
@@ -61,7 +61,7 @@
                                         </div>
                                     </td>
                                     <td class="cart__price">$ <%=item._doc.product_total%></td>
-                                    <td class="cart__close"><a href=""><i class="fa fa-close"></i></a></td>
+                                    <td class="cart__close"><a onclick="confirmRemoval('/remove-from-cart/<%=item._doc._id%>')"><i class="fa fa-close"></i></a></td>
                                 </tr>
                                 <% } %>
                             </tbody>
@@ -182,6 +182,124 @@
         </div>
     </div>
     <!-- Search End -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <!-- fetch functions starts -->
+    <script>
+        //     async function removeFromCart(itemId){
+        //     console.log("inside removeFromCart",itemId);
+        //     try {
+        //       const response = await fetch('/get-cart',{
+        //         method:'POST',
+        //         headers:{
+        //             'Content-Type': 'application/json'
+        //         },
+        //         body: JSON.stringify({
+        //             itemId
+        //         })
+        //       })
+              
+        //       const data = await response.json();
+        //       console.log("data al;kdhrflkweh",data);
+
+        //       if(data && data.success){
+        //         updateCartContainer(data.enrichedCartData);
+        //       }else{
+        //         console.log("error while fetching updated cart items");
+        //       }
+
+        //     } catch (error) {
+        //        console.log("error removing item",error) 
+        //     }
+        // }
+
+        // function updateCartContainer(cartItems){
+        //     console.log("updating");
+        //     const cartContainer = document.getElementById('cart-container');
+        //     cartContainer.innerHTML = '';
+        //     cartItems.forEach(item => {
+        //         const tableRow = document.createElement('tr');
+
+        //         // Product cell
+        //         const productCell = document.createElement('td');
+        //         const productImage = document.createElement('img');
+        //         productImage.src = item.image;
+        //         productImage.width = '150px';
+        //         productImage.height = '150px';
+        //         productImage.alt = item.name;
+        //         productCell.appendChild(productImage);
+        //         const productDetails = document.createElement('div');
+        //         productDetails.textContent = `${item.name}<br>size: ${item._doc.size}`;
+        //         productCell.appendChild(productDetails);
+        //         tableRow.appendChild(productCell);
+
+        //         // Quantity cell
+        //         const quantityCell = document.createElement('td');
+        //         const quantityButtonsDiv = document.createElement('div');
+        //         const decreaseButton = document.createElement('button');
+        //         decreaseButton.textContent = '-';
+        //         decreaseButton.addEventListener('click', () => {
+        //             // Implement logic to decrease quantity and update the table
+        //         });
+        //         quantityButtonsDiv.appendChild(decreaseButton);
+        //         const quantityDisplay = document.createElement('span');
+        //         quantityDisplay.textContent = item._doc.quantity;
+        //         quantityButtonsDiv.appendChild(quantityDisplay);
+        //         const increaseButton = document.createElement('button');
+        //         increaseButton.textContent = '+';
+        //         increaseButton.addEventListener('click', () => {
+        //             // Implement logic to increase quantity and update the table
+        //         });
+        //         quantityButtonsDiv.appendChild(increaseButton);
+        //         quantityCell.appendChild(quantityButtonsDiv);
+        //         tableRow.appendChild(quantityCell);
+
+        //         // Price and total cells
+        //         const priceCell = document.createElement('td');
+        //         priceCell.textContent = `$${item.price}`;
+        //         tableRow.appendChild(priceCell);
+        //         const totalCell = document.createElement('td');
+        //         totalCell.textContent = `$${item._doc.product_total}`;
+        //         tableRow.appendChild(totalCell);
+
+        //         // Close button cell
+        //         const closeButtonCell = document.createElement('td');
+        //         const closeButton = document.createElement('a');
+        //         closeButton.textContent = '×';
+        //         closeButton.addEventListener('click', () => {
+        //             confirmRemoval(item._doc._id);
+        //         });
+        //         closeButtonCell.appendChild(closeButton);
+        //         tableRow.appendChild(closeButtonCell);
+
+        //         cartContainer.appendChild(tableRow);
+        //     });
+        // }
+
+        function confirmRemoval(itemId){
+           Swal.fire({
+               title: "Are you sure?",
+               text: "Are you sure you want to proceed?",
+               icon: "warning",
+               showCancelButton: true,  
+               confirmButtonColor: "#3085d6",
+               cancelButtonColor: "#d33",
+               confirmButtonText: "Confirm",
+               cancelButtonText: "Cancel",  
+               dangerMode: true,
+           })
+           .then((result) => {
+               if (result.isConfirmed) {
+                //    removeFromCart(itemId);
+                window.location.href = itemId;
+               } else {
+                   console.log("User canceled");
+               }
+           });
+        }
+
+        
+    </script>
+    <!-- fetch functions ends -->
 
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>

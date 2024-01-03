@@ -35,6 +35,7 @@ user_route.post('/sort-products',shopController.sort_products);
 
 user_route.get('/get-cart', validUser, cartController.get_cart);
 user_route.post('/add-to-cart/:id', validUser, cartController.add_to_cart);
+user_route.get('/remove-from-cart/:id', validUser, cartController.remove_from_cart);
 
 user_route.get('/user-profile/:id', validUser, profileController.get_userProfile)
 

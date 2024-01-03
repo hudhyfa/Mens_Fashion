@@ -52,23 +52,22 @@
                                     <td class="quantity__item">
                                         <div class="quantity">
                                             <div class="d-flex flex-row">
-                                                <a href="" class="mx-2 my-1"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a>
+                                                <% if(item._doc.quantity > 1) { %>
+                                                <a href="/dec-qty/<%=item._doc._id%>/<%=item.price%>" class="mx-2 my-1"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></a>
+                                                <% } %>
                                                 <!-- <input type="text" value="<%=item._doc.quantity%>"> -->
                                                 <h5 class="my-1"><%=item._doc.quantity%></h5>
-                                                <a href="" class="mx-2 my-1"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a>
+                                                <a href="/inc-qty/<%=item._doc._id%>/<%=item.price%>" class="mx-2 my-1"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a>
                                                 
                                             </div>
                                         </div>
                                     </td>
                                     <td class="cart__price">$ <%=item._doc.product_total%></td>
-                                    <td class="cart__close"><a onclick="confirmRemoval('/remove-from-cart/<%=item._doc._id%>')"><i class="fa fa-close"></i></a></td>
+                                    <td class="cart__close"><a onclick="confirmRemoval('/remove-from-cart/<%=item._doc._id%>/<%=item._doc.product_total%>')"><i class="fa fa-close"></i></a></td>
                                 </tr>
                                 <% } %>
                             </tbody>
                         </table>
-                        <% } else { %>
-                            <h2>your cart is empty</h2>
-                        <% } %>
                     </div>
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6">
@@ -94,82 +93,22 @@
                     <div class="cart__total">
                         <h6>Cart total</h6>
                         <ul>
-                            <li>Subtotal <span>$ 169.50</span></li>
-                            <li>Total <span>$ 169.50</span></li>
+                            <li>Subtotal <span>$ <%=cart.cart_total%></span></li>
+                            <li>Total <span>$ <%=cart.cart_total%></span></li>
                         </ul>
                         <a href="#" class="primary-btn">Proceed to checkout</a>
                     </div>
                 </div>
+                <% } else { %>
+                    <h2>your cart is empty</h2>
+                <% } %>
             </div>
         </div>
     </section>
     <!-- Shopping Cart Section End -->
 
     <!-- Footer Section Begin -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6 col-sm-6">
-                    <div class="footer__about">
-                        <div class="footer__logo">
-                            <a href="#"><img src="img/footer-logo.png" alt=""></a>
-                        </div>
-                        <p>The customer is at the heart of our unique business model, which includes design.</p>
-                        <a href="#"><img src="img/payment.png" alt=""></a>
-                    </div>
-                </div>
-                <div class="col-lg-2 offset-lg-1 col-md-3 col-sm-6">
-                    <div class="footer__widget">
-                        <h6>Shopping</h6>
-                        <ul>
-                            <li><a href="#">Clothing Store</a></li>
-                            <li><a href="#">Trending Shoes</a></li>
-                            <li><a href="#">Accessories</a></li>
-                            <li><a href="#">Sale</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-6">
-                    <div class="footer__widget">
-                        <h6>Shopping</h6>
-                        <ul>
-                            <li><a href="#">Contact Us</a></li>
-                            <li><a href="#">Payment Methods</a></li>
-                            <li><a href="#">Delivary</a></li>
-                            <li><a href="#">Return & Exchanges</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-3 offset-lg-1 col-md-6 col-sm-6">
-                    <div class="footer__widget">
-                        <h6>NewLetter</h6>
-                        <div class="footer__newslatter">
-                            <p>Be the first to know about new arrivals, look books, sales & promos!</p>
-                            <form action="#">
-                                <input type="text" placeholder="Your email">
-                                <button type="submit"><span class="icon_mail_alt"></span></button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <div class="footer__copyright__text">
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                        <p>Copyright ©
-                            <script>
-                                document.write(new Date().getFullYear());
-                            </script>2020
-                            All rights reserved | This template is made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
-                        </p>
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <%-include('userFooter')%>
     <!-- Footer Section End -->
 
     <!-- Search Begin -->
@@ -185,7 +124,49 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <!-- fetch functions starts -->
     <script>
-        //     async function removeFromCart(itemId){
+        function confirmRemoval(itemId){
+           Swal.fire({
+               title: "Are you sure?",
+               text: "Are you sure you want to proceed?",
+               icon: "warning",
+               showCancelButton: true,  
+               confirmButtonColor: "#3085d6",
+               cancelButtonColor: "#d33",
+               confirmButtonText: "Confirm",
+               cancelButtonText: "Cancel",  
+               dangerMode: true,
+           })
+           .then((result) => {
+               if (result.isConfirmed) {
+                //    removeFromCart(itemId);
+                window.location.href = itemId;
+               } else {
+                   console.log("User canceled");
+               }
+           });
+        }
+
+        // async function incQty(itemId){
+        //     try {
+        //         const response = await fetch('/inc-qty',{
+        //             method:'POST',
+        //             headers: {
+        //                 'Content-Type': 'application/json'
+        //             },
+        //             body: JSON.stringify({
+        //                 itemId
+        //             })
+        //         })
+
+        //         const data = response.json();
+
+        //     } catch (error) {
+        //         console.log("error while quantity increment",error);
+        //     }
+        // }
+    </script>
+    <!-- fetch functions starts for cart removal -->
+        <!-- //     async function removeFromCart(itemId){
         //     console.log("inside removeFromCart",itemId);
         //     try {
         //       const response = await fetch('/get-cart',{
@@ -273,33 +254,8 @@
 
         //         cartContainer.appendChild(tableRow);
         //     });
-        // }
-
-        function confirmRemoval(itemId){
-           Swal.fire({
-               title: "Are you sure?",
-               text: "Are you sure you want to proceed?",
-               icon: "warning",
-               showCancelButton: true,  
-               confirmButtonColor: "#3085d6",
-               cancelButtonColor: "#d33",
-               confirmButtonText: "Confirm",
-               cancelButtonText: "Cancel",  
-               dangerMode: true,
-           })
-           .then((result) => {
-               if (result.isConfirmed) {
-                //    removeFromCart(itemId);
-                window.location.href = itemId;
-               } else {
-                   console.log("User canceled");
-               }
-           });
-        }
-
-        
-    </script>
-    <!-- fetch functions ends -->
+        // } -->
+    <!-- fetch functions ends for cart removal -->
 
     <!-- Js Plugins -->
     <script src="js/jquery-3.3.1.min.js"></script>

@@ -16,9 +16,11 @@ const get_cart = async (req,res) => {
                     ...cartProduct,
                     name: product.name,
                     price: product.price,
-                    image: product.image[0]
+                    image: product.image[0],
                 }
             })
+
+            
     
             res.render('user/shopping-cart',{cart:cart,cartItems:enrichedCartData});
         }else{
@@ -129,10 +131,14 @@ const remove_from_cart = async (req, res) => {
     console.log("inside remove from cart");
     const user_id = req.session.userId;
     const cart_item_id = req.params.id;
+    const productTotal = parseInt(req.params.price);
 
     await Cart.findOneAndUpdate(
         {user_id:user_id},
-        {$pull:{products:{_id:cart_item_id}}},
+        {
+          $pull:{products:{_id:cart_item_id}},
+          $inc:{cart_total: -productTotal}
+        },
         {new:true}
     )
 
@@ -163,10 +169,78 @@ const remove_from_cart = async (req, res) => {
     res.status(403).send("error removing item from cart");
   }
 }
+
+const inc_quantity = async (req, res) => {
+  try {
+    const user_id = req.session.userId;
+    const item_id = req.params.id;
+    const price = parseInt(req.params.price);
+
+    updatedCart = await Cart.findOneAndUpdate(
+      { user_id: user_id },
+      {
+        $inc: { cart_total: price }
+      },
+      { new: true }
+    );
+
+    if (updatedCart) {
+      const productIndex = updatedCart.products.findIndex(p => p._id.equals(item_id));
+      if (productIndex !== -1) {
+        updatedCart.products[productIndex].quantity += 1;
+        updatedCart.products[productIndex].product_total += price;
+        await updatedCart.save(); // Save the modified document
+      } else {
+        throw new Error("Product not found in cart");
+      }
+    }
+
+    res.status(202).redirect('/get-cart');
+    
+  } catch (error) {
+    console.log("error increasing quantity",error);
+    res.status(404).send("error increasing quantity");
+  }
+}
+
+const dec_quantity = async (req, res) => {
+  try {
+    const user_id = req.session.userId;
+    const item_id = req.params.id;
+    const price = parseInt(req.params.price);
+
+    updatedCart = await Cart.findOneAndUpdate(
+      { user_id: user_id },
+      {
+        $inc: { cart_total: -price }
+      },
+      { new: true }
+    );
+
+    if (updatedCart) {
+      const productIndex = updatedCart.products.findIndex(p => p._id.equals(item_id));
+      if (productIndex !== -1) {
+        updatedCart.products[productIndex].quantity -= 1;
+        updatedCart.products[productIndex].product_total -= price;
+        await updatedCart.save(); // Save the modified document
+      } else {
+        throw new Error("Product not found in cart");
+      }
+    }
+
+    res.status(202).redirect('/get-cart');
+    
+  } catch (error) {
+    console.log("error decreasing quantity",error);
+    res.status(404).send("error decreasing quantity");
+  }
+}
   
 
 module.exports = {
     get_cart,
     add_to_cart,
-    remove_from_cart
+    remove_from_cart,
+    inc_quantity,
+    dec_quantity
 }

@@ -4,6 +4,7 @@ const userController = require('../controller/userController')
 const shopController = require('../controller/shopController')
 const profileController = require('../controller/profileController')
 const cartController = require('../controller/ cartController');
+const checkoutController = require('../controller/checkoutController');
 const auth = require('../../middlewares/user/userLogged');
 
 
@@ -58,6 +59,8 @@ user_route.get('/security/:id',profileController.get_security);
 user_route.post('/security/:id',profileController.change_password);
 
 user_route.get('/coupon/:id',profileController.get_coupon)
+
+user_route.get('/checkout',checkoutController.get_checkout);
 
 module.exports = user_route;
 

@@ -88,6 +88,16 @@ const get_coupon = async (req,res) => {
     }
 }
 
+const get_orders = async (req,res) => {
+    try {
+        const id = req.params.id;
+        const user = await User.findById({_id:id});
+        res.render('user/orders',{user:user})
+    } catch (error) {
+        console.error("error rendering order page: \n", error)
+    }
+}
+
 const add_wallet = async (req,res) => {
     try {
         const id = req.params.id;
@@ -273,6 +283,7 @@ module.exports = {
     get_edit_address,
     get_security,
     get_coupon,
+    get_orders,
     add_wallet,
     add_address,
     edit_address,

@@ -1,6 +1,10 @@
 <%-include('userNavbar')%>
 <body>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             height: auto;
             font-family: "Nunito Sans", sans-serif;
@@ -96,12 +100,8 @@
             transition: 0.4s;
         }
 
-        .profile-welcome {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-
         .content {
+            width: 90%;
             text-align: center;
             padding: 20px;
             background-color: #fff;
@@ -115,72 +115,100 @@
             margin-bottom: 15px;
         }
 
-        .add-address-form {
+        h1#pageTitle {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .order-card {
+            width: 99%;
+            border: 1px solid lightgrey;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+
+        .order-status {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .pending {
+            color: orange;
+        }
+
+        .shipped {
+            color: blue;
+        }
+
+        .arrived {
+            color: green;
+        }
+
+        .cancelled {
+            color: red;
+        }
+
+        .order-details {
+            margin-bottom: 15px;
+        }
+
+        .order-address {
+            font-weight: bold;
+            color: #333; /* Adjust for desired highlighting */
+        }
+
+        .products-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .product-card {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .add-address-form label {
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        .add-address-form input {
-            padding: 8px;
-            margin-bottom: 20px;
-            width: 60%;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
+            padding: 10px;
             border-radius: 5px;
+            background-color: #f5f5f5;
         }
 
-        .add-address-button {
-            background-color: #e53637;
-            color: #fff;
-            padding: 10px 20px;
+        .product-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+
+        .product-card h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .cancel-order-button {
+            background-color: red;
+            color: white;
+            padding: 10px 15px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        .add-address-button:hover {
-            background-color: #c32434;
-        }
-
-        .address-card {
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-            background-color: #f9f9f9;
-        }
-
-        .save-address-input {
-            margin-bottom: 10px;
-            padding: 8px;
-            width: 60%;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .save-address-button {
-            background-color: #e53637;
-            color: #fff;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .save-address-button:hover {
-            background-color: #c32434;
+        .cancel-order-button:hover {
+            background-color: darkred;
         }
 
         @media only screen and (max-width: 768px) {
+            .products-container {
+                flex-direction: column;
+            }
+
+            .order-card {
+                margin-bottom: 10px;
+            }
             .sidebar {
                 display: none;
             }
@@ -232,7 +260,6 @@
             }
         }
     </style>
-
     <div class="box">
         <div class="hamburger-menu" onclick="toggleSidebar()">
             <div></div>
@@ -240,39 +267,42 @@
             <div></div>
         </div>
         <% if (user) { %>
-            <div class="container" id="userContainer">               
+        <div class="container" id="userContainer">
             <%- include('profile-sidebar') %>
-                <div class="content">
-                    <h1 id="pageTitle">Welcome to the Addresses Page</h1>
-                    <% if(address && address.length > 0) { %>
-                        <% address.forEach((address) => { %>
-                            <div class="address-card">
-                                <h3><%=address.name%></h3>
-                                <p><strong>House No/Name:</strong><%=address.house_name%></p>
-                                <p><strong>State:</strong><%=address.state%></p>
-                                <p><strong>Country:</strong> <%=address.country%></p>
-                                <p><strong>Pincode:</strong> <%=address.pincode%></p>
-                                <p><strong>Landmark:</strong> <%=address.landmark%></p>
-                                <form action="/delete-address/<%=address._id%>" method="post">
-                                    <a class="btn btn-outline-dark" href="/edit-address/<%=address._id%>">Edit Address</a>
-                                    <input type="text" name="userId" value="<%=user._id%>" hidden>
-                                    <button type="submit" class="btn btn-dark text-light">Delete Address</button>
-                                </form>
-                            </div>
-                        <% }) %>
-                    <% } else { %>
-                            <h4>no address found. Add new address.</h4>
-                    <% } %>
-                    <div class="box-buttons">
-                        <a href="/" class="btn btn-danger">Go back</a>
-                        <a href="/add-address/<%=user._id%>" class="btn btn-danger">Add address</a>
+            <div class="content">
+                <h1 id="pageTitle">My Orders</h1>
+        
+                <div class="order-card">
+                    <h2>Order ID: #12345</h2>
+                    <p class="order-status shipped">Shipped</p>
+
+                    <div class="order-details">
+                        <p><strong>Ordered to:</strong> <span class="order-address">Home</span></p>
                     </div>
+        
+                    <div class="products-container">
+                        <div class="product-card">
+                            <img src="https://example.com/product1.jpg" alt="Product 1">
+                            <h3>Product Name 1</h3>
+                            <p>Quantity: 2</p>
+                            <p>Size: M</p>
+                        </div>
+                        <div class="product-card">
+                            <img src="https://example.com/product2.jpg" alt="Product 2">
+                            <h3>Product Name 2</h3>
+                            <p>Quantity: 1</p>
+                            <p>Size: M</p>
+                        </div>
+                    </div>
+                    <button type="submit" class="cancel-order-button mt-2">Cancel Order</button>    
                 </div>
             </div>
+        </div>
         <% } else { %>
             <h2>User not found</h2>
         <% } %>
     </div>
+
 
     <script>
         function toggleSidebar() {

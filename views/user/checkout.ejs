@@ -31,6 +31,18 @@
             margin-bottom: 3px;
         }
 
+        .site-btn {
+            display: block;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+
         @media only screen and (max-width: 768px) {
             .checkout__address-options {
                 flex-direction: column;
@@ -70,60 +82,53 @@
                             <h6 class="checkout__title">Choose your delivery address</h6>
 
                             <div class="checkout__address-options">
+                            <%if(addresses && addresses.length > 0) {%>
+                                <% addresses.forEach(address => { %>
                                 <div class="checkout__address-option">
-                                    <input type="radio" name="selectedAddress" id="address-1" value="1">
-                                    <label for="address-1">
+                                    <input type="radio" name="<%=address._id%>">
+                                    <label>
                                         <div class="checkout__address-details">
-                                            <p>John Smith</p>
-                                            <p>123 Main Street</p>
-                                            <p>Anytown, NY 10001</p>
-                                            <p>(555) 555-5555</p>
+                                            <p><%=address.name%></p>
+                                            <p><%=address.house_name%></p>
+                                            <p><%=address.state%></p>
+                                            <p><%=address.country%></p>
+                                            <p>pincode : <%=address.pincode%></p>
+                                            <p>landmark : <%=address.landmark%></p>
                                         </div>
                                     </label>
+                                    
                                 </div>
-                                <div class="checkout__address-option">
-                                    <input type="radio" name="selectedAddress" id="address-2" value="2">
-                                    <label for="address-2">
-                                        <div class="checkout__address-details">
-                                            <p>Jane Doe</p>
-                                            <p>456 Elm Street</p>
-                                            <p>Springfield, CA 90001</p>
-                                            <p>(123) 456-7890</p>
-                                        </div>
-                                    </label>
-                                </div>
+                                <% }) %>
+                                <button type="button" class="site-btn">Add address</button>
+                            <% } else { %>
+                                <p>no addresses found.</p>
+                                <button type="button" class="site-btn">Add address</button>
+                            <% } %>
                             </div>
 
                         </div>
                         <div class="col-lg-4 col-md-6">
                             <div class="checkout__order">
                                 <h4 class="order__title">Your order</h4>
-                                <div class="checkout__order__products">Product <span>Total</span></div>
+                                <div class="checkout__order__products">Q. Product <span>Total</span></div>
+                            <% cartItems.forEach(item => { %>
                                 <ul class="checkout__total__products">
-                                    <li>01. Vanilla salted caramel <span>$ 300.0</span></li>
-                                    <li>02. German chocolate <span>$ 170.0</span></li>
-                                    <li>03. Sweet autumn <span>$ 170.0</span></li>
-                                    <li>04. Cluten free mini dozen <span>$ 110.0</span></li>
+                                    <li><%=item._doc.quantity%>. <%=item.name%> (<%=item._doc.size%>) <span>$ <%=item._doc.product_total%></span></li>
                                 </ul>
+                            <% }) %>
                                 <ul class="checkout__total__all">
-                                    <li>Subtotal <span>$750.99</span></li>
-                                    <li>Total <span>$750.99</span></li>
+                                    <li>Subtotal <span>$<%=cart.cart_total%></span></li>
+                                    <li>Total <span>$<%=cart.cart_total%></span></li>
                                 </ul>
     
                                 <div class="checkout__input__checkbox">
                                     <label for="payment">
-                                        Check Payment
+                                        Cash on delivery
                                         <input type="checkbox" id="payment">
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
-                                <div class="checkout__input__checkbox">
-                                    <label for="paypal">
-                                        Paypal
-                                        <input type="checkbox" id="paypal">
-                                        <span class="checkmark"></span>
-                                    </label>
-                                </div>
+                                
                                 <button type="submit" class="site-btn">PLACE ORDER</button>
                             </div>
                         </div>

@@ -60,7 +60,7 @@ user_route.post('/security/:id',profileController.change_password);
 
 user_route.get('/coupon/:id',profileController.get_coupon)
 
-user_route.get('/checkout',checkoutController.get_checkout);
+user_route.get('/checkout', validUser, checkoutController.get_checkout);
 
 module.exports = user_route;
 

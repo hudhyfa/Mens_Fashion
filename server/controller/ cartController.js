@@ -20,8 +20,6 @@ const get_cart = async (req,res) => {
                 }
             })
 
-            
-    
             res.render('user/shopping-cart',{cart:cart,cartItems:enrichedCartData});
         }else{
             res.render('user/shopping-cart',{cart:cart})

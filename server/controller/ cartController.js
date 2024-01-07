@@ -1,6 +1,7 @@
 const Cart = require('../modal/cart')
 const Product = require('../modal/product')
 
+
 const get_cart = async (req,res) => {
     try {
         const user_id = req.session.userId;

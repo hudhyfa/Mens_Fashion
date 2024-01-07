@@ -61,6 +61,9 @@ user_route.post('/security/:id',profileController.change_password);
 user_route.get('/coupon/:id',profileController.get_coupon)
 
 user_route.get('/checkout', validUser, checkoutController.get_checkout);
+user_route.post('/checkout', validUser, checkoutController.post_checkout);
+
+user_route.get('/confirmation', validUser, checkoutController.confirmed_message);
 
 module.exports = user_route;
 

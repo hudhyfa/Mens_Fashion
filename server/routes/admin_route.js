@@ -18,6 +18,7 @@ admin_route.post('/admin_login',adminController.adminLogin)
 admin_route.post('/admin_logout',adminController.adminLogout)
 
 admin_route.get('/orders',orderController.get_orders);
+admin_route.get('/update-status/:id/:status',orderController.update_status)
 
 admin_route.get('/products',productController.get_products);
 admin_route.get('/add_product',productController.get_add_product)

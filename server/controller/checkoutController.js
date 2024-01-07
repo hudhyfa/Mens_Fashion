@@ -3,8 +3,6 @@ const Cart = require('../modal/cart');
 const Address = require('../modal/address');
 const Order = require('../modal/order')
 
-
-
 const get_checkout = async (req,res) => {
     try {
         const id = req.session.userId;

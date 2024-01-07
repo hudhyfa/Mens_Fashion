@@ -1,5 +1,6 @@
 const User = require('../modal/user')
 const Address = require('../modal/address')
+const Order = require('../modal/order')
 const profileValidator = require('../../utils/profile_validator')
 const bcrypt = require('bcrypt');
 
@@ -91,8 +92,22 @@ const get_coupon = async (req,res) => {
 const get_orders = async (req,res) => {
     try {
         const id = req.params.id;
-        const user = await User.findById({_id:id});
-        res.render('user/orders',{user:user})
+        const [user, orders] = await Promise.all([
+            User.findOne({_id:id}),
+            Order.find({user_id:id})    
+        ])
+
+        const populatedOrders = await Promise.all(orders.map(async order => {
+            const populatedOrder = await Order.populate(order, [
+              { path: 'address_id', select: 'name' },
+              { path: 'products.product_id', select: 'name image' }
+            ]);
+            return populatedOrder;
+          }));
+
+          console.log("populated orders", populatedOrders);
+        
+        res.render('user/orders',{user:user,orders:populatedOrders})
     } catch (error) {
         console.error("error rendering order page: \n", error)
     }

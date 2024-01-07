@@ -104,8 +104,6 @@ const get_orders = async (req,res) => {
             ]);
             return populatedOrder;
           }));
-
-          console.log("populated orders", populatedOrders);
         
         res.render('user/orders',{user:user,orders:populatedOrders})
     } catch (error) {

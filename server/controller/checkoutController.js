@@ -86,15 +86,58 @@ const post_checkout = async (req, res) => {
 
         console.log("cart updated");
 
-        res.status(200).redirect('/confimation')
+        res.status(200).redirect('/confirmation')
         
     } catch (error) {
         console.error("error while posting checkout page",error);
     }
 }
 
+const cancel_order = async (req, res) => {
+    try {
+       const user_id = req.session.userId;
+       const order_id = req.params.id;
+       
+       const order = await Order.findOne({_id:order_id});
+
+       for(const product of order.products){
+
+        const productId = product.product_id;
+        const size = product.size;
+        const quantity = product.quantity;
+
+        await updateStock(productId, size, quantity);
+       }
+
+       async function updateStock(productId, size, quantity) {
+         await Product.updateOne(
+            {_id:productId},
+            {$inc:{"stock.$[elem].quantity": quantity}},
+            {arrayFilters: [{"elem.size": size}]}
+         )
+       }
+
+       console.log("stock updated after cancellation");
+
+       await Order.findOneAndUpdate(
+        {_id:order_id},
+        {$set:{status:"cancelled",updated_at:new Date()}},
+        {new:true}
+       )
+
+       console.log("order updated after cancellation");
+
+       res.status(200).redirect(`/orders/${user_id}`);
+
+
+    } catch (error) {
+       console.error("error while cancelling order",error); 
+    }
+}
+
 module.exports = {
     get_checkout,
     post_checkout,
-    confirmed_message
+    confirmed_message,
+    cancel_order
 }

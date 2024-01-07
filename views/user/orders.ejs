@@ -428,9 +428,13 @@
                     </div>
                     <p><strong>Total amount: $<%=order.total_amount%></strong></p>
                     <p><strong>payment method: <%=order.payment%></strong></p>
-                    <% if( order.status !== "returned" || "cancelled") { %>
-                    <button type="submit" class="cancel-order-button mt-2">Cancel Order</button>
-                    <% } %>    
+                    <% if( order.status !== "cancelled") { %>
+                    <button onclick="cancel('<%=order._id%>')" class="cancel-order-button mt-2">Cancel Order</button>
+                    <% }else if( order.status !== "returned") { %>
+                    <button onclick="cancel('<%=order._id%>')" class="cancel-order-button mt-2">Cancel Order</button>
+                    <% }else if(order.status == "delivered"){ %>
+                    <button type="submit" class="cancel-order-button mt-2">Return Order</button>
+                    <% } %>  
                 </div>
                 <% }) %>
             <% }else{ %>
@@ -445,6 +449,10 @@
 
 
     <script>
+        function cancel(id){
+            window.location.href = `/cancel-order/${id}`;
+        }
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('active');

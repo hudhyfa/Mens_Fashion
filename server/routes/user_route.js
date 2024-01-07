@@ -64,6 +64,7 @@ user_route.get('/checkout', validUser, checkoutController.get_checkout);
 user_route.post('/checkout', validUser, checkoutController.post_checkout);
 
 user_route.get('/confirmation', validUser, checkoutController.confirmed_message);
+user_route.get('/cancel-order/:id', validUser, checkoutController.cancel_order);
 
 module.exports = user_route;
 

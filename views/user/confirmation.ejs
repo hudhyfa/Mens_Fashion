@@ -1,13 +1,10 @@
 <%-include('userNavbar')%>
-    <style>
-        .message{
-            margin: auto;
-        }
-    </style>
+    
     <!-- Header Section End -->
     <section>
         <div class="message">
             <h2>order placed!</h2>
+            <button onclick="downloadInvoice()">Download Invoice</button>
         </div>
     </section>
     
@@ -28,9 +25,12 @@
     <!-- Search End -->
 
     <script>
-        function newAddress(route){
-            window.location.href = route;
-        }
+        
+       async function downloadInvoice() {    
+           window.location.href = "/create-bill"
+      }
+
+      
     </script>
 
     <!-- Js Plugins -->

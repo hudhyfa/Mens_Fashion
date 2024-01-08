@@ -62,9 +62,10 @@ user_route.get('/coupon/:id',profileController.get_coupon)
 
 user_route.get('/checkout', validUser, checkoutController.get_checkout);
 user_route.post('/checkout', validUser, checkoutController.post_checkout);
-
-user_route.get('/confirmation', validUser, checkoutController.confirmed_message);
 user_route.get('/cancel-order/:id', validUser, checkoutController.cancel_order);
+
+user_route.get('/confirmation/:id', validUser, checkoutController.confirmed_message);
+user_route.get('/create-bill', validUser, checkoutController.create_invoice);
 
 module.exports = user_route;
 

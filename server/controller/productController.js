@@ -6,6 +6,8 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const get_products = async (req,res) => {
     try {
+        console.log(req.body.currentPage, req.body.filter)
+        console.log("inside get products")
         let page = parseInt(req.body.currentPage) || 1;
         const limit = 2;
     
@@ -18,22 +20,72 @@ const get_products = async (req,res) => {
         }
         const skip = (page - 1) * limit;
 
-        const products = await Product.find()
+        async function sortedProductsByPrice(order) {
+            return await Product.find()
+            .sort({price:order})
             .limit(limit)
             .skip(skip)
             .populate({path:"category",select:["name"]});
+        }
+
+        async function filterProductsByStatus(bool){
+            return await Product.find({status:bool})
+            .limit(limit)
+            .skip(skip)
+            .populate({path:"category",select:["name"]});
+        }
+
+        // const products = await Product.find()
+        //     .limit(limit)
+        //     .skip(skip)
+        //     .populate({path:"category",select:["name"]});
 
         // const prodCount = products.length;
         // console.log("asd", prodCount);
+        
 
-        if(req.body.currentPage){
-            res.json({
-                products,
+        if(req.body.currentPage && req.body.filterBy == "pricelth" && req.body.filter===false){
+            console.log("inside sorted products");
+            const sortedProducts = await sortedProductsByPrice(1)
+            return res.json({
+                products: sortedProducts,
+                currentPage: page,
+                totalPages
+            })
+        }else if(req.body.currentPage && req.body.filterBy == "listed" && req.body.filter===true){
+            console.log("inside listed products");
+            const filteredProducts = await filterProductsByStatus(true);
+            return res.json({
+                products: filteredProducts,
+                currentPage: page,
+                totalPages,
+            })
+        }else if(req.body.currentPage && req.body.filterBy == "unlisted" && req.body.filter===true){
+            console.log("inside unlisted products");
+            const filteredProducts = await filterProductsByStatus(false);
+            return res.json({
+                products: filteredProducts,
+                currentPage: page,
+                totalPages,
+            })
+        }else if(req.body.currentPage && req.body.filterBy == "pricehtl" && req.body.filter===true){
+            console.log("inside sorted products");
+            const sortedProducts = await sortedProductsByPrice(-1);
+            return res.json({
+                products: sortedProducts,
+                currentPage: page,
+                totalPages,
+            })
+        }else if(req.body.currentPage){
+            const products = await sortedProductsByPrice(1);
+            return res.json({
+                products: products,
                 currentPage: page,
                 totalPages,
             })
         }else{
-            res.status(200).render('admin/products',{products, currentPage: page, totalPages})
+            const products = await sortedProductsByPrice(1); 
+            return res.status(200).render('admin/products',{products: products, currentPage: page, totalPages})
         }
         
         
@@ -290,6 +342,45 @@ const search_product = async (req, res) => {
     }
 }
 
+const filterProducts = async (req, res) => {
+    try {
+       const degree = req.body.filterBy;
+       const [sortByPriceAsc, sortByPriceDesc, filterListed, filterUnlisted] = await Promise.all([
+        Product.find().sort({price:1}),
+        Product.find().sort({price:-1}),
+        Product.find({status:true}),
+        Product.find({status:false})
+       ])
+
+       if(degree==="pricelth"){
+        return res.json({
+            success:true,
+            products:sortByPriceAsc
+        })
+       }
+       else if(degree==="pricehtl"){
+        return res.json({
+            success:true,
+            products:sortByPriceDesc
+        })
+       }
+       else if(degree==="listed"){
+        return res.json({
+            success:true,
+            products:filterListed
+        })
+       }
+       else if(degree==="unlisted"){
+        return res.json({
+            success:true,
+            products:filterUnlisted
+        })
+       }
+
+    } catch (error) {
+        console.log('error while filtering products',error);
+    }
+}
 
 
 module.exports ={
@@ -300,5 +391,6 @@ module.exports ={
     edit_product,
     get_edit_product,
     delete_image,
-    search_product
+    search_product,
+    filterProducts
 }

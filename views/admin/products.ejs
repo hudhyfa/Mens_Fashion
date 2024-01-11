@@ -63,13 +63,15 @@
                   </div>
                 </div>
                 <div class="">
+                  <% if(products) { %>
                   <span>Filter: </span>
-                  <select onchange="filter(this)" id="">
+                  <select onchange="productFilter(this,'<%= currentPage %>')" id="">
                     <option value="pricelth">$ low to high</option>
                     <option value="pricehtl">$ high to low</option>
                     <option value="listed">Listed items</option>
                     <option value="unlisted">Unlisted items</option>
                   </select>
+                  <% } %>
                 </div>
               </div>
               <div class="table-responsive">
@@ -141,6 +143,10 @@
         <%-include('_footer')-%>
     </div>
     <script>
+      let filter = false;
+      let filterBy;
+     
+
       function updateStock(selectedSize, stockData) {
         console.log("Stock")
           const selectedSizeValue = selectedSize.value;
@@ -157,15 +163,18 @@
               quantityDisplay.textContent = 'Select a size to see stock availability.';
           }
       }
-
+      
       // for pagination
       async function changePage(currentPage, action) {
+        console.log("filter:",filter);
         const response = await fetch('/products',{
           method: 'POST',
           headers: {'Content-Type':'application/json'},
           body:JSON.stringify({
             currentPage,
-            action
+            action,
+            filter,
+            filterBy
           })
         })
 
@@ -174,6 +183,78 @@
           updateProductContainer(data.products); 
           updatePaginationContainer(data.currentPage,data.totalPages);
         }
+      }
+
+      // for sorting and filtering
+      async function productFilter(filterby, currentPage){
+        filterBy = filterby.value;
+        if(filterby.value === 'pricelth'){
+          filter = false;
+        }else{
+          filter = true;
+        }
+        console.log("inside productFilter");
+        try {
+          console.log("inside product filter");
+          const filterBy = filterby.value;
+          const response = await fetch('/products',{
+            method: 'POST',
+            headers:{
+              'Content-Type':'application/json'
+            },
+            body:JSON.stringify({
+              filterBy,
+              currentPage,
+              filter
+            })
+          })
+          console.log("before data");
+          const data = await response.json();
+          console.log("data",data);
+          if(data){
+            updateProductContainer(data.products)
+            updatePaginationContainer(data.currentPage,data.totalPages)
+          }
+        } catch (error) {
+          console.log("error while filtering products",error)
+        }
+      }
+
+      // search function starts
+
+      async function search(){
+        const product_name = document.getElementById('product-name').value.trim();
+
+        if(!product_name||product_name===" "){
+          const errContainer = document.getElementById('search-err');
+          errContainer.innerHTML += `
+            <p class="text text-danger">invalid search</p>
+          `
+          setTimeout(()=>errContainer.innerHTML = "",3000);
+        }else{
+          const response =  await fetch('/admin-search-product',{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body:JSON.stringify({
+              product_name
+            })
+          })
+          console.log("before data");
+          const data = await response.json();
+          console.log("asdf",data);
+          if(data && data.success){
+            updateProductContainer(data.products);
+            const paginationContainer = document.getElementById('pagination-container');
+            paginationContainer.innerHTML = "";
+          }else if(data && !data.success){
+            const errContainer = document.getElementById('search-err');
+            errContainer.innerHTML += `
+            <p class="text text-danger">invalid product name</p>
+            `
+            setTimeout(()=>errContainer.innerHTML = "",3000);
+          }
+        }
+
       }
 
       // for updating products container while changing page
@@ -227,42 +308,7 @@
 
       // pagination function ends
 
-      // search function starts
-
-      async function search(){
-        const product_name = document.getElementById('product-name').value.trim();
-
-        if(!product_name||product_name===" "){
-          const errContainer = document.getElementById('search-err');
-          errContainer.innerHTML += `
-            <p class="text text-danger">invalid search</p>
-          `
-          setTimeout(()=>errContainer.innerHTML = "",3000);
-        }else{
-          const response =  await fetch('/admin-search-product',{
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body:JSON.stringify({
-              product_name
-            })
-          })
-          console.log("before data");
-          const data = await response.json();
-          console.log("asdf",data);
-          if(data && data.success){
-            updateProductContainer(data.products);
-            const paginationContainer = document.getElementById('pagination-container');
-            paginationContainer.innerHTML = "";
-          }else if(data && !data.success){
-            const errContainer = document.getElementById('search-err');
-            errContainer.innerHTML += `
-            <p class="text text-danger">invalid product name</p>
-            `
-            setTimeout(()=>errContainer.innerHTML = "",3000);
-          }
-        }
-
-      }
+      
 
       
   </script>

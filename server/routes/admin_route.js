@@ -21,12 +21,14 @@ admin_route.get('/orders',orderController.get_orders);
 admin_route.get('/update-status/:id/:status',orderController.update_status)
 
 admin_route.get('/products',productController.get_products);
+admin_route.post('/products',productController.get_products);
 admin_route.get('/add_product',productController.get_add_product)
 admin_route.post('/add_product',upload.array('images'),productController.add_product);
 admin_route.get('/update_status/:id',productController.update_status)
 admin_route.get('/edit-product/:id',productController.get_edit_product);
 admin_route.post('/edit-product/:id',upload.array('newImages'),productController.edit_product)
 admin_route.get('/delete-image',productController.delete_image);
+admin_route.post('/admin-search-product',productController.search_product);
 
 admin_route.get('/categories',categoryController.get_categories);
 admin_route.get('/add_category',categoryController.get_add_category);

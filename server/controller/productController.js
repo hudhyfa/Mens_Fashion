@@ -6,12 +6,37 @@ const ObjectId = mongoose.Types.ObjectId;
 
 const get_products = async (req,res) => {
     try {
-        const products = await Product.find().populate({path:"category",select:["name"]});
-        if(products){
-            res.render('admin/products',{products:products});        
-        }else{
-            return res.status(404).redirect('/admin');
+        let page = parseInt(req.body.currentPage) || 1;
+        const limit = 2;
+    
+        const productCount = await Product.countDocuments();
+        const totalPages = productCount/limit;
+        const action = req.body.action
+
+        if(action){
+            page += action;
         }
+        const skip = (page - 1) * limit;
+
+        const products = await Product.find()
+            .limit(limit)
+            .skip(skip)
+            .populate({path:"category",select:["name"]});
+
+        // const prodCount = products.length;
+        // console.log("asd", prodCount);
+
+        if(req.body.currentPage){
+            res.json({
+                products,
+                currentPage: page,
+                totalPages,
+            })
+        }else{
+            res.status(200).render('admin/products',{products, currentPage: page, totalPages})
+        }
+        
+        
     } catch (error) {
         console.error("Error rendering products page",error)
     }
@@ -244,6 +269,27 @@ const delete_image = async (req, res) => {
     }
 }
 
+const search_product = async (req, res) => {
+    try {
+        const productName = req.body.product_name;
+        const regexname = new RegExp(productName, 'i');
+        const products = await Product.find({name:{$regex:regexname}})
+        
+        if(products && products.length > 0) {
+            return res.json({
+                success:true,
+                products
+            })
+        }else{
+            return res.json({
+                success:false
+            })
+        }
+    } catch (error) {
+        console.log('error while searching for product',error);
+    }
+}
+
 
 
 module.exports ={
@@ -253,5 +299,6 @@ module.exports ={
     update_status,
     edit_product,
     get_edit_product,
-    delete_image
+    delete_image,
+    search_product
 }

@@ -22,8 +22,9 @@ app.set('view engine', 'ejs');
 app.set('views',path.join(__dirname,'views'))
 
 // load static files
-app.use(express.static(path.join(__dirname,'public/userAssets')));
 app.use(express.static(path.join(__dirname,'public')));
+app.use(express.static(path.join(__dirname,'public/userAssets')));
+app.use(express.static(path.join(__dirname,'public/adminAssets')));
 
 // Configurations
 app.use(session({

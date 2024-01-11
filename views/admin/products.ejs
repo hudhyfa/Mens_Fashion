@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="/adminAssets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css" />
     <link rel="stylesheet" href="/adminAssets/css/style.css" />
     <link rel="shortcut icon" href="/adminAssets/images/favicon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
   </head>
   <body>
     <div class="container-scroller">
@@ -50,23 +52,43 @@
         <div class="col-lg-12 grid-margin stretch-card">
           <div class="card">
             <div class="card-body">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;margin-bottom: 10px;">
+                <div class="">
+                  <div class="">
+                    <input type="text" id="product-name" style="border-radius: 5px;border: 1px solid black; margin-right: 5px;padding: 6px;" placeholder="search here">
+                    <button onclick="search()" class="btn btn-primary">search</button>
+                  </div>
+                  <div id="search-err">
+                    
+                  </div>
+                </div>
+                <div class="">
+                  <span>Filter: </span>
+                  <select onchange="filter(this)" id="">
+                    <option value="pricelth">$ low to high</option>
+                    <option value="pricehtl">$ high to low</option>
+                    <option value="listed">Listed items</option>
+                    <option value="unlisted">Unlisted items</option>
+                  </select>
+                </div>
+              </div>
               <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Product Img</th>
+                      <th>Product Name</th>
+                      <th>Category</th>
+                      <th>Stock</th>
+                      <!-- <th>SubCategory</th> -->
+                      <th>Price</th>
+                      <th>Offer Price</th>
+                      <th>Status</th>
+                      <th>Config</th>
+                    </tr>
+                  </thead>
                   <% if(products) { %>
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Product Img</th>
-                        <th>Product Name</th>
-                        <th>Category</th>
-                        <th>Stock</th>
-                        <!-- <th>SubCategory</th> -->
-                        <th>Price</th>
-                        <th>Offer Price</th>
-                        <th>Status</th>
-                        <th>Config</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+                    <tbody id="product-container">
                       <% products.forEach((product) => { %>
                         <tr>
                         <td class="py-1">
@@ -98,6 +120,18 @@
                   <% } else { %>
                   <p class="text-center">No products found.</p>
                   <% } %>
+                  <div id="pagination-container" style="display: flex; justify-content: center; align-items: center; margin-top: 50px;">
+                    <% if(currentPage > 1) { %>
+                    <!-- Left Button -->
+                    <button onclick="changePage('<%= currentPage %>',-1)" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></button>
+                    <% } %>
+                    <!-- Page Indicator -->
+                    <p style="margin: 0 20px; font-size: 18px;">1</p>
+                    <% if(currentPage < totalPages) { %>
+                    <!-- Right Button -->
+                    <button onclick="changePage('<%= currentPage %>',1)" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></button>
+                    <% } %>
+                  </div>
                 </div>
               </div>
             </div>
@@ -122,6 +156,112 @@
           } else {
               quantityDisplay.textContent = 'Select a size to see stock availability.';
           }
+      }
+
+      // for pagination
+      async function changePage(currentPage, action) {
+        const response = await fetch('/products',{
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body:JSON.stringify({
+            currentPage,
+            action
+          })
+        })
+
+        const data = await response.json();
+        if(data){
+          updateProductContainer(data.products); 
+          updatePaginationContainer(data.currentPage,data.totalPages);
+        }
+      }
+
+      // for updating products container while changing page
+      function updateProductContainer(products) {
+        const productContainer = document.getElementById('product-container');
+        productContainer.innerHTML = "";
+        products.forEach(product => {
+        const updateContainer = `
+          <tr>
+            <td class="py-1">
+              <img src="${product.image[0]}" alt="image" />
+            </td>
+            <td>${product.name}</td>
+            <td>${product.category.name}</td>
+            <td>
+              <select class="form-select" onchange="updateStock(this, ${JSON.stringify(product.stock)})">
+                <option value="" selected disabled>Select a size</option>
+                ${product.stock.map(size => `<option value="${size.size}">${size.size}</option>`).join('')}
+              </select>
+              <p class="stock-display">Select a size to see stock availability.</p>
+            </td>
+            <td>$ ${product.price}</td>
+            <td>$ ${product.offer_price}</td>
+            <td>${product.status?"listed":"unlisted"}</td>
+            <td>
+                <a href="/update_status/${product._id}" class="btn btn-primary btn-sm me-2 mb-2">${product.status?"unlist":"list"}</a>
+                <a href="/edit-product/${product._id}" class="btn btn-success btn-sm me-2 mb-2">Edit</a>
+            </td>
+          </tr> 
+        `
+        productContainer.innerHTML += updateContainer;
+        })
+      }
+
+      function updatePaginationContainer(currentPage, totalPages) {
+        const paginationContainer = document.getElementById('pagination-container');
+        paginationContainer.innerHTML = "";
+        const leftButton = currentPage > 1
+          ? `<button onclick="changePage('${currentPage}',-1)" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></button>`
+          : '';
+        const rightButton = currentPage < totalPages
+          ? `<button onclick="changePage('${currentPage}',1)" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></button>`
+          : '';
+        const edits = `
+        ${leftButton}
+        <p style="margin: 0 20px; font-size: 18px;">${currentPage}</p>
+        ${rightButton}
+        `
+        paginationContainer.innerHTML += edits;
+      }
+
+      // pagination function ends
+
+      // search function starts
+
+      async function search(){
+        const product_name = document.getElementById('product-name').value.trim();
+
+        if(!product_name||product_name===" "){
+          const errContainer = document.getElementById('search-err');
+          errContainer.innerHTML += `
+            <p class="text text-danger">invalid search</p>
+          `
+          setTimeout(()=>errContainer.innerHTML = "",3000);
+        }else{
+          const response =  await fetch('/admin-search-product',{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body:JSON.stringify({
+              product_name
+            })
+          })
+          console.log("before data");
+          const data = await response.json();
+          console.log("asdf",data);
+          if(data && data.success){
+            updateProductContainer(data.products);
+            const paginationContainer = document.getElementById('pagination-container');
+            paginationContainer.innerHTML = "";
+          }else if(data && !data.success){
+            const errContainer = document.getElementById('search-err');
+            errContainer.innerHTML += `
+            <p class="text text-danger">invalid product name</p>
+            `
+            setTimeout(()=>errContainer.innerHTML = "",3000);
+          }
+        }
+
       }
 
       

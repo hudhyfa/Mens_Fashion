@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="/adminAssets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css" />
     <link rel="stylesheet" href="/adminAssets/css/style.css" />
     <link rel="shortcut icon" href="/adminAssets/images/favicon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body>
     <div class="container-scroller">
@@ -51,27 +52,46 @@
           <div class="card">
             <div class="card-body">
               <div class="table-responsive">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;margin-bottom: 10px;">
+                  <div class="">
+                    <div class="">
+                      <input type="text" id="username-input" style="border-radius: 5px;border: 1px solid black; margin-right: 5px;padding: 6px;" placeholder="search username">
+                      <button onclick="search()" class="btn btn-primary">search</button>
+                    </div>
+                    <div id="search-err">
+                      
+                    </div>
+                  </div>
+                  <div class="">
+                    <% if(orders) { %>
+                    <span>Filter: </span>
+                    <select onchange="productFilter(this,'<%= currentPage %>')" id="">
+                      <option value="pending">Pending</option>
+                      <option value="cancelled">Cancelled</option>
+                      <option value="delivered">Delivered</option>
+                      <option value="shipped">Shipped</option>
+                      <option value="returned">Returned</option>
+                    </select>
+                    <% } %>
+                  </div>
+                </div>
                 <% if (orders) { %>  
                   <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th>order_id</th>
-                        <th>user_id</th>
-                        <th>address_id</th>
+                        <th>user</th>
                         <th>method</th>
                         <th>order_total</th>
                         <th>Status</th>
-                        <th>created_at</th>
-                        <th>updated_at</th>
+                        <th>ordered at:</th>
+                        <th>config</th>
                         
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="orders-container">
                       <% orders.forEach((order) => { %>
                         <tr>
-                        <td><%=order._id%></td>
-                        <td><%=order.user_id%></td>
-                        <td><%=order.address_id%></td>
+                        <td><%=order.user_id.username%></td>
                         <td><%=order.payment%></td>
                         <td>$ <%=order.total_amount%></td>
                         <td>
@@ -84,7 +104,7 @@
                           </select>
                         </td>
                         <td><%=new Date(order.created_at).toISOString().slice(0, 10)%></td>
-                        <td><%=new Date(order.updated_at).toISOString().slice(0, 10)%></td> 
+                        <td><button onclick="moreInfo('<%=order._id%>')" class="btn btn-success">more info</button></td>
                         </tr> 
                       <% }) %>  
                     </tbody>
@@ -92,6 +112,18 @@
                 <% } else { %>
                   <h2>no orders yet. be patient.</h2>
                 <% } %>
+                <div id="pagination-container" style="display: flex; justify-content: center; align-items: center; margin-top: 50px;">
+                  <% if(currentPage > 1) { %>
+                  <!-- Left Button -->
+                  <button onclick="changePage('<%= currentPage %>',-1)" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></button>
+                  <% } %>
+                  <!-- Page Indicator -->
+                  <p style="margin: 0 20px; font-size: 18px;">1</p>
+                  <% if(currentPage < totalPages) { %>
+                  <!-- Right Button -->
+                  <button onclick="changePage('<%= currentPage %>',1)" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></button>
+                  <% } %>
+                </div>
                 </div>
               </div>
             </div>
@@ -121,6 +153,79 @@
       async function updateStatus(selectedSize, orderId){
         const newStatus = selectedSize.value;
         window.location.href = `/update-status/${orderId}/${newStatus}`;
+      }
+
+      // pagination begins
+      async function changePage(currentPage,action){
+        const response =  await fetch('/orders',{
+          method:'POST',
+          headers:{
+            'Content-type':'application/json'
+          },
+          body:JSON.stringify({
+            currentPage,
+            action
+          })
+        })
+        console.log("before data");
+        const data = await response.json();
+        console.log("after data",data);
+        if(data){
+          updateTable(data.orders);
+          updatePagination(data.currentPage,data.totalPages);
+        }
+
+
+      }
+
+      async function updateTable(orders){
+        try {
+          const container = document.getElementById('orders-container');
+          container.innerHTML = "";
+          orders.forEach(order => {
+            const updateContainer = `
+            <tr>
+              <td>${order.user_id.username}</td>
+              <td>${order.payment}</td>
+              <td>$ ${order.total_amount}</td>
+              <td>
+                <select id="orderStatus${order._id}" onchange="updateStatus(this, ${order._id})">
+                  <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>        
+                  <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>        
+                  <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>       
+                  <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                  <option value="returned" ${order.status === 'returned' ? 'selected' : ''}>Returned</option>
+                </select>
+              <td>${new Date(order.created_at).toISOString().slice(0, 10)}</td>
+              <td><button onclick="moreInfo(${order._id})" class="btn btn-success">more info</button></td>
+              </tr> 
+            `
+            container.innerHTML += updateContainer;
+          })
+        } catch (error) {
+          console.log("error while updating orders",error);
+        }
+      }
+
+      async function updatePagination(currentPage,totalPages){
+        try {
+          const paginationContainer = document.getElementById('pagination-container');
+          paginationContainer.innerHTML = "";
+          const leftButton = currentPage > 1
+            ? `<button onclick="changePage('${currentPage}',-1)" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></button>`
+            : '';
+          const rightButton = currentPage < totalPages
+            ? `<button onclick="changePage('${currentPage}',1)" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></button>`
+            : '';
+          const edits = `
+          ${leftButton}
+          <p style="margin: 0 20px; font-size: 18px;">${currentPage}</p>
+          ${rightButton}
+          `
+          paginationContainer.innerHTML += edits;
+        } catch (error) {
+          console.log("error while updating page",error);
+        }
       }
 
       

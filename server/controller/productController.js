@@ -9,7 +9,7 @@ const get_products = async (req,res) => {
         console.log(req.body.currentPage, req.body.filter)
         console.log("inside get products")
         let page = parseInt(req.body.currentPage) || 1;
-        const limit = 2;
+        const limit = 3;
     
         const productCount = await Product.countDocuments();
         const totalPages = productCount/limit;
@@ -35,6 +35,12 @@ const get_products = async (req,res) => {
             .populate({path:"category",select:["name"]});
         }
 
+        async function calculateTotalPage(bool) {
+            const totalCount = await Product.find({status:bool}).countDocuments();
+            const totalPage = totalCount/limit;
+            return totalPage
+        }
+
         // const products = await Product.find()
         //     .limit(limit)
         //     .skip(skip)
@@ -55,18 +61,20 @@ const get_products = async (req,res) => {
         }else if(req.body.currentPage && req.body.filterBy == "listed" && req.body.filter===true){
             console.log("inside listed products");
             const filteredProducts = await filterProductsByStatus(true);
+            const totalPage = await calculateTotalPage(true);
             return res.json({
                 products: filteredProducts,
                 currentPage: page,
-                totalPages,
+                totalPages:totalPage,
             })
         }else if(req.body.currentPage && req.body.filterBy == "unlisted" && req.body.filter===true){
             console.log("inside unlisted products");
             const filteredProducts = await filterProductsByStatus(false);
+            const totalPage = await calculateTotalPage(false);
             return res.json({
                 products: filteredProducts,
                 currentPage: page,
-                totalPages,
+                totalPages:totalPage,
             })
         }else if(req.body.currentPage && req.body.filterBy == "pricehtl" && req.body.filter===true){
             console.log("inside sorted products");

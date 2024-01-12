@@ -47,7 +47,27 @@ const update_status = async (req, res) => {
     }
 }
 
+const search_order = async (req, res) => {
+    try {
+      const order_id = req.body.orderId;
+      const order = await Order.find({_id: order_id});
+      if(order){
+        return res.json({
+            sucess:true,
+            orders:order
+        })
+      }else{
+        return res.json({
+            success:false
+        })
+      }
+    } catch (error) {
+       console.log("error searching orders", error); 
+    }
+}
+
 module.exports = {
     get_orders,
-    update_status
+    update_status,
+    search_order
 }

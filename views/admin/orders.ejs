@@ -55,7 +55,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;margin-bottom: 10px;">
                   <div class="">
                     <div class="">
-                      <input type="text" id="username-input" style="border-radius: 5px;border: 1px solid black; margin-right: 5px;padding: 6px;" placeholder="search username">
+                      <input type="text" id="orderid-input" style="border-radius: 5px;border: 1px solid black; margin-right: 5px;padding: 6px;" placeholder="search username">
                       <button onclick="search()" class="btn btn-primary">search</button>
                     </div>
                     <div id="search-err">
@@ -174,9 +174,56 @@
           updateTable(data.orders);
           updatePagination(data.currentPage,data.totalPages);
         }
-
-
       }
+      // pagination ends
+
+      // search begins
+
+      async function search(){
+        try {
+          console.log("inside search function");
+          const orderId = document.getElementById('orderid-input').value.trim();
+          console.log("order id:",orderId);
+          if(!orderId || orderId===" "){
+            const errContainer = document.getElementById('search-err');
+            errContainer.innerHTML += `
+              <p class="text text-danger">invalid search</p>
+            `
+            setTimeout(()=>errContainer.innerHTML = "",3000);
+          }else{
+            const response = await fetch('/admin-search-order',{
+              method:'POST',
+              headers:{
+                'Content-Type':'application/json'
+              },
+              body:JSON.stringify({
+                orderId
+              })
+            })
+
+            const data = await response.json();
+            console.log("data:",data);
+            if(data.success){
+              updateTable(data.orders)
+              const paginationContainer = document.getElementById('pagination-container');
+              paginationContainer.innerHTML = "";
+            }
+            else if(!data.success){
+              const errContainer = document.getElementById('search-err');
+              errContainer.innerHTML += `
+              <p class="text text-danger">invalid order id</p>
+              `
+              setTimeout(()=>errContainer.innerHTML = "",3000);
+            }
+              
+          }
+        } catch (error) {
+          console.log("error while searching order",error);
+        }
+      }
+      // search ends
+
+
 
       async function updateTable(orders){
         try {
@@ -227,6 +274,8 @@
           console.log("error while updating page",error);
         }
       }
+
+      
 
       
   </script>

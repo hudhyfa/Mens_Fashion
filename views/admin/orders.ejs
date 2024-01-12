@@ -155,6 +155,8 @@
         window.location.href = `/update-status/${orderId}/${newStatus}`;
       }
 
+      let filterBy;
+
       // pagination begins
       async function changePage(currentPage,action){
         const response =  await fetch('/orders',{
@@ -222,6 +224,35 @@
         }
       }
       // search ends
+
+      // for filtering orders
+      async function productFilter(filterby, currentPage){
+        console.log("inside product filter");
+        filterBy = filterby.value;
+        console.log("status",filterBy);
+        console.log("page",currentPage);
+        try {
+          const response = await fetch('/orders',{
+            method: 'POST',
+            headers:{
+              'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+              filterBy,
+              currentPage
+            })
+          })
+
+          const data = await response.json();
+          console.log("data",data);
+          if(data){
+            updateTable(data.orders)
+            updatePagination(data.currentPage,data.totalPages)
+          }
+        } catch (error) {
+          console.log("error while filtering orders",err)
+        }
+      }
 
 
 

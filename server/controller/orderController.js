@@ -12,22 +12,53 @@ const get_orders = async (req,res) => {
         const orderCount = await Order.countDocuments();
         const totalPages = orderCount/limit;
 
-        const orders = await Order.find()
-            .populate({path:"user_id",select:["username"]})
-            .sort({created_at:-1})
-            .skip(skip)
-            .limit(limit)
-            
+        async function filterOrders(status){
+            try {
+                return await Order.find({status: status})
+                .populate({path:"user_id",select:["username"]})
+                .sort({created_at:-1})
+                .skip(skip)
+                .limit(limit)
+            } catch (error) {
+                console.log("error while filtering orders", error);
+            }
+        }
 
-        if(req.body.currentPage){
-            res.json({
+        async function calculateTotalPage(status){
+            try {
+                const totalCount = await Order.find({status:status}).countDocuments();
+                const totalPage = totalCount/limit;
+                return totalPage
+            } catch (error) {
+                console.log("error while counting orders",error);
+            }
+        }
+
+        if(req.body.currentPage && req.body.filterBy){
+            const orders = await filterOrders(req.body.filterBy);
+            const totalPage = await calculateTotalPage(orders);
+            return res.json({
                 orders: orders,
                 currentPage: page,
-                totalPages: totalPages
+                totalPages: totalPage
             })
         }else{
-            return res.render('admin/orders',{orders:orders,currentPage:page,totalPages:totalPages});
-        }
+            const orders = await Order.find()
+                .populate({path:"user_id",select:["username"]})
+                .sort({created_at:-1})
+                .skip(skip)
+                .limit(limit)
+
+                if(req.body.currentPage){
+                    res.json({
+                        orders: orders,
+                        currentPage: page,
+                        totalPages: totalPages
+                    })
+                }else{
+                    return res.render('admin/orders',{orders:orders,currentPage:page,totalPages:totalPages});
+                }
+        }     
 
     } catch (error) {
         console.error("error rendering orders", error);

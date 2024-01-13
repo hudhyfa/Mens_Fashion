@@ -65,6 +65,22 @@ const get_orders = async (req,res) => {
     }
 }
 
+const get_single_order = async (req, res) => {
+    try {
+        const order_id = req.body.order_id;
+        console.log("id: " + order_id);
+        const order = await Order.findOne({ _id: order_id })
+        .populate({ path: 'address_id', select: 'name' })
+        .populate({ path: 'products.product_id', select: 'name image' })
+        
+        res.json({
+            order
+        })
+    } catch (error) {
+        console.log("error while getting single order", error);
+    }
+}
+
 const update_status = async (req, res) => {
     try {
         const order_id = req.params.id;
@@ -100,5 +116,6 @@ const search_order = async (req, res) => {
 module.exports = {
     get_orders,
     update_status,
-    search_order
+    search_order,
+    get_single_order
 }

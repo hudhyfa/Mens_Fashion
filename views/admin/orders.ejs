@@ -16,6 +16,85 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body>
+    <style>
+      .order-card {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+  width: 100%;
+  max-width: 600px; /* Adjust for desired width */
+  margin: 0 auto;
+}
+
+.order-card h2 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.order-status {
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.order-status.pending {
+  background-color: #f0f0f0;
+  color: #999;
+}
+
+/* ... styles for other order statuses */
+
+.order-details {
+  margin-bottom: 20px;
+}
+
+.products-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.product-card {
+  width: calc(50% - 15px); /* Adjust for desired product card width */
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+.product-card img {
+  width: 100%;
+  height: 150px; /* Adjust for desired image height */
+  object-fit: cover;
+}
+
+/* ... styles for product card content */
+
+.go-back-button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.go-back-button:hover {
+  background-color: #e0e0e0;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .product-card {
+    width: 100%;
+  }
+}
+
+    </style>
     <div class="container-scroller">
       <!-- sidebar -->
     <%-include('_sidebar')-%>
@@ -49,13 +128,13 @@
         </div>
         <!-- table begins -->
         <div class="col-lg-12 grid-margin stretch-card">
-          <div class="card">
+          <div class="card" id="orders-and-order">
             <div class="card-body">
               <div class="table-responsive">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;margin-bottom: 10px;">
+                <div id="search-and-filter" style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;margin-bottom: 10px;">
                   <div class="">
                     <div class="">
-                      <input type="text" id="orderid-input" style="border-radius: 5px;border: 1px solid black; margin-right: 5px;padding: 6px;" placeholder="search username">
+                      <input type="text" id="orderid-input" style="border-radius: 5px;border: 1px solid black; margin-right: 5px;padding: 6px;" placeholder="search order_id">
                       <button onclick="search()" class="btn btn-primary">search</button>
                     </div>
                     <div id="search-err">
@@ -128,27 +207,12 @@
               </div>
             </div>
           </div>
+        </div>
 
         <!-- table ends -->
         <%-include('_footer')-%>
     </div>
     <script>
-      function updateStock(selectedSize, stockData) {
-        console.log("Stock")
-          const selectedSizeValue = selectedSize.value;
-          const parsedStockData = JSON.parse(stockData);
-          const quantityDisplay = selectedSize.parentElement.querySelector('.stock-display');
-  
-          // Find the selected size in the stock data
-          const selectedSizeInfo = parsedStockData.find(sizeInfo => sizeInfo.size === selectedSizeValue);
-  
-          // Display stock quantity for the selected size
-          if (selectedSizeInfo) {
-              quantityDisplay.textContent = `Stock Available: ${selectedSizeInfo.quantity}`;
-          } else {
-              quantityDisplay.textContent = 'Select a size to see stock availability.';
-          }
-      }
 
       async function updateStatus(selectedSize, orderId){
         const newStatus = selectedSize.value;
@@ -254,7 +318,78 @@
         }
       }
 
+      // filtering products ends
 
+      // single order info
+      async function moreInfo(orderId){
+        try {
+          const order_id = orderId;
+          const response = await fetch('/single-order',{
+            method:'POST',
+            headers:{
+              'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+              order_id
+            })
+          })
+          const data = await response.json();
+          console.log("data",data);
+          if(data){
+            showOrderInfo(data.order)
+          }
+        } catch (error) {
+          console.log("error while fetching single order info",err)
+        }
+      }
+
+      function showOrderInfo(order){
+        try {
+          const orderContainer = document.getElementById('orders-and-order');
+          const paginationContainer = document.getElementById('pagination-container');
+          orderContainer.innerHTML = "";
+          paginationContainer.innerHTML = "";
+
+          const showOrder = `
+          <div class="card-body">
+              <div class="order-card">
+                <h2>Order ID: ${order._id}</h2>
+                <p class="order-status pending">${order.status}</p>
+              
+                <div class="order-details">
+                  <p><strong>Ordered to:</strong> <span class="order-address">${order.address_id.name}</span></p>
+                </div>
+              
+                <div class="products-container">
+                  ${order.products.map(product => 
+                    `
+                    <div class="product-card">
+                      <img src="${product.product_id.image[2]}" alt="Product 1">
+                      <h3>${product.product_id.name}</h3>
+                      <p>Size: ${product.size}</p>
+                      <p>Quantity: ${product.quantity}</p>
+                      <p>Total: $ ${product.product_total}</p>
+                    </div>
+                    `
+                  )}
+                </div>
+              
+                <p><strong>Total amount: $ ${order.total_amount}</strong></p>
+                <p><strong>Payment method: ${order.payment}</strong></p>
+              
+                <button class="go-back-button">Go Back</button>
+              </div>
+              
+            </div>
+          `
+          orderContainer.innerHTML = showOrder;
+
+        } catch (error) {
+          console.log("error while showing single order info",err)
+        }
+      }
+
+      // single order info ends
 
       async function updateTable(orders){
         try {

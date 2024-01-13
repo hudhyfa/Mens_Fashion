@@ -103,7 +103,7 @@ const get_orders = async (req,res) => {
               { path: 'products.product_id', select: 'name image' }
             ]);
             return populatedOrder;
-          }));
+        }));
         
         res.render('user/orders',{user:user,orders:populatedOrders})
     } catch (error) {

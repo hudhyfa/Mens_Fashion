@@ -1,36 +1,185 @@
 <%-include('userNavbar')%>
-    
-    <!-- Header Section End -->
-    <section>
-        <div class="message">
-            <h2>order placed!</h2>
-            <button onclick="downloadInvoice()">Download Invoice</button>
+<style>
+    #container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      
+      .header {
+        text-align: center;
+      }
+      
+      .header h1 {
+        font-size: 36px;
+        margin-bottom: 10px;
+      }
+      
+      /* Order details */
+      .order-details {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      
+      .product-card {
+        width: 30%;
+        border: 1px solid #eee;
+        border-radius: 5px;
+        padding: 10px;
+        text-align: center;
+      }
+      
+      .product-card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        margin-bottom: 10px;
+      }
+      
+      .product-info {
+        font-size: 14px;
+      }
+      
+      .product-info h3 {
+        margin-bottom: 5px;
+      }
+      
+      /* Address card */
+      .address-card {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      
+      .address-card h3 {
+        margin-bottom: 10px;
+      }
+      
+      .address-card p {
+        margin-bottom: 5px;
+      }
+      
+      /* Order total */
+      .order-total {
+        margin-top: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+        text-align: right;
+      }
+      
+      .order-total h4 {
+        margin-bottom: 5px;
+      }
+      
+      /* Download invoice button */
+      .download-invoice {
+        background-color: #f00;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+        margin-top: 20px;
+      }
+      
+      .download-invoice:hover {
+        background-color: #d00;
+      }
+      
+      /* Animations */
+      .order-details,
+      .address-card,
+      .order-total {
+        animation: fade-in 0.5s ease-in-out;
+      }
+      
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      /* Media queries */
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+      
+        .order-details,
+        .address-card,
+        .order-total {
+          margin-top: 10px;
+          padding: 10px;
+        }
+      
+        .product-card {
+          width: 45%;
+        }
+      
+        .download-invoice {
+          font-size: 14px;
+        }
+      }
+      
+      @media (max-width: 480px) {
+        .product-card {
+          width: 100%;
+        }
+      }
+</style>
+  
+    <div id="container">
+        <header class="header">
+        <h1>Order Confirmed!</h1>
+        <p>Thank you for your purchase!</p>
+        </header>
+
+        <div class="order-details">
+        <div class="product-card">
+            <img src="https://imgupscaler.com/images/samples/animal-after.webp" alt="Product Name">
+            <div class="product-info">
+            <h3>Product Name</h3>
+            <p>Quantity: 2</p>
+            <p>Price: $15.99</p>
+            <p>Total Price: $31.98</p>
+            </div>
         </div>
-    </section>
-    
+        </div>
+
+        <div class="address-card">
+            <h3>Shipping Address</h3>
+            <p>Save As: <%=order.address_id.name%></p>
+            <p>Country: <%=order.address_id.country%></p>
+            <p>State: <%=order.address_id.name%></p>
+            <p>Pincode: <%=order.address_id.name%></p>
+            <p>House Name: <%=order.address_id.name%></p>
+        </div>
+
+        <div class="order-total">
+        <h4>Raw Order Total: <span id="raw-total">$49.99</span></h4>
+        </div>
+
+        <button onclick="downloadInvoice()" class="download-invoice">Download Invoice</button>
+    </div>
 
     <!-- Footer Section Begin -->
     <%-include('userFooter')%>
     <!-- Footer Section End -->
 
-    <!-- Search Begin -->
-    <div class="search-model">
-        <div class="h-100 d-flex align-items-center justify-content-center">
-            <div class="search-close-switch">+</div>
-            <form class="search-model-form">
-                <input type="text" id="search-input" placeholder="Search here.....">
-            </form>
-        </div>
-    </div>
-    <!-- Search End -->
-
-    <script>
-        
+    <script>    
        async function downloadInvoice() {    
            window.location.href = "/create-bill"
       }
-
-      
     </script>
 
     <!-- Js Plugins -->

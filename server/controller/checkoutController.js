@@ -35,7 +35,12 @@ const get_checkout = async (req,res) => {
 const confirmed_message = async(req,res) => {
     try {
         req.session.order_id = req.params.id;
-        res.render('user/confirmation')
+
+        const order = await Order.findOne({ _id: req.session.order_id })
+        .populate({ path: 'address_id', select: 'name house_name state country pincode' })
+        .populate({ path: 'products.product_id', select: 'name image price' })
+
+        res.render('user/confirmation',{order:order})
     } catch (error) {
         console.error("error while rendering confirmed page",error);
     }

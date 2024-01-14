@@ -145,28 +145,30 @@
         </header>
 
         <div class="order-details">
-        <div class="product-card">
-            <img src="https://imgupscaler.com/images/samples/animal-after.webp" alt="Product Name">
-            <div class="product-info">
-            <h3>Product Name</h3>
-            <p>Quantity: 2</p>
-            <p>Price: $15.99</p>
-            <p>Total Price: $31.98</p>
+        <% order.products.forEach((product)=>{ %>
+            <div class="product-card">
+                <img src="<%=product.product_id.image[0]%>" alt="Product Name">
+                <div class="product-info">
+                    <h3><%=product.product_id.name%></h3>
+                    <p>Quantity: <%=product.quantity%></p>
+                    <p>Price: $<%=product.product_id.price%></p>
+                    <p>Total Price: $<%=product.product_total%></p>
+                </div>
             </div>
-        </div>
+            <% })%>
         </div>
 
         <div class="address-card">
             <h3>Shipping Address</h3>
             <p>Save As: <%=order.address_id.name%></p>
             <p>Country: <%=order.address_id.country%></p>
-            <p>State: <%=order.address_id.name%></p>
-            <p>Pincode: <%=order.address_id.name%></p>
-            <p>House Name: <%=order.address_id.name%></p>
+            <p>State: <%=order.address_id.state%></p>
+            <p>Pincode: <%=order.address_id.pincode%></p>
+            <p>House Name: <%=order.address_id.house_name%></p>
         </div>
 
         <div class="order-total">
-        <h4>Raw Order Total: <span id="raw-total">$49.99</span></h4>
+        <h4>Order Total: <span id="raw-total">$<%=order.total_amount%></span></h4>
         </div>
 
         <button onclick="downloadInvoice()" class="download-invoice">Download Invoice</button>

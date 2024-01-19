@@ -173,7 +173,6 @@ const create_invoice = async (req, res) => {
 
 const generateInvoice=async (order)=>{
     try{
-      console.log("kayari");
 
       const data = {
         documentTitle: "Invoice",
@@ -199,9 +198,9 @@ const generateInvoice=async (order)=>{
           description: item.product_id.name,
           price: item.product_id.price,
         })),
-        
-        total: parseInt(order.total_amount),
-        tax: 0,
+        tax:0,
+        subtotal: order.total_amount,
+        total: order.total_amount,
         bottomNotice: "Thank you for shopping at UrbanSole!",
       };
       

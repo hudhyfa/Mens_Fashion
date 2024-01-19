@@ -223,14 +223,14 @@
                 <div class="edit-profile-image">
                     <div class="image-box">
                         <div class="second-option">
-                            <label for="file">Choose a file:</label>
-                            <input type="file" id="file">
+                            <label for="file">Update Profile image:</label>
+                            <input type="text" placeholder="image url" id="img-url">
                         </div>
                     </div>
                     <label for="username">Change Username:</label>
                     <input type="text" id="username" placeholder="Enter new username" value="<%=user.username%>">
                     <div class="box-buttons">
-                        <a class="btn btn-outline-dark" onclick="updateProfileImage()">Update profile</a>
+                        <a class="btn btn-outline-dark" onclick="updateProfile('<%=user._id%>')">Update profile</a>
                         <a href="/" class="btn btn-danger">Go back</a>
                     </div>
                 </div>
@@ -255,6 +255,10 @@
         const links = document.querySelectorAll('.sidebar-list a');
         links.forEach(link => link.classList.remove('active'));
         event.target.classList.add('active');
+
+        function updateProfile(){
+            const imageURL = document.getElementById('img-url')
+        }
 
     </script>
 

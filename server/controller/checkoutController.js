@@ -7,6 +7,7 @@ var easyinvoice = require('easyinvoice');
 const get_checkout = async (req,res) => {
     try {
         const id = req.session.userId;
+        console.log("meanwhile");
 
         const [cart, address] = await Promise.all([
             Cart.findOne({user_id: id}),

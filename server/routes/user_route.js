@@ -7,14 +7,15 @@ const cartController = require('../controller/ cartController');
 const checkoutController = require('../controller/checkoutController');
 const auth = require('../../middlewares/user/userLogged');
 
+const errorHandlingMiddleware = require('../../middlewares/error/errorHandler');
 
 const { userLoggedIn,validUser } = auth;
 
 user_route.get('/',userController.get_homepage)
 
-user_route.get('/user_login', userLoggedIn, userController.get_userLogin)
-user_route.post('/user_login',userController.userLogin)
-user_route.post('/user_logout',userController.userLogout)
+user_route.get('/user_login', userLoggedIn, userController.get_userLogin, errorHandlingMiddleware)
+user_route.post('/user_login',userController.userLogin, errorHandlingMiddleware)
+user_route.post('/user_logout',userController.userLogout, errorHandlingMiddleware)
 
 user_route.get('/email_validation',userController.get_emailValidation)
 user_route.post('/email_validation',userController.emailValidation)
@@ -66,6 +67,8 @@ user_route.get('/cancel-order/:id', validUser, checkoutController.cancel_order);
 
 user_route.get('/confirmation/:id', validUser, checkoutController.confirmed_message);
 user_route.get('/create-bill', validUser, checkoutController.create_invoice);
+
+user_route.get('*', userController.get_errpage)
 
 module.exports = user_route;
 

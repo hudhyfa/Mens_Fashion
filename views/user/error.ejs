@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Uh Oh!</title>
+  <style>
+      body {
+        background-color: #f5f5f5;
+        font-family: sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+      
+      .error-container {
+        background-color: #fff;
+        border-radius: 10px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      
+      .error-image {
+        width: 200px;
+        margin-bottom: 1rem;
+      }
+      
+      .error-title {
+        color: #e53637;
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+      
+      .error-message {
+        color: #333;
+        font-size: 1.1rem;
+        line-height: 1.5;
+        margin-bottom: 1.5rem;
+      }
+      
+      #error-button {
+        background-color: #e53637;
+        color: #fff;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      
+      @media (max-width: 768px) {
+        .error-container {
+          padding: 1rem;
+        }
+      
+        .error-image {
+          width: 150px;
+        }
+      
+        .error-title {
+          font-size: 1.5rem;
+        }
+      }
+  </style>
+  
+</head>
+<body>
+  <div class="error-container">
+    <img src="https://cdn.dribbble.com/users/26878/screenshots/3650354/20-error.gif" alt="Error Image" class="error-image">
+    <h1 class="error-title">Something went wrong!</h1>
+    <p class="error-message"><%=errMsg%></p>
+    <a class="btn" href="/" id="error-button">Go Back</a>
+  </div>
+</body>
+</html>

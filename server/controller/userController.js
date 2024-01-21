@@ -17,6 +17,13 @@ const get_homepage = async (req,res) => {
     }
 }
 
+const get_errpage = async (req, res) => {
+    try {
+        res.status(404).render('user/error',{errMsg: "We are working on it!"})
+    } catch (error) {
+        console.log("error rendering errpage", error)
+    }
+}
 
 const get_userLogin = async (req,res) => {
     try {
@@ -332,6 +339,7 @@ module.exports = {
     get_homepage,
     get_verifyOtp,
     get_userSignup,
+    get_errpage
 }
 
 

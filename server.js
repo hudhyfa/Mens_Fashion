@@ -44,6 +44,10 @@ app.use(express.urlencoded({extended:true}));
 
 app.use(cors());
 
+// error handler
+const errorHandlerMiddleware = require('./middlewares/error/errorHandler');
+app.use(errorHandlerMiddleware);
+
 // multer config
 app.use('/uploads/',express.static('uploads'));
 const storage = multer.diskStorage({
@@ -59,7 +63,6 @@ const upload = multer({storage:storage})
 // setting routes
 app.use('/',user_route);
 app.use('/',admin_route);
-
 
 
 app.listen(process.env.PORT,()=>console.log(`connection on port ${process.env.PORT}`));

@@ -1,6 +1,7 @@
 const User = require('../modal/user')
 const Address = require('../modal/address')
 const Order = require('../modal/order')
+const Wallet = require('../modal/wallet')
 const profileValidator = require('../../utils/profile_validator')
 const bcrypt = require('bcrypt');
 
@@ -20,8 +21,11 @@ const get_userProfile = async (req,res) => {
 const get_wallet = async (req,res) => {
     try {
         const id = req.params.id;
-        const user = await User.findById({_id:id});
-        res.render('user/valet',{user:user})
+        const [user,wallet] = await Promise.all([
+            User.findById({_id:id}),
+            Wallet.findOne({user_id:id})
+        ])
+        res.render('user/valet',{user:user,wallet:wallet})
     } catch (error) {
        throw new Error("error rendering valet page: \n", error) 
     }
@@ -115,7 +119,12 @@ const add_wallet = async (req,res) => {
     try {
         const id = req.params.id;
         const credit_wallet = req.body.bucks;
+        const wallet = await Wallet.findOne({user_id: id});
 
+        if(wallet){
+            let updateAmount = wallet.amount + req.body.bucks;
+            
+        }
 
         //* add money to user's wallet
         console.log("before updating wallet")

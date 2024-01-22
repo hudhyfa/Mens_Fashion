@@ -217,9 +217,6 @@
             <div class="content">
                 <h1 id="pageTitle">Welcome to the MXF Wallet</h1>
                 <p class="profile-welcome">Hello, <%= user.username %>!</p>
-                <div class="valet-balance">
-                    Wallet Balance: $ <%= user.wallet %>
-                </div>
                 <div class="add-valet-money">
                     <form action="/wallet-add-money/<%=user._id%>" method="post">
                         <label for="addValetMoney">Add Wallet Money:</label>
@@ -227,23 +224,27 @@
                         <button type="submit" class="btn btn-sm btn-dark">Add Money</button>
                     </form>
                 </div>
-                <table class="table table-hover" id="transaction-table">
-                    <tr>
-                        <th>Date</th>
-                        <th>Amount</th>
-                        <th>Type</th>
-                    </tr>
-                    <tr>
-                        <td>20 Dec 2023</td>
-                        <td>599</td>
-                        <td>Credited</td>
-                    </tr>
-                    <tr>
-                        <td>20 Dec 2023</td>
-                        <td>599</td>
-                        <td>Credited</td>
-                    </tr>
-                </table>
+                <% if(wallet) { %>
+                    <div class="valet-balance">
+                        Wallet Balance: $ <%= user.wallet %>
+                    </div>
+                    <table class="table table-hover" id="transaction-table">
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                        </tr>
+                        <% wallet.transactions.forEach((transaction)=>{ %>
+                        <tr>
+                            <td><%= new Date(transaction.transaction_date).getFullYear() %>-<%= new Date(transaction.transaction_date).getMonth() + 1 %>-<%= new Date(transaction.transaction_date).getDate() %></td>
+                            <td><%= transaction.transaction_amount %></td>
+                            <td><%= transaction.transaction_type %>></td>
+                        </tr>
+                        <% }) %>
+                    </table>
+                <% }else{ %>
+                    <h5>add money to wallet</h5>
+                <% } %>
                 <div class="box-buttons">
                     <a href="/" class="btn btn-danger">Go back</a>
                 </div>

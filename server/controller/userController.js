@@ -1,6 +1,7 @@
 
 const User = require('../modal/user');
-const Otp = require('../modal/otp')
+const Otp = require('../modal/otp');
+const Wallet = require('../modal/wallet');
 const userValidator = require('../../utils/user_validator')
 const bcrypt = require('bcrypt')
 const { transporter } = require('../../config/nodemailer');
@@ -157,9 +158,19 @@ const userSignup = async (req,res) => {
                 phone: phone,
                 password: hashedPassword,
                 username: user_name,
-                // userProfile: profile_img
             })
             newUser.save()
+            console.log("new user's id for wallet: ", newUser._id)
+            // create e-wallet for the user
+            await Wallet.create({
+                user_id: newUser._id,
+                transactions:[{
+                    transaction_amount: 100,
+                    transaction_type: "Credit",
+                    transaction_date: new Date()
+                }]
+            })
+
             console.log(`user created: ${newUser.email}`)
         }
 

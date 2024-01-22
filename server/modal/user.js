@@ -25,11 +25,6 @@ const schema = new mongoose.Schema({
         require:false,
         default:"https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
     },
-    wallet:{
-        type:Number,
-        require:false,
-        default:100
-    },
     isAdmin:{
         type:Boolean,
         require:true,

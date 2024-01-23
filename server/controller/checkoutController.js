@@ -2,7 +2,9 @@ const Product = require('../modal/product');
 const Cart = require('../modal/cart');
 const Address = require('../modal/address');
 const Order = require('../modal/order');
+const Wallet = require('../modal/wallet');
 var easyinvoice = require('easyinvoice');
+const { request } = require('../routes/user_route');
 
 const get_checkout = async (req,res) => {
     try {
@@ -51,10 +53,24 @@ const post_checkout = async (req, res) => {
     try {
         const id = req.session.userId;
         const {address, payment_method} = req.body;
-
+        
         const cart = await Cart.findOne({user_id:id});
         const cartItems = [...cart.products];
         const total = cart.cart_total;
+
+        if(!address){
+            req.flash("addressError","Invalid address");
+            res.status(404).redirect('/checkout');
+        }
+        
+        if(payment_method === "wallet"){
+            const checkBalance = await Wallet.findOne({user_id:id});
+            if(!checkBalance || checkBalance.amount < total){
+                req.flash("walletError", "insufficient funds")
+                res.status(404).redirect('/checkout');
+            }
+            await Wallet.updateOne({user_id:id},{$inc:{amount:-total}});
+        }
 
         const newOrder = await Order.create({
             user_id: id,
@@ -132,6 +148,11 @@ const cancel_order = async (req, res) => {
         {$set:{status:"cancelled",updated_at:new Date()}},
         {new:true}
        )
+
+       if(order.payment === "wallet"){
+        await Wallet.updateOne({user_id:user_id},{$inc:{amount:order.amount}})
+        console.log("wallet updated after cancellation");
+       }
 
        console.log("order updated after cancellation");
 

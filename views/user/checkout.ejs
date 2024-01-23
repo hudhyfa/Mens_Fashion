@@ -122,14 +122,29 @@
                                 </ul>
     
                                 <div class="checkout__input__checkbox">
-                                    <label for="payment">
+                                    <label for="cod">
                                         Cash on delivery
-                                        <input type="checkbox" id="payment" name="payment_method" value="cod">
+                                        <input type="checkbox" id="cod" name="payment_method" value="cod">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                                <div class="checkout__input__checkbox">
+                                    <label for="wallet">
+                                        Wallet
+                                        <input type="checkbox" id="wallet" name="payment_method" value="wallet">
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
                                 
                                 <button type="submit" class="site-btn">PLACE ORDER</button>
+
+                                <div class="mt-2">
+                                    <% if(flash.walletError) { %>
+                                        <p style="color:#e53637">*<%=flash.walletError%></p>
+                                    <% }else if(flash.addressError) { %>
+                                        <p style="color:#e53637">*<%=flash.addressError%></p>
+                                    <% } %>
+                                </div>
                             </div>
                         </div>
                     </div>

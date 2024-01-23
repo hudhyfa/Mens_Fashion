@@ -122,8 +122,30 @@ const add_wallet = async (req,res) => {
         const wallet = await Wallet.findOne({user_id: id});
 
         if(wallet){
-            let updateAmount = wallet.amount + req.body.bucks;
-            
+            let newTransaction = {
+                transaction_amount: req.body.bucks,
+                transaction_type: "Credit",
+                transaction_date: new Date()
+            }
+            await Wallet.updateOne(
+                {user_id:id},
+                {
+                    $inc:{amount: req.body.bucks},
+                    $push:{transactions: newTransaction}
+                }
+            )
+            console.log(`${req.body.bucks} credited to wallet!`)
+        }else{
+            await Wallet.create({
+                user_id: id,
+                amount: 100 + parseInt(req.body.bucks),
+                transactions:[{
+                    transaction_amount: parseInt(req.body.bucks),
+                    transaction_type: "Credit",
+                    transaction_date: new Date()
+                }]
+            })
+            console.log("wallet created and amount added to wallet!")
         }
 
         //* add money to user's wallet

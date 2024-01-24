@@ -299,11 +299,10 @@
                     </div>
                     <p><strong>Total amount: $<%=order.total_amount%></strong></p>
                     <p><strong>payment method: <%=order.payment%></strong></p>
-                    <% if( order.status !== "cancelled" && order.status !== "returned") { %>
-                    <button onclick="cancel('<%=order._id%>')" class="cancel-order-button mt-2">Cancel Order</button>
-                    
+                    <% if( order.status !== "cancelled" && order.status !== "returned" && order.status !== "delivered") { %>
+                        <button onclick="cancel('<%=order._id%>')" class="cancel-order-button mt-2">Cancel Order</button>
                     <% }else if(order.status === "delivered"){ %>
-                    <button type="submit" class="cancel-order-button mt-2">Return Order</button>
+                        <button onclick="returnOrder('<%=order._id%>')" class="cancel-order-button mt-2">Return Order</button>
                     <% } %>  
                 </div>
                 <% }) %>
@@ -323,7 +322,7 @@
         function cancel(id){
             Swal.fire({
                title: "Are you sure?",
-               text: "Are you sure you want to proceed?",
+               text: "Are you sure you want to cancel the order?",
                icon: "warning",
                showCancelButton: true,  
                confirmButtonColor: "#3085d6",
@@ -335,6 +334,27 @@
            .then((result) => {
                if (result.isConfirmed) {
                    window.location.href = `/cancel-order/${id}`;
+               } else {
+                   console.log("User canceled");
+               }
+           });
+        }
+
+        function returnOrder(id){
+            Swal.fire({
+               title: "Are you sure?",
+               text: "Are you sure you want to return the order?",
+               icon: "warning",
+               showCancelButton: true,  
+               confirmButtonColor: "#3085d6",
+               cancelButtonColor: "#d33",
+               confirmButtonText: "Confirm",
+               cancelButtonText: "Cancel",  
+               dangerMode: true,
+           })
+           .then((result) => {
+               if (result.isConfirmed) {
+                   window.location.href = `/return-order/${id}`;
                } else {
                    console.log("User canceled");
                }

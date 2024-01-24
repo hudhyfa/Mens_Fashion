@@ -94,8 +94,18 @@ const post_checkout = async (req, res) => {
                 req.flash("walletError", "insufficient funds")
                 res.status(404).redirect('/checkout');
             }
-            await Wallet.updateOne({user_id:id},{$inc:{amount:-total}});
-            
+            let newTransaction = {
+                transaction_amount: total,
+                transaction_type: "Debit",
+                transaction_date: new Date()
+            }
+            await Wallet.updateOne(
+                {user_id:id},
+                {
+                    $inc:{amount:-total},
+                    $push:{transactions:newTransaction}
+                }
+            );            
         }
 
         const newOrder = await Order.create({
@@ -175,8 +185,8 @@ const cancel_order = async (req, res) => {
         {new:true}
        )
 
-       if(order.payment === "wallet"){
-        await Wallet.updateOne({user_id:user_id},{$inc:{amount:order.amount}})
+       if(order.payment === "wallet"||order.payment === "razorpay"){
+        await Wallet.updateOne({user_id:user_id},{$inc:{amount:order.total_amount}})
         console.log("wallet updated after cancellation");
        }
 
@@ -187,6 +197,52 @@ const cancel_order = async (req, res) => {
 
     } catch (error) {
        console.error("error while cancelling order",error); 
+    }
+}
+
+const return_order = async (req, res) => {
+    try {
+        const user_id = req.session.userId;
+        const order_id = req.params.id;
+        console.log("order id1",order_id);
+        const order = await Order.findOne({_id:order_id});
+
+        for(const product of order.products){
+
+            const productId = product.product_id;
+            const size = product.size;
+            const quantity = product.quantity;
+
+            await updateStock(productId, size, quantity);
+        }
+
+        async function updateStock(productId, size, quantity) {
+            await Product.updateOne(
+                {_id:productId},
+                {$inc:{"stock.$[elem].quantity": quantity}},
+                {arrayFilters: [{"elem.size": size}]}
+            )
+        }
+
+        console.log("stock updated after returning order");
+
+        await Order.findOneAndUpdate(
+            {_id:order_id},
+            {$set:{status:"returned",updated_at:new Date()}},
+            {new:true}
+        )
+
+        if(order.payment === "wallet"||order.payment === "razorpay"){
+            await Wallet.updateOne({user_id:user_id},{$inc:{amount:order.total_amount}})
+            console.log("wallet updated after cancellation");
+        }
+
+        console.log("order updated after returning order");
+
+        res.status(200).redirect(`/orders/${user_id}`);
+    } catch (error) {
+        console.log("error while returning order",error);
+        res.status(404).render('user/error',{errMsg: "error occured while returning order"});
     }
 }
 
@@ -266,6 +322,7 @@ module.exports = {
     post_checkout,
     confirmed_message,
     cancel_order,
+    return_order,
     create_invoice,
     onlinePayment
 }

@@ -21,7 +21,7 @@
             display: flex;
             border: 1px solid black;
             border-radius: 15px;
-            height: 80%;
+            height: auto;
         }
 
         .sidebar {
@@ -238,7 +238,11 @@
                         <tr>
                             <td><%= new Date(transaction.transaction_date).getFullYear() %>-<%= new Date(transaction.transaction_date).getMonth() + 1 %>-<%= new Date(transaction.transaction_date).getDate() %></td>
                             <td><%= transaction.transaction_amount %></td>
-                            <td><%= transaction.transaction_type %>></td>
+                            <% if (transaction.transaction_type==="Debit") { %>
+                                <td style="color: red;"><%= transaction.transaction_type %>></td>
+                            <% } else { %>
+                                <td style="color: green;"><%= transaction.transaction_type %>></td>
+                            <% } %>    
                         </tr>
                         <% }) %>
                     </table>

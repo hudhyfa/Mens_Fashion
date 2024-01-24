@@ -66,9 +66,10 @@ user_route.post('/checkout', validUser, checkoutController.post_checkout);
 user_route.get('/cancel-order/:id', validUser, checkoutController.cancel_order);
 
 user_route.get('/confirmation/:id', validUser, checkoutController.confirmed_message);
+user_route.post('/create/orderId', validUser, checkoutController.onlinePayment);
 user_route.get('/create-bill', validUser, checkoutController.create_invoice);
 
-user_route.get('*', userController.get_errpage)
+// user_route.get('*', userController.get_errpage)
 
 module.exports = user_route;
 

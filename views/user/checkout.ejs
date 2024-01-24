@@ -74,7 +74,7 @@
     <section class="checkout spad">
         <div class="container">
             <div class="checkout__form">
-                <form action="/checkout" method="post">
+                <form action="/checkout" method="post" id="checkout-form">
                     <div class="row">
                         <div class="col-lg-8 col-md-6">
                             <h6 class="coupon__code"><span class="icon_tag_alt"></span> Have a coupon? <a href="/coupon/<%=cart.user_id%>">Click
@@ -120,30 +120,43 @@
                                     <li>Subtotal <span>$<%=cart.cart_total%></span></li>
                                     <li>Total <span>$<%=cart.cart_total%></span></li>
                                 </ul>
+
+                                <input type="Number" id="cart-total" value="<%=cart.cart_total%>" hidden>
     
                                 <div class="checkout__input__checkbox">
                                     <label for="cod">
                                         Cash on delivery
-                                        <input type="checkbox" id="cod" name="payment_method" value="cod">
+                                        <input type="checkbox" onclick="checkValue('cod')" id="cod" name="payment_method" value="cod">
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
                                 <div class="checkout__input__checkbox">
                                     <label for="wallet">
                                         Wallet
-                                        <input type="checkbox" id="wallet" name="payment_method" value="wallet">
+                                        <input type="checkbox" onclick="checkValue('wallet')" id="wallet" name="payment_method" value="wallet">
                                         <span class="checkmark"></span>
                                     </label>
                                 </div>
+                                <div class="checkout__input__checkbox">
+                                    <label for="razorpay">
+                                        UPI / Netbanking
+                                        <input type="checkbox" onclick="checkValue('razorpay')" id="razorpay" name="payment_method" value="razorpay">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+
+                                <input type="hidden" id="payment_method" value="">
                                 
-                                <button type="submit" class="site-btn">PLACE ORDER</button>
+                                <button id="proceed-btn" onclick="proceedOrder(event)" class="site-btn">PLACE ORDER</button>
 
                                 <div class="mt-2">
                                     <% if(flash.walletError) { %>
                                         <p style="color:#e53637">*<%=flash.walletError%></p>
                                     <% }else if(flash.addressError) { %>
                                         <p style="color:#e53637">*<%=flash.addressError%></p>
-                                    <% } %>
+                                    <% }else if(flash.paymentMethodError) { %>
+                                        <p style="color:#e53637">*<%=flash.paymentMethodError%></p>
+                                    <% } %>    
                                 </div>
                             </div>
                         </div>
@@ -168,11 +181,98 @@
         </div>
     </div>
     <!-- Search End -->
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
+        function checkValue(method){
+            console.log("inside chekcout");
+            if(document.getElementById(method).checked){
+                console.log("inside cheker");
+                document.getElementById('payment_method').value = method;
+                console.log(document.getElementById('payment_method').value);
+            }else{
+                console.log("else checker")
+                document.getElementById('payment_method').value = "";
+                console.log(document.getElementById('payment_method').value);
+            }
+        }
+
         function newAddress(route){
             window.location.href = route;
         }
+        
+        function proceedOrder(e) {
+            console.log("inside proceedOrder");
+
+            if (document.getElementById("payment_method").value === "razorpay") {
+                // razorpay //
+                console.log("inside if order");
+                const amount = document.getElementById('cart-total').value;
+                console.log("amount: " + amount);
+                var orderId;
+
+                // Ajax request to create a new orderId
+                $.ajax({
+                "url": "/create/orderId",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "data": JSON.stringify({
+                    "amount": parseInt(amount) * 100
+                }),
+                "success": function (response) {
+                    orderId = response.orderId;
+                    console.log(orderId);
+
+                    var options = {
+                    // Your Razorpay options
+                        "key": "rzp_test_AGAl3sXv1UmAjD", // Enter the Key ID generated from the Dashboard
+                        "amount": parseInt(amount)*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                        "currency": "INR",
+                        "name": "Mens Fashion",
+                        "description": "Test Transaction",
+                        "image": "public/userAssets/img/logo.png",
+                        "order_id": orderId, // Use the orderId obtained from the server response
+                        "handler": function (response) {
+                            alert(response.razorpay_payment_id);
+                            document.getElementById('checkout-form').submit();             
+                        },
+                        "theme": {
+                            "color": "white"
+                        }
+                    };
+
+                    var rzp1 = new Razorpay(options);
+                    console.log("after rzp obj");
+                    rzp1.on('payment.failed', function (response) {
+                    // Handle failed payment
+                        alert(response.error.code);
+                        alert(response.error.description);
+                        alert(response.error.source);
+                        alert(response.error.step);
+                        alert(response.error.reason);
+                        alert(response.error.metadata.order_id);
+                        alert(response.error.metadata.payment_id);
+                    });
+                    console.log("before open");
+                    rzp1.open();
+                    console.log("after open");
+                },
+                "error": function (error) {
+                    console.error("Error creating orderId:", error);
+                }
+                });
+
+                e.preventDefault(); // Prevent the default form submission
+
+                // razorpay ends //
+            } else {
+                document.getElementById('checkout-form').submit();
+            }
+        }
+
     </script>
 
     <!-- Js Plugins -->

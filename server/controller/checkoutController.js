@@ -3,8 +3,16 @@ const Cart = require('../modal/cart');
 const Address = require('../modal/address');
 const Order = require('../modal/order');
 const Wallet = require('../modal/wallet');
-var easyinvoice = require('easyinvoice');
-const { request } = require('../routes/user_route');
+const easyinvoice = require('easyinvoice');
+const Razorpay = require('razorpay');
+
+require('dotenv').config()
+
+const instance = new Razorpay({
+    key_id: process.env.RAZORPAY_ID_KEY,
+    key_secret: process.env.RAZORPAY_SECRET_KEY
+})
+
 
 const get_checkout = async (req,res) => {
     try {
@@ -49,6 +57,20 @@ const confirmed_message = async(req,res) => {
     }
 }
 
+const onlinePayment = async (req, res) => {
+    console.log("inside online payment");
+    console.log("amt",req.body.amount);
+    const options = {
+        amount: req.body.amount,  // amount in the smallest currency unit
+        currency: "INR",
+        receipt: "order_reciept"
+      };
+      instance.orders.create(options, function(err, order) {
+        console.log(order);
+        res.send({orderId: order.id})
+      });
+}
+
 const post_checkout = async (req, res) => {
     try {
         const id = req.session.userId;
@@ -61,6 +83,9 @@ const post_checkout = async (req, res) => {
         if(!address){
             req.flash("addressError","Invalid address");
             res.status(404).redirect('/checkout');
+        }else if(!payment_method){
+            req.flash("paymentMethodError","Invalid payment method");
+            res.status(404).redirect('/checkout');
         }
         
         if(payment_method === "wallet"){
@@ -70,6 +95,7 @@ const post_checkout = async (req, res) => {
                 res.status(404).redirect('/checkout');
             }
             await Wallet.updateOne({user_id:id},{$inc:{amount:-total}});
+            
         }
 
         const newOrder = await Order.create({
@@ -240,5 +266,6 @@ module.exports = {
     post_checkout,
     confirmed_message,
     cancel_order,
-    create_invoice
+    create_invoice,
+    onlinePayment
 }

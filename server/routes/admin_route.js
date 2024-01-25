@@ -7,6 +7,7 @@ const customerController = require('../controller/customerController')
 const productController = require('../controller/productController');
 const categoryController = require('../controller/categoryController');
 const orderController = require('../controller/orderController');
+const couponController = require('../controller/couponController')
 const auth = require('../../middlewares/admin/adminLogged')
 
 const { adminLoggedOut,isAdminLogged } = auth;
@@ -43,6 +44,8 @@ admin_route.post('/edit_category/:id',categoryController.update_category);
 admin_route.get('/sub_categories',categoryController.get_subCategories);
 
 admin_route.get('/customers',customerController.get_customers);
-admin_route.get('/customer_status/:id',customerController.update_status)
+admin_route.get('/customer_status/:id',customerController.update_status);
+
+admin_route.get('/coupons',couponController.get_coupons);
 
 module.exports = admin_route;

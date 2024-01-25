@@ -34,6 +34,10 @@ const schema = new mongoose.Schema({
         type:Boolean,
         require:true,
         default:true,
+    },
+    usedCoupons:{
+        type:Array,
+        require:false
     }
 })
 

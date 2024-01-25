@@ -2,6 +2,7 @@ const User = require('../modal/user')
 const Address = require('../modal/address')
 const Order = require('../modal/order')
 const Wallet = require('../modal/wallet')
+const Coupon = require('../modal/coupon')
 const profileValidator = require('../../utils/profile_validator')
 const bcrypt = require('bcrypt');
 
@@ -86,8 +87,15 @@ const get_security = async (req,res) => {
 const get_coupon = async (req,res) => {
     try {
        const id = req.params.id;
-       const user = await User.findById({_id:id});
-       res.render('user/coupon',{user:user})
+
+       const [user,allCoupons] = await Promise.all([
+             User.findById({_id:id}),
+             Coupon.find()
+       ]) 
+
+       const coupons = allCoupons.filter((coupon)=>!user.usedCoupons.includes(coupon._id));
+
+       res.render('user/coupon',{user:user,coupons:coupons})
     } catch (error) {
         throw new Error("error rendering coupon page: \n", error)
     }

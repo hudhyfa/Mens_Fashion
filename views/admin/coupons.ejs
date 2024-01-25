@@ -63,21 +63,29 @@
                         <th>Max.Discount</th>
                         <th>Expires at</th>
                         <th>Status</th>
+                        <th>config</th>
                       </tr>
                     </thead>
                     <tbody>
+                    <% if(coupons) { %>
+                     <% coupons.forEach((coupon) => { %>
                       <tr>
-                        <td>MAX_500</td>
-                        <td>Percentage</td>
-                        <td>2000</td>
-                        <td>25%</td>
-                        <td>500</td>
-                        <td>25-11-2024</td>
+                        <td><%=coupon.coupon_code%></td>
+                        <td><%=coupon.type%></td>
+                        <td><%=coupon.min_purchase_amount%></td>
+                        <td><%=coupon.discount%></td>
+                        <td><%=coupon.max_discount_amount%></td>
+                        <td><%= coupon.expiry_date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></td>
+                        <td><%=coupon.status?"Listed":"Unlisted"%></td>
                         <td>
-                            <a href="" class="btn btn-primary">Edit</a> 
-                            <a href="" class="btn btn-danger">Unlist</a>
+                            <a href="/get-update-coupon/<%=coupon._id%>" class="btn btn-primary">Edit</a> 
+                            <a href="/update-coupon-status/<%=coupon._id%>" class="btn btn-danger"><%= coupon.status ? "Unlist" : "List"%></a>
                         </td>
-                      </tr>  
+                      </tr>
+                     <% }) %>
+                    <% } else { %>
+                        <h6>Add Coupons</h6>
+                    <% } %>
                     </tbody>
                   </table>
                 </div>

@@ -82,37 +82,40 @@
         <div class="main-panel">
           <div class="content-wrapper pb-0">
             <div class="page-header flex-wrap">
-              <h3 class="mb-0">welcome back admin! <span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Add new coupon.</span>
+              <h3 class="mb-0">welcome back admin! <span class="pl-0 h6 pl-sm-2 text-muted d-inline-block">Edit coupon.</span>
               </h3>
             </div>
         </div>
         <!-- table begins -->
         <div class="container form-container">
-            <h2 class="mb-4">Add Coupon</h2>
-            <form action="/add-coupon" method="post">
+            <h2 class="mb-4">Edit Coupon</h2>
+            <form action="/update-coupon/<%=coupon._id%>" method="post">
                 <div class="mb-3">
                     <label for="couponCode" class="form-label">Coupon Code</label>
-                    <input type="text" class="form-control" id="couponCode" name="coupon_code">
+                    <input type="text" class="form-control" id="couponCode" name="coupon_code" value="<%=coupon.coupon_code%>">
                 </div>
                 <div class="mb-3">
                     <label for="type" class="form-label">type</label>
-                    <input type="text" class="form-control" id="type" name="type">
+                    <input type="text" class="form-control" id="type" name="type" value="<%=coupon.type%>">
                 </div>
                 <div class="mb-3">
                     <label for="minPurchase" class="form-label">Minimum purchase amount</label>
-                    <input type="number" class="form-control" id="minPurchase" name="min_purchase_amount" min="1">
+                    <input type="number" class="form-control" id="minPurchase" name="min_purchase_amount" min="1" value="<%=coupon.min_purchase_amount%>">
                 </div>
                 <div class="mb-3">
                     <label for="discount" class="form-label">Discount</label>
-                    <input type="number" class="form-control" id="discount" name="discount" min="1">
+                    <input type="number" class="form-control" id="discount" name="discount" min="1" value="<%=coupon.discount%>">
                 </div>
                 <div class="mb-3">
                     <label for="maxDiscount" class="form-label">Maximum discountable amount</label>
-                    <input type="number" class="form-control" id="maxDiscount" name="max_discount_amount" min="1">
+                    <input type="number" class="form-control" id="maxDiscount" name="max_discount_amount" min="1" value="<%=coupon.max_discount_amount%>">
                 </div>
                 <div class="mb-3">
-                    <label for="expiry" class="form-label">Expiry Date</label>
-                    <input type="date" class="form-control" id="expiry" name="expiry_date">
+                    <label for="expiry" class="form-label">Current Expiry Date</label>
+                    <input type="text" class="form-control" id="expiry" value="<%=coupon.expiry_date%>" readonly>
+                </div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="expiry" name="expiry_date" value="<%=coupon.expiry_date%>" hidden>
                 </div>
     
                 

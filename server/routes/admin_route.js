@@ -47,5 +47,6 @@ admin_route.get('/customers',customerController.get_customers);
 admin_route.get('/customer_status/:id',customerController.update_status);
 
 admin_route.get('/coupons',couponController.get_coupons);
+admin_route.get('/add-coupon',couponController.get_add_coupon);
 
 module.exports = admin_route;

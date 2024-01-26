@@ -1,5 +1,7 @@
 const Cart = require('../modal/cart')
 const Product = require('../modal/product')
+const Coupon = require('../modal/coupon')
+const User = require('../modal/user')
 
 
 const get_cart = async (req,res) => {
@@ -234,6 +236,24 @@ const dec_quantity = async (req, res) => {
     res.status(404).send("error decreasing quantity");
   }
 }
+
+const apply_coupon = async (req, res) => {
+  try {
+    const couponCode = req.body.couponCode;
+    const checkCoupon = await Coupon.findOne({coupon_code: couponCode});
+    const user = await User.findOne({_id: req.session.userId});
+    
+    if(!checkCoupon) return res.json({success:false,errMsg:"invalid coupon"});
+
+    if(user.usedCoupons.includes(checkCoupon._id)) return res.json({success:false,errMsg:"coupon already used before"});
+
+    
+
+  } catch (error) {
+    console.log("error applying coupon",error);
+    res.status(404).render('user/error',{errMsg: "error while applying coupon code try again!"})
+  }
+}
   
 
 module.exports = {
@@ -241,5 +261,6 @@ module.exports = {
     add_to_cart,
     remove_from_cart,
     inc_quantity,
-    dec_quantity
+    dec_quantity,
+    apply_coupon
 }

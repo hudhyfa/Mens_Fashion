@@ -1,5 +1,29 @@
 <%-include('userNavbar')%>
     <!-- Header Section End -->
+    <style>
+        #coupon-code{
+            font-size: 14px;
+            color: #b7b7b7;
+            height: 50px;
+            width: 100%;
+            border: 1px solid #e1e1e1;
+            padding-left: 20px;
+        }
+        #coupon-button{
+            font-size: 14px;
+            color: #ffffff;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: #111111;
+            padding: 0 30px;
+            border: none;
+            position: absolute;
+            right: 0;
+            top: 3;
+            height: 50px;
+        }
+    </style>
 
     <!-- Breadcrumb Section Begin -->
     <section class="breadcrumb-option">
@@ -57,8 +81,7 @@
                                                 <% } %>
                                                 <!-- <input type="text" value="<%=item._doc.quantity%>"> -->
                                                 <h5 class="my-1"><%=item._doc.quantity%></h5>
-                                                <a href="/inc-qty/<%=item._doc._id%>/<%=item.price%>" class="mx-2 my-1"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a>
-                                                
+                                                <a href="/inc-qty/<%=item._doc._id%>/<%=item.price%>" class="mx-2 my-1"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></a> 
                                             </div>
                                         </div>
                                     </td>
@@ -80,10 +103,16 @@
                 <div class="col-lg-4">
                     <div class="cart__discount">
                         <h6>Discount codes</h6>
-                        <form action="#">
-                            <input type="text" placeholder="Coupon code">
-                            <button type="submit">Apply</button>
-                        </form>
+                        <!-- <form>
+                            <input type="text" placeholder="Coupon code" id="coupon-code">
+                            <button onclick="applyDiscount()">Apply</button>
+                        </form> -->
+                        <div>
+                            <input type="text" placeholder="Coupon code" id="coupon-code">
+                            <button onclick="applyDiscount()" id="coupon-button">Apply</button>
+                        </div>
+                        <div id="discount-err">
+                        </div>
                     </div>
                     <div class="cart__total">
                         <h6>Cart total</h6>
@@ -141,7 +170,48 @@
            });
         }
 
-        // async function incQty(itemId){
+        function invalidCoupon(errMsg){
+            const discountErr = document.getElementById("discount-err");
+            discountErr.innerHTML += `
+                <p class="text text-danger" id="discount-err">${errMsg} try again!</p> 
+            `
+            setTimeout(() => {
+                discountErr.innerHTML = ""
+            }, 3000);
+        }
+
+        async function applyDiscount(){
+            const discountCode = document.getElementById("coupon-code").value;
+            console.log("discount code",discountCode);
+            const discountErr = document.getElementById("discount-err");
+
+            if(discountCode.trim()===""){
+                invalidCoupon("Enter a coupon code, ")
+            }else{
+                const response = await fetch('/apply-coupon',{
+                    method: 'POST',
+                    headers:{
+                        'Content-Type': 'application/json'
+                    },
+                    body:JSON.stringify({
+                        couponCode: discountCode
+                    })
+                }) 
+                
+                const data = await response.json();
+    
+                if(!data.success){
+                    invalidCoupon(data.errMsg);
+                }
+            }
+
+
+
+            
+        }
+
+    </script>
+        <!-- // async function incQty(itemId){
         //     try {
         //         const response = await fetch('/inc-qty',{
         //             method:'POST',
@@ -158,8 +228,7 @@
         //     } catch (error) {
         //         console.log("error while quantity increment",error);
         //     }
-        // }
-    </script>
+        // } -->
     <!-- fetch functions starts for cart removal -->
         <!-- //     async function removeFromCart(itemId){
         //     console.log("inside removeFromCart",itemId);

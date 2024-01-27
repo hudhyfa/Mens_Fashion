@@ -109,7 +109,7 @@
                         </form> -->
                         <div>
                             <input type="text" placeholder="Coupon code" id="coupon-code">
-                            <button onclick="applyDiscount()" id="coupon-button">Apply</button>
+                            <button onclick="applyDiscount('<%=cart._id%>')" id="coupon-button">Apply</button>
                         </div>
                         <div id="discount-err">
                         </div>
@@ -180,10 +180,10 @@
             }, 3000);
         }
 
-        async function applyDiscount(){
+        async function applyDiscount(cartId){
             const discountCode = document.getElementById("coupon-code").value;
-            console.log("discount code",discountCode);
             const discountErr = document.getElementById("discount-err");
+            const cart_id = cartId;
 
             if(discountCode.trim()===""){
                 invalidCoupon("Enter a coupon code, ")
@@ -194,7 +194,8 @@
                         'Content-Type': 'application/json'
                     },
                     body:JSON.stringify({
-                        couponCode: discountCode
+                        couponCode: discountCode,
+                        cartId: cart_id,
                     })
                 }) 
                 

@@ -240,13 +240,18 @@ const dec_quantity = async (req, res) => {
 const apply_coupon = async (req, res) => {
   try {
     const couponCode = req.body.couponCode;
-    const checkCoupon = await Coupon.findOne({coupon_code: couponCode});
-    const user = await User.findOne({_id: req.session.userId});
+    const cart_id = req.body.cartId;
+
+    const [checkCoupon, user, cart] = await Promise.all([
+      Coupon.findOne({coupon_code: couponCode}),
+      User.findOne({_id: req.session.userId}),
+      Cart.findOne({_id: cart_id})
+    ])
     
     if(!checkCoupon) return res.json({success:false,errMsg:"invalid coupon"});
-
     if(user.usedCoupons.includes(checkCoupon._id)) return res.json({success:false,errMsg:"coupon already used before"});
-
+    if(cart.cart_total <= checkCoupon.min_purchase_amount) return res.json({success:false,errMsg:`you should purchase for at least $${checkCoupon.min_purchase_amount} to redeem the coupon, `});
+    
     
 
   } catch (error) {

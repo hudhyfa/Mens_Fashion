@@ -118,7 +118,8 @@
                             <% }) %>
                                 <ul class="checkout__total__all">
                                     <li>Subtotal <span>$<%=cart.cart_total%></span></li>
-                                    <li>Total <span>$<%=cart.cart_total%></span></li>
+                                    <li>Discount <span>$<%=discountAmount%></span></li>
+                                    <li>Total <span>$<%=finalAmount%></span></li>
                                 </ul>
 
                                 <input type="Number" id="cart-total" value="<%=cart.cart_total%>" hidden>

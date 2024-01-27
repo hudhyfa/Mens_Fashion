@@ -39,7 +39,10 @@ const get_checkout = async (req,res) => {
             }
         })
 
-        res.render('user/checkout',{cart:cart, cartItems:enrichedCartData, addresses:address});
+        const finalAmount = req.session.finalAmount;
+        const discountAmount = req.session.discountAmount;
+
+        res.render('user/checkout',{cart:cart, cartItems:enrichedCartData, addresses:address, finalAmount, discountAmount});
     } catch (error) {
         console.error("error while rendering checkout page",error);
     }
@@ -156,6 +159,14 @@ const post_checkout = async (req, res) => {
         }
 
         console.log("coupons updated");
+
+        delete req.session.coupon_id;
+        delete req.session.finalAmount;
+        delete req.session.discountAmount;
+
+        console.log("sessions deleted");
+
+        console.log("session after deletion:",req.session.coupon_id,req.session.finalAmount);
 
 
         res.status(200).redirect(`/confirmation/${newOrder._id}`)

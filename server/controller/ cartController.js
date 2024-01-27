@@ -255,6 +255,8 @@ const apply_coupon = async (req, res) => {
     if(checkCoupon.type == "flat"){
       const order_total = cart.cart_total - checkCoupon.discount;
       req.session.finalAmount = order_total;
+      req.session.discountAmount = checkCoupon.discount;
+      req.session.coupon_id = checkCoupon._id;
 
       return res.json({
         success:true, 
@@ -269,6 +271,7 @@ const apply_coupon = async (req, res) => {
 
       const order_total = cart.cart_total - discounted_price;
       req.session.finalAmount = order_total;
+      req.session.discountAmount = discounted_price;
       req.session.coupon_id = checkCoupon._id;
 
       return res.json({

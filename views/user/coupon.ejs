@@ -227,11 +227,11 @@
                 <div class="content">
                     <h1 id="pageTitle">Coupons</h1>
                     <div class="coupons-container">
-                        <% coupons.forEach((coupon) => { %>
+                        <% coupons.forEach((coupon,i) => { %>
                                 <div class="coupon">
                                     <div class="coupon-details">
-                                        <h6 class="coupon-name"><%=coupon.coupon_code%></h6>
-                                        <input type="text" id="couponCode" value="<%=coupon.coupon_code%>" hidden>
+                                        <h6 class="coupon-name" id='couponCode<%=i%>'><%=coupon.coupon_code%></h6>
+                                        <input type="text"  value="<%=coupon.coupon_code%>" hidden>
                                         <%if(coupon.type === "flat") { %>
                                             <p> flat $<%=coupon.discount%> off on purchases above $<%=coupon.min_purchase_amount%></p>
                                         <% } else { %>
@@ -239,7 +239,7 @@
                                         <% } %>      
                                         <p>Expires at: <%= coupon.expiry_date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %></p>
                                     </div>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="copyCouponCode('<%=coupon._id%>')">Copy</button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="copyCouponCode('<%=i%>')">Copy</button>
                                 </div>
                         <% }) %>
                     </div>
@@ -258,8 +258,8 @@
             hamburgerMenu.classList.toggle('active');
         }
 
-        function copyCouponCode() {
-            const couponCode = document.getElementById('couponCode').value;
+        function copyCouponCode(i) {
+            let couponCode = document.getElementById(`couponCode${i}`).textContent;
             console.log("couponCode: ", couponCode);
             navigator.clipboard.writeText(couponCode)
                 .then(() => {

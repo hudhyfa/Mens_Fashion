@@ -3,6 +3,8 @@ const Cart = require('../modal/cart');
 const Address = require('../modal/address');
 const Order = require('../modal/order');
 const Wallet = require('../modal/wallet');
+const Coupon = require('../modal/coupon');
+const User = require('../modal/user');
 const easyinvoice = require('easyinvoice');
 const Razorpay = require('razorpay');
 
@@ -78,7 +80,7 @@ const post_checkout = async (req, res) => {
         
         const cart = await Cart.findOne({user_id:id});
         const cartItems = [...cart.products];
-        const total = cart.cart_total;
+        const total = req.session.finalAmount;
 
         if(!address){
             req.flash("addressError","Invalid address");
@@ -145,6 +147,16 @@ const post_checkout = async (req, res) => {
         )
 
         console.log("cart updated");
+
+        if(req.session.coupon_id){
+            await User.updateOne(
+                {_id: id},
+                {$push: {usedCoupons:req.session.coupon_id}}
+            )
+        }
+
+        console.log("coupons updated");
+
 
         res.status(200).redirect(`/confirmation/${newOrder._id}`)
         

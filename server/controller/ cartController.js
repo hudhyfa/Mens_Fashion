@@ -252,7 +252,32 @@ const apply_coupon = async (req, res) => {
     if(user.usedCoupons.includes(checkCoupon._id)) return res.json({success:false,errMsg:"coupon already used before"});
     if(cart.cart_total <= checkCoupon.min_purchase_amount) return res.json({success:false,errMsg:`you should purchase for at least $${checkCoupon.min_purchase_amount} to redeem the coupon, `});
     
-    
+    if(checkCoupon.type == "flat"){
+      const order_total = cart.cart_total - checkCoupon.discount;
+      req.session.finalAmount = order_total;
+
+      return res.json({
+        success:true, 
+        discount:checkCoupon.discount,
+        orderTotal:order_total,
+      });
+    }
+
+    if(checkCoupon.type == "percentage"){
+      let discounted_price = (checkCoupon.discount/100)*cart.cart_total;
+      if(discounted_price > checkCoupon.max_discount_amount) discounted_price = checkCoupon.max_discount_amount;
+
+      const order_total = cart.cart_total - discounted_price;
+      req.session.finalAmount = order_total;
+      req.session.coupon_id = checkCoupon._id;
+
+      return res.json({
+        success:true, 
+        discount:discounted_price,
+        orderTotal:order_total,
+      })
+    }
+
 
   } catch (error) {
     console.log("error applying coupon",error);

@@ -117,8 +117,9 @@
                     <div class="cart__total">
                         <h6>Cart total</h6>
                         <ul>
-                            <li>Subtotal <span>$ <%=cart.cart_total%></span></li>
-                            <li>Total <span>$ <%=cart.cart_total%></span></li>
+                            <li>Subtotal <span>$ <%=cart.cart_total%></span></li>       
+                            <li>Discount <span id="discount-amount">- $ 0.00</span></li>
+                            <li>Total <span id="final-amount">$ <%=cart.cart_total%></span></li>
                         </ul>
                         <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                     </div>
@@ -203,6 +204,16 @@
     
                 if(!data.success){
                     invalidCoupon(data.errMsg);
+                }
+                if(data.success){
+                    document.getElementById('discount-amount').innerHTML = "";
+                    document.getElementById('discount-amount').innerHTML += `
+                        - $ ${data.discount}
+                    `;
+                    document.getElementById('final-amount').innerHTML = "";
+                    document.getElementById('final-amount').innerHTML += `
+                        $ ${data.orderTotal}
+                    `;
                 }
             }
 

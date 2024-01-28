@@ -2,6 +2,7 @@
 const User = require('../modal/user');
 const Otp = require('../modal/otp');
 const Wallet = require('../modal/wallet');
+const Banner = require('../modal/banner');
 const userValidator = require('../../utils/user_validator')
 const bcrypt = require('bcrypt')
 const { transporter } = require('../../config/nodemailer');
@@ -12,7 +13,9 @@ require('dotenv').config()
 
 const get_homepage = async (req,res) => {
     try {
-        res.render('user/home')
+        const banners = await Banner.find();
+
+        res.render('user/home',{banners: banners});
     } catch (error) {
         console.error("error rendering home page", error)
     }

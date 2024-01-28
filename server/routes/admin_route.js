@@ -7,7 +7,8 @@ const customerController = require('../controller/customerController')
 const productController = require('../controller/productController');
 const categoryController = require('../controller/categoryController');
 const orderController = require('../controller/orderController');
-const couponController = require('../controller/couponController')
+const couponController = require('../controller/couponController');
+const bannerController = require('../controller/bannerController');
 const auth = require('../../middlewares/admin/adminLogged')
 
 const { adminLoggedOut,isAdminLogged } = auth;
@@ -52,5 +53,9 @@ admin_route.post('/add-coupon',couponController.add_coupon);
 admin_route.get('/update-coupon-status/:id',couponController.update_coupon_status);
 admin_route.get('/get-update-coupon/:id',couponController.get_edit_coupon);
 admin_route.post('/update-coupon/:id',couponController.edit_coupon);
+
+admin_route.get('/banners',bannerController.get_banners);
+admin_route.get('/add-banner',bannerController.get_add_banner);
+admin_route.post('/add-banner',bannerController.add_banner);
 
 module.exports = admin_route;

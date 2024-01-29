@@ -1,10 +1,46 @@
 const User = require('../modal/user');
+const Product = require('../modal/product');
+const Order = require('../modal/order');
+
 const adminValidator = require('../../utils/user_validator')
 const bcrypt = require('bcrypt');
 
 const admin_dashboard = async (req, res) => {
     try {
-        res.render('admin/dashboard')
+
+        const [productCount, orderCount, userCount] = await Promise.all([
+            Product.countDocuments(),
+            Order.countDocuments(),
+            User.countDocuments()
+        ])
+
+        const sales = await Order.aggregate([
+            {
+                $match:{
+                    status:{
+                        $nin: ["returned","cancelled"]
+                    }
+                }
+            },
+            {
+                $group:{
+                    _id:null,
+                    totalAmount:{
+                        $sum: "$total_amount"
+                    }
+                }
+            }
+        ])
+        const totalSales = sales[0].totalAmount;
+
+        const sideBox = {
+            totalSales,
+            productCount,
+            userCount,
+            orderCount
+        }
+
+        res.render('admin/dashboard',{sideBox:sideBox})
     } catch (error) {
         console.error("Error rendering admin dashboard")
     }

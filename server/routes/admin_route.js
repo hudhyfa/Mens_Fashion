@@ -59,4 +59,5 @@ admin_route.get('/add-banner',bannerController.get_add_banner);
 admin_route.post('/add-banner',bannerController.add_banner);
 admin_route.get('/edit-banner/:id',bannerController.get_edit_banner);
 admin_route.post('/edit-banner/:id',bannerController.edit_banner);
+admin_route.delete('/delete-banner',bannerController.delete_banner);
 module.exports = admin_route;

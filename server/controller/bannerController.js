@@ -38,9 +38,9 @@ const add_banner = async (req, res) => {
             banner_description
         } = req.body;
 
-        if(!banner_img.trim()||banner_heading.trim()||banner_subHeading.trim()||banner_description.trim()){
+        if(!banner_img.trim()||!banner_heading.trim()||!banner_subHeading.trim()||!banner_description.trim()){
             req.flash("invalidFields","Empty fields are not allowed");
-            res.status(403).redirect('/add-banner');
+            return res.status(403).redirect('/add-banner');
         }
 
         await Banner.create({
@@ -52,7 +52,7 @@ const add_banner = async (req, res) => {
 
         console.log("new banner created");
 
-        res.status(202).redirect('/banners');
+        return res.status(202).redirect('/banners');
 
     } catch (error) {
         console.log("error occured while adding banner", error);
@@ -99,6 +99,18 @@ const edit_banner = async (req, res) => {
     }
 }
 
+const delete_banner = async (req, res) => {
+    try {
+      await Banner.deleteOne({_id:req.body.bannerId});
+      console.log("banner deleted successfully");
+      res.json({
+        success: true,
+      });
+    } catch (error) {
+       res.status(404).render('admin/error', {errMsg:"error occured while deleting banner"});
+    }
+}
+
 
 
 module.exports = {
@@ -106,5 +118,6 @@ module.exports = {
     get_add_banner,
     add_banner,
     get_edit_banner,
-    edit_banner
+    edit_banner,
+    delete_banner
 }

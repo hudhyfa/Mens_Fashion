@@ -40,6 +40,15 @@ const admin_dashboard = async (req, res) => {
             orderCount
         }
 
+
+        const salesGraph = await Order.aggregate([
+            {
+                $match:{
+                    
+                }
+            }
+        ])
+
         res.render('admin/dashboard',{sideBox:sideBox})
     } catch (error) {
         console.error("Error rendering admin dashboard")

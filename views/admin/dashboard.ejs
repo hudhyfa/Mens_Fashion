@@ -91,12 +91,17 @@
                     <div class="row">
                       <div class="col-sm-7">
                         <h5>Business Survey</h5>
+                        <button class="btn btn-success" onclick="showGraph()">Show graph</button>
                       </div>
                       <div class="col-sm-5 text-md-right">
+                        <div class="dates">
+                          <label for="">From: </label><input type="date" name="fromDate"><br>
+                          <label for="">To: </label><input type="date" name="toDate">
+                        </div>
                         <button type="button" class="btn btn-icon-text mb-3 mb-sm-0 btn-inverse-primary font-weight-normal">
                           <i class="mdi mdi-email btn-icon-prepend"></i>Download Report </button>
+                        </div>
                       </div>
-                    </div>
                     <div class="row my-3">
                       <div class="col-sm-12">
                         <div class="flot-chart-wrapper">
@@ -128,26 +133,47 @@
     <!-- chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-      const ctx = document.getElementById('myChart');
-    
-      const chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
-            }
+      async function showGraph(){
+        try {
+          const response = await fetch('/admin',{
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({getGraph:true})
+          });
+          
+          const data = await response.json();
+          
+          if(data){
+            const years = data.salesGraph.map(obj=>obj._id.year).reverse();
+            const orders = data.salesGraph.map(obj=>obj.count).reverse();
+            const ctx = document.getElementById('myChart');
+            const chart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels: years,
+                datasets: [{
+                  label: 'Number of Orders per year',
+                  data: orders,
+                  borderWidth: 1,
+                  borderColor: 'blue',
+                  backgroundColor: 'lightblue',
+                }]
+              },
+              options: {
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
           }
+          
+        } catch (error) {
+          console.log("error while showing graph:",error);
         }
-      });
+      }
+      
     </script>
     <!-- container-scroller -->
     <!-- plugins:js -->

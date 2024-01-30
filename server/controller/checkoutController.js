@@ -83,7 +83,12 @@ const post_checkout = async (req, res) => {
         
         const cart = await Cart.findOne({user_id:id});
         const cartItems = [...cart.products];
-        const total = req.session.finalAmount;
+        let total;
+        if(req.session.finalAmount){
+            total = req.session.finalAmount;
+        }else{
+            total = cart.cart_total;
+        }
 
         if(!address){
             req.flash("addressError","Invalid address");

@@ -14,6 +14,7 @@ const auth = require('../../middlewares/admin/adminLogged')
 const { adminLoggedOut,isAdminLogged } = auth;
 
 admin_route.get('/admin',adminLoggedOut,adminController.admin_dashboard);
+admin_route.post('/admin',adminLoggedOut,adminController.admin_dashboard);
 
 admin_route.get('/admin_login',isAdminLogged,adminController.get_adminLogin)
 admin_route.post('/admin_login',adminController.adminLogin)

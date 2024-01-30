@@ -332,7 +332,7 @@ const generateInvoice=async (order)=>{
         })),
         tax:0,
         total: `$ ${totalAmount.toFixed(2)}`,
-        bottomNotice: "Thank you for shopping at UrbanSole!",
+        bottomNotice: "Thank you for shopping at Mens fashion!",
       };
       
     const result = await easyinvoice.createInvoice(data);

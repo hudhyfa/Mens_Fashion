@@ -34,7 +34,7 @@
                         <div class="d-flex justify-content-between align-items-start">
                           <div class="color-card">
                             <p class="mb-0 color-card-head">Sales</p>
-                            <h2 class="text-white"> $<%=sideBox.totalSales%>.<span class="h5">00</span>
+                            <h2 class="text-white"> $  <%=sideBox.totalSales%><span class="h5"></span>
                             </h2>
                           </div>
                           <i class="card-icon-indicator mdi mdi-basket bg-inverse-icon-warning"></i>
@@ -95,10 +95,13 @@
                       </div>
                       <div class="col-sm-5 text-md-right">
                         <div class="dates">
-                          <label for="">From: </label><input type="date" name="fromDate"><br>
-                          <label for="">To: </label><input type="date" name="toDate">
+                          <label for="">From: </label><input type="date" id="fromDate"><br>
+                          <label for="">To: </label><input type="date" id="toDate">
                         </div>
-                        <button type="button" class="btn btn-icon-text mb-3 mb-sm-0 btn-inverse-primary font-weight-normal">
+                        <div id="err-msg">
+                          
+                        </div>
+                        <button type="button" onclick="downloadReport()" class="btn btn-icon-text mb-3 mb-sm-0 btn-inverse-primary font-weight-normal">
                           <i class="mdi mdi-email btn-icon-prepend"></i>Download Report </button>
                         </div>
                       </div>
@@ -133,6 +136,31 @@
     <!-- chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+      async function downloadReport(){
+        const from = document.getElementById('fromDate').value;
+        const to = document.getElementById('toDate').value;
+      
+        if(!from||!to||from.trim()===""||to.trim()===""||to < from){
+          console.log("inside if case");
+          const errMsg = document.getElementById('err-msg');
+          errMsg.innerHTML += `
+            <p class="text text-danger">*Invalid dates</p> 
+          `
+          setTimeout(() => {
+            errMsg.innerHTML = ""
+          }, 3000);
+        }else{
+          const response = await fetch('/download-report',{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body:JSON.stringify({
+              fromDate: from,
+              toDate: to
+            })
+          })
+        }
+      }
+
       async function showGraph(){
         try {
           const response = await fetch('/admin',{

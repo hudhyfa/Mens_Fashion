@@ -1,6 +1,8 @@
 const User = require('../modal/user');
 const Product = require('../modal/product');
 const Order = require('../modal/order');
+const easyinvoice = require('easyinvoice');
+
 
 const adminValidator = require('../../utils/user_validator')
 const bcrypt = require('bcrypt');
@@ -68,6 +70,138 @@ const admin_dashboard = async (req, res) => {
     } catch (error) {
         console.error("Error rendering admin dashboard")
     }
+}
+
+const create_report = async (req, res) => {
+    try {
+        const from = req.body.fromDate;
+        const to = req.body.toDate;
+
+        const fromDate = new Date(from); 
+        const toDate = new Date(to);   
+
+        const report = await Order.aggregate([
+            {
+                $match: {
+                    created_at: {
+                        $gte: fromDate,
+                        $lte: toDate
+                    }
+                }
+            },
+            {
+                $unwind: "$products"
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "products.product_id",
+                    foreignField: "_id",
+                    as: "productDetails"
+                }
+            },
+            {
+                $unwind: "$productDetails"
+            },
+            {
+                $group: {
+                    _id: {
+                        productId: "$products.product_id",
+                        productName: "$productDetails.name",
+                        productPrice: "$productDetails.price"
+                    },
+                    quantitySold: { $sum: "$products.quantity" },
+                    productTotal: { $sum: { $multiply: ["$products.quantity", "$productDetails.price"] } }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    productName: "$_id.productName",
+                    quantitySold: 1,
+                    productTotal: 1
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    products: { $push: "$$ROOT" },
+                    totalProductTotals: { $sum: "$productTotal" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    products: 1,
+                    totalProductTotals: 1
+                }
+            }
+        ]);
+        
+        console.log(report);
+
+        const products = report[0].products;
+
+        products.forEach(product => {
+            const productName = product.productName;
+            const quantitySold = product.quantitySold;
+            const productTotal = product.productTotal;
+
+            console.log(`Product: ${productName}, Quantity Sold: ${quantitySold}, Total Amount: ${productTotal}`);
+        }); 
+        
+        const pdfBuffer = await generateInvoice(report);
+
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", `attachment; filename=${new Date()}.pdf`);
+        res.send(pdfBuffer);
+
+        
+    } catch (error) {
+        console.log("error creating report", error)
+    }
+}
+
+const generateInvoice=async (report)=>{
+    try{
+      let totalAmount = report[0].totalProductTotals;
+      let allProducts = report[0].products;
+      const data = {
+        documentTitle: "SALES REPORT",
+        currency: "INR",
+        marginTop: 25,
+        marginRight: 25,
+        marginLeft: 25,
+        marginBottom: 25,
+        sender: {
+          company: "Men's Fashion",
+          address: "123 Main Street, Banglore, India",
+          zip: "651323",
+          city: "Banglore",
+          country: "INDIA",
+          phone: "9876543210",
+          email: "mensfashion@gmail.com",
+          website: "www.mensfashion.shop",
+        },
+        invoiceNumber: "INV-${order._id}",
+        invoiceDate: new Date().toJSON(),
+        products: allProducts.map((product) => ({
+            Name: product.productName,
+            Quantity: product.quantitySold,
+            Total: product.productTotal
+        })),
+        tax:0,
+        total: `$ ${totalAmount.toFixed(2)}`,
+        bottomNotice: "Congrats !",
+      };
+      
+    const result = await easyinvoice.createInvoice(data);
+    const pdfBuffer = Buffer.from(result.pdf, "base64");
+  
+    return pdfBuffer;
+  }catch(error){
+      console.log(error);
+  }
 }
 
 const get_adminLogin = async (req, res) => {
@@ -142,4 +276,5 @@ module.exports = {
     admin_dashboard,
     adminLogin,
     adminLogout,
+    create_report
 }

@@ -74,8 +74,8 @@ const admin_dashboard = async (req, res) => {
 
 const create_report = async (req, res) => {
     try {
-        const from = req.body.fromDate;
-        const to = req.body.toDate;
+        const from = req.query.from;
+        const to = req.query.to;
 
         const fromDate = new Date(from); 
         const toDate = new Date(to);   
@@ -166,8 +166,8 @@ const generateInvoice=async (report)=>{
     try{
       let totalAmount = report[0].totalProductTotals;
       let allProducts = report[0].products;
+      console.log("inside generate:",totalAmount,allProducts);
       const data = {
-        documentTitle: "SALES REPORT",
         currency: "INR",
         marginTop: 25,
         marginRight: 25,
@@ -183,12 +183,12 @@ const generateInvoice=async (report)=>{
           email: "mensfashion@gmail.com",
           website: "www.mensfashion.shop",
         },
-        invoiceNumber: "INV-${order._id}",
+        invoiceNumber: `INV-${report[0]._id}`,
         invoiceDate: new Date().toJSON(),
         products: allProducts.map((product) => ({
-            Name: product.productName,
-            Quantity: product.quantitySold,
-            Total: product.productTotal
+            quantity: product.quantitySold,
+            description: product.productName,
+            price: product.productTotal
         })),
         tax:0,
         total: `$ ${totalAmount.toFixed(2)}`,

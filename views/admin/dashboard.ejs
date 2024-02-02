@@ -150,14 +150,7 @@
             errMsg.innerHTML = ""
           }, 3000);
         }else{
-          const response = await fetch('/download-report',{
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body:JSON.stringify({
-              fromDate: from,
-              toDate: to
-            })
-          })
+          window.location.href = `/download-report?from=${from}&to=${to}`
         }
       }
 

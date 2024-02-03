@@ -277,7 +277,6 @@ const return_order = async (req, res) => {
 const create_invoice = async (req, res) => {
     try {
       const order_id = req.session.order_id;
-      console.log(order_id);
       const order = await Order.findOne({_id:order_id})
                                     .populate({
                                         path: 'address_id', 
@@ -287,7 +286,6 @@ const create_invoice = async (req, res) => {
                                         path: 'products.product_id', 
                                         select: 'name price' 
                                     });
-    console.log("order bill",order);
     
     const pdfBuffer = await generateInvoice(order);
 

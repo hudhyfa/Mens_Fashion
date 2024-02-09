@@ -1,5 +1,4 @@
 const User = require('../../server/modal/user.js');
-const { request } = require('../../server/routes/user_route.js');
 
 const userLoggedIn = (req,res,next) => {
     console.log(req.session.userAuth);

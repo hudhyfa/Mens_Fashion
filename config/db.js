@@ -1,11 +1,11 @@
 const mongoose = require('mongoose')
-require('dotenv').config();
+// require('dotenv').config();
 
 
 //Connect to MongoDB
 const connectDB = async ()=>{
     try {
-        await mongoose.connect(process.env.MONGODB_URL);
+        await mongoose.connect('mongodb+srv://hudhaifa:mhone4Atlas@cluster0.uhxckro.mongodb.net/MensFashion');
         console.log("connected to MongoDB")
     } catch (error) {
         console.error("Error connecting to MongoDB");

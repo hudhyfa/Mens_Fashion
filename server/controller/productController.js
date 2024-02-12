@@ -122,6 +122,8 @@ const get_edit_product = async (req,res) => {
             Product.findOne({_id:new ObjectId(id)}),
             Category.find()
         ]);
+
+        req.session.images = product.image;
         
         const category = await Category.findOne({_id:product.category})
         console.log(category);
@@ -226,7 +228,6 @@ const update_status = async (req,res) => {
 
 const edit_product = async (req,res) => {
     try {
-
         const id = req.params.id;
 
         const { 
@@ -254,7 +255,10 @@ const edit_product = async (req,res) => {
             return res.status(402).redirect(`/edit-product/${id}`)
         }
 
-        // console.log(req.files)
+        const oldImages = req.session.images;
+        const newImages = req.files.map(file => file.path);
+        const allImages = [...oldImages,...newImages];
+
         const update_body =
         {
             name:name,
@@ -288,10 +292,7 @@ const edit_product = async (req,res) => {
                 }
             ],
             description:description,
-            image : [
-
-                ...req.files.map(file=>file.path)
-            ],
+            image : allImages,
             updated_on:Date.now()
         }
         

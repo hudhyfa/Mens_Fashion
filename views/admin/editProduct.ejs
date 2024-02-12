@@ -138,7 +138,8 @@
     
                 <div class="mb-3">
                     <label for="productDescription" class="form-label">Product Description</label>
-                    <textarea class="form-control" id="productDescription" rows="4" name="description" placeholder="<%=product.description%>" required></textarea>
+                    <!-- <p class="mx-2"><%=product.description%></p> -->
+                    <textarea class="form-control" id="productDescription" rows="4" name="description" required><%=product.description%></textarea>
                 </div>
 
                 <div id="errorMessages" class="my-3">

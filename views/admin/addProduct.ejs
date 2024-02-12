@@ -80,10 +80,16 @@
         <div class="container form-container">
             <h2 class="mb-4">Add Product</h2>
             <form action="/add_product" method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="productImage" class="form-label">Product Image</label>
-                    <input type="file" class="form-control" name="images" id="productImage" accept="image/*" multiple>
-                </div>
+              <div class="mb-3">
+                <label for="productImage" class="form-label">Product Image</label>
+                <input type="file" class="form-control" name="images" id="productImagesInput" accept="image/*" multiple>
+              </div>
+              
+              <div class="mb-3" id="productImages">
+                <label for="" class="form-label">Preview of the selected Images</label>
+                <div id="previewContainer" class="d-flex flex-wrap justify-content-between"></div>
+              </div>
+                           
     
                 <div class="mb-3">
                     <label for="productName" class="form-label">Product Name</label>
@@ -165,7 +171,46 @@
         <!-- table ends -->
         <%-include('_footer')-%>
     </div>
-    <!-- container-scroller -->
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const productImagesInput = document.getElementById('productImagesInput');
+        productImagesInput.addEventListener('change', handleFileSelect);
+      });
+
+      function handleFileSelect(event) {
+        // Access files based on the actual ID used in the EJS template
+        const files = event.target.files; // Or potentially event.target.files directly if ID matches
+
+        const previewContainer = document.getElementById('previewContainer');
+
+        for (let i = 0; i < files.length; i++) {
+          const reader = new FileReader();
+
+          reader.onload = function(e) {
+            const card = document.createElement('div'); // Create a card element for each preview
+
+            card.className = "card my-1"; // Add your existing card classes
+            card.style.width = "17rem"; // Add your existing card width
+
+            const img = document.createElement('img'); // Create an img element for the card
+            img.src = e.target.result; // Set the image source
+            img.className = "card-img-top"; // Add your existing image class
+
+            card.appendChild(img); // Add the image to the card
+            previewContainer.appendChild(card); // Add the card to the preview container
+          };
+
+          reader.onerror = function(error) {
+            // Handle file reading errors (display message, etc.)
+            console.error("Error reading file:", error);
+          };
+
+          reader.readAsDataURL(files[i]); // Read the file as base64 data
+        }
+      }
+
+
+    </script>
     <!-- plugins:js -->
     <script src="/adminAssets/vendors/js/vendor.bundle.base.js"></script>
     <!-- endinject -->

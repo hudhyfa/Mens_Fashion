@@ -96,7 +96,13 @@
                       <div class="col-sm-5 text-md-right">
                         <div class="dates">
                           <label for="">From: </label><input type="date" id="fromDate"><br>
-                          <label for="">To: </label><input type="date" id="toDate">
+                          <label for="">To: </label><input type="date" id="toDate"><br>
+                          <label for="">Format: </label>
+                          <select id="mySelect" onchange="selectedFormat(this.value)">
+                            <option value="">select a format</option>
+                            <option value="excel">Excel</option>
+                            <option value="pdf">PDF</option>
+                          </select>
                         </div>
                         <div id="err-msg">
                           
@@ -136,21 +142,27 @@
     <!-- chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+      let method = "";
+      function selectedFormat(val){
+        method = val;
+      }
+
       async function downloadReport(){
         const from = document.getElementById('fromDate').value;
         const to = document.getElementById('toDate').value;
+        const format = method;
       
-        if(!from||!to||from.trim()===""||to.trim()===""||to < from){
+        if(!from||!to||from.trim()===""||to.trim()===""||to < from||format==""){
           console.log("inside if case");
           const errMsg = document.getElementById('err-msg');
           errMsg.innerHTML += `
-            <p class="text text-danger">*Invalid dates</p> 
+            <p class="text text-danger">*Invalid dates or format</p> 
           `
           setTimeout(() => {
             errMsg.innerHTML = ""
           }, 3000);
         }else{
-          window.location.href = `/download-report?from=${from}&to=${to}`
+          window.location.href = `/download-report?from=${from}&to=${to}&format=${format}`
         }
       }
 

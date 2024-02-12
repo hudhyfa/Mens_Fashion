@@ -3,9 +3,9 @@ const Product = require('../modal/product');
 const Order = require('../modal/order');
 const easyinvoice = require('easyinvoice');
 
-
 const adminValidator = require('../../utils/user_validator')
 const bcrypt = require('bcrypt');
+const excelJs = require('exceljs');
 
 const admin_dashboard = async (req, res) => {
     try {
@@ -76,6 +76,7 @@ const create_report = async (req, res) => {
     try {
         const from = req.query.from;
         const to = req.query.to;
+        const format = req.query.format;
 
         const fromDate = new Date(from); 
         const toDate = new Date(to);   
@@ -148,13 +149,52 @@ const create_report = async (req, res) => {
             const productTotal = product.productTotal;
 
             console.log(`Product: ${productName}, Quantity Sold: ${quantitySold}, Total Amount: ${productTotal}`);
-        }); 
+        });
         
-        const pdfBuffer = await generateInvoice(report);
+        if(format === "pdf"){
+            const pdfBuffer = await generateInvoice(report);
+    
+            res.setHeader("Content-Type", "application/pdf");
+            res.setHeader("Content-Disposition", `attachment; filename=${new Date()}.pdf`);
+            res.send(pdfBuffer);
+        }else{
+            let totalAmount = report[0].totalProductTotals;
+            let allProducts = report[0].products;
 
-        res.setHeader("Content-Type", "application/pdf");
-        res.setHeader("Content-Disposition", `attachment; filename=${new Date()}.pdf`);
-        res.send(pdfBuffer);
+            let workbook = new excelJs.Workbook();
+            
+            const sheet = workbook.addWorksheet("Sales Report");
+            sheet.columns = [
+                {header:"Product Name",key:"productName",width:25},
+                {header:"Quantity",key:"productQuantity",width:10},
+                {header:"Total",key:"productTotal",width:10},
+                {header:"Total Sales",key:"totalSales",width:10}
+            ]
+
+            await allProducts.map((value,idx) => {
+                sheet.addRow({
+                    productName: value.productName,
+                    productQuantity: value.quantitySold,
+                    productTotal: value.productTotal
+                })
+            })
+
+            sheet.addRow({
+                totalSales: totalAmount
+            })
+
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+
+            res.setHeader(
+                "Content-Disposition",
+                "attachment;filename=" + "report.xlsx"
+            )
+
+            workbook.xlsx.write(res)
+        }
 
         
     } catch (error) {

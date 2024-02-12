@@ -278,14 +278,14 @@ const create_invoice = async (req, res) => {
     try {
       const order_id = req.session.order_id;
       const order = await Order.findOne({_id:order_id})
-                                    .populate({
-                                        path: 'address_id', 
-                                        select: 'house_name state country pincode' 
-                                    })
-                                    .populate({
-                                        path: 'products.product_id', 
-                                        select: 'name price' 
-                                    });
+        .populate({
+            path: 'address_id', 
+            select: 'house_name state country pincode' 
+        })
+        .populate({
+            path: 'products.product_id', 
+            select: 'name price' 
+        });
     
     const pdfBuffer = await generateInvoice(order);
 

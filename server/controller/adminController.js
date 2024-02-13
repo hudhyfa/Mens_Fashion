@@ -68,7 +68,7 @@ const admin_dashboard = async (req, res) => {
 
 
     } catch (error) {
-        console.error("Error rendering admin dashboard")
+        console.error("Error rendering admin dashboard",error);
     }
 }
 

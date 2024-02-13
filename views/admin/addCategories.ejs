@@ -89,7 +89,7 @@
         <!-- table begins -->
         <div class="container form-container">
             <h2 class="mb-4">Add Categories</h2>
-            <form action="/add_category" method="post">
+            <form action="/add_category" method="post" id="addCategoryForm">
                 <div class="mb-3">
                     <label for="categoryName" class="form-label">Category Name</label>
                     <input type="text" class="form-control" id="categoryName" name="category_name">
@@ -101,23 +101,35 @@
                 </div>
                 
                 <div id="errorMessages" class="my-3">
-                  <% if(flash.errNothing) { %>
-                    <h6 style="color: #e74c3c;"><%=flash.errNothing%></h6>
-                  <% }else if(flash.errInput) { %>
-                    <h6 style="color: #e74c3c;"><%=flash.errInput%></h6>
-                  <% }else if(flash.error) { %>
-                    <h6 style="color: #e74c3c;"><%=flash.error%></h6>
-                  <% }else if(flash.catExists) { %>
+                  <% if(flash.catExists) { %>
                     <h6 style="color: #e74c3c;"><%=flash.catExists%></h6>
                   <% } %>
                 </div>
                 
-                <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                <button type="button" onclick="addCategory()" class="btn btn-sm btn-primary">Save</button>
             </form>
         </div>
         <!-- table ends -->
         <%-include('_footer')-%>
     </div>
+    <script>
+      function addCategory() {
+        console.log("inside add category function");
+        const name = document.getElementById('categoryName').value;
+        const desc = document.getElementById('categoryDescription').value;
+        if(!name||!desc||name.trim()==""||desc.trim()==""){
+          const errMsg = document.getElementById('errorMessages');
+          errMsg.innerHTML += `
+            <h6 style="color: #e74c3c;">"Invalid Input"</h6>
+          `
+          setTimeout(() => {
+            errMsg.innerHTML = ""
+          }, 3000);
+        }else{
+          document.getElementById('addCategoryForm').submit();
+        }
+      }
+    </script>
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="/adminAssets/vendors/js/vendor.bundle.base.js"></script>

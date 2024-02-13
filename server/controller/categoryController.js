@@ -22,31 +22,23 @@ const add_category = async (req,res) => {
 
         const { category_name, category_desc } = req.body;
 
-        if(category_name && category_desc){
+        const category_exists = await Category.findOne({name : category_name})
 
-            const category_exists = await Category.findOne({name : category_name})
-
-            if(category_exists){
-                req.flash('catExists',"Category already exists")
-                return res.status(402).redirect('/add_category')
-            }else{
-                const new_category = await Category.create({
-                    name: category_name,
-                    description: category_desc
-                })
-                await new_category.save();
-
-                return res.status(200).redirect('/categories')
-            }
-
+        if(category_exists){
+            req.flash('catExists',"Category already exists")
+            return res.status(402).redirect('/add_category')
         }else{
-           req.flash('errInput',"Please enter all details")
-           return res.status(402).redirect('/categories') 
+            const new_category = await Category.create({
+                name: category_name,
+                description: category_desc
+            })
+            await new_category.save();
+
+            return res.status(200).redirect('/categories')
         }
 
     } catch (error) {
-       console.error("Error adding category");
-       req.flash("error","Error occurred while adding category")
+       console.error("Error adding category",error);
        return res.status(402).redirect('/categories') 
     }
 }

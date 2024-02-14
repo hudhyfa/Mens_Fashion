@@ -214,7 +214,18 @@ const cancel_order = async (req, res) => {
        )
 
        if(order.payment === "wallet"||order.payment === "razorpay"){
-        await Wallet.updateOne({user_id:user_id},{$inc:{amount:order.total_amount}})
+        let newTransaction = {
+            transaction_amount: order.total_amount,
+            transaction_type: "Credit",
+            transaction_date: new Date()
+        }
+        await Wallet.updateOne(
+                {user_id:user_id},
+                {
+                    $inc:{amount:order.total_amount},
+                    $push:{transactions:newTransaction}
+                }  
+            )
         console.log("wallet updated after cancellation");
        }
 
@@ -261,8 +272,19 @@ const return_order = async (req, res) => {
         )
 
         if(order.payment === "wallet"||order.payment === "razorpay"){
-            await Wallet.updateOne({user_id:user_id},{$inc:{amount:order.total_amount}})
-            console.log("wallet updated after cancellation");
+            let newTransaction = {
+                transaction_amount: order.total_amount,
+                transaction_type: "Credit",
+                transaction_date: new Date()
+            }
+            await Wallet.updateOne(
+                    {user_id:user_id},
+                    {
+                        $inc:{amount:order.total_amount},
+                        $push:{transactions:newTransaction}
+                    }  
+                )
+            console.log("wallet updated after returning order");
         }
 
         console.log("order updated after returning order");

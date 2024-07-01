@@ -1,0 +1,19 @@
+name: mensfashion CI workflow
+
+on:
+    push:
+        branches: 
+            - main
+    pull_request: 
+        branches: 
+            - main
+    workflow_dispatch:
+
+jobs:
+    notification:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: notification
+              run: echo "codebase updated"
+              shell: bash

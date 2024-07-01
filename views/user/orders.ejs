@@ -274,10 +274,10 @@
         <div class="container" id="userContainer">
             <%- include('profile-sidebar') %>
             <div class="content">
+                <% if( orders && orders.length > 0 ) { %>
                 <h1 id="pageTitle">My Orders</h1>
-            <% if( orders && orders.length > 0 ) { %>
                 <% orders.forEach(order => { %>    
-                <div class="order-card">
+                <div class="order-card"  id="orders-container">
                     <h2>Order ID: #<%=order._id%></h2>
                     <p class="order-status <%=order.status%>"><%=order.status%></p>
 
@@ -295,8 +295,8 @@
                             <p>Total: $ <%=product.product_total%></p>
                         </div>
                         <% }) %>
-                        
                     </div>
+
                     <p><strong>Total amount: $<%=order.total_amount%></strong></p>
                     <p><strong>payment method: <%=order.payment%></strong></p>
                     <% if( order.status !== "cancelled" && order.status !== "returned" && order.status !== "delivered") { %>
@@ -309,6 +309,15 @@
             <% }else{ %>
                 <h4>no orders yet.</h4>
             <% } %>
+            <div id="pagination-container" style="display: flex; justify-content: center; align-items: center; margin-top: 50px;">
+                <% if(currentPage > 1) { %>
+                <button onclick="changePage('<%=currentPage%>',-1,'<%=user._id%>')" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></button>
+                <% } %>
+                <p style="margin: 0 20px; font-size: 18px;">1</p>
+                <% if(currentPage < totalPages) { %>
+                <button onclick="changePage('<%=currentPage%>',1,'<%=user._id%>')" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></button>
+                <% } %>
+            </div>
             </div>
         </div>
         <% } else { %>
@@ -319,6 +328,90 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
     <script>
+        async function changePage(currentPage,action,userId){
+            console.log("inside changePage");
+            const response = await fetch(`/orders/${userId}`,{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    currentPage,
+                    action
+                })
+            })
+            const data = await response.json();
+            if(data){
+                console.log("got data",data);
+                updateOrders(data.orders);
+                updatePagination(data.currentPage,data.totalPages,data.userId);
+            }
+        }
+
+        async function updateOrders(orders) {
+    try {
+        const container = document.getElementById('orders-container');
+        container.innerHTML = "";
+        orders.forEach(order => {
+            const updateContainer = `
+                <div class="order-card">
+                    <h2>Order ID: #${order._id}</h2>
+                    <p class="order-status ${order.status}">${order.status}</p>
+
+                    <div class="order-details">
+                        <p><strong>Ordered to:</strong> <span class="order-address">${order.address_id.name}</span></p>
+                    </div>
+
+                    <div class="products-container">
+                        ${order.products.map(product => `
+                            <div class="product-card">
+                                <img src="${product.product_id.image[0]}" alt="${product.product_id.name}">
+                                <h3>${product.product_id.name}</h3>
+                                <p>Size: ${product.size}</p>
+                                <p>Quantity: ${product.quantity}</p>
+                                <p>Total: $${product.product_total}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <p><strong>Total amount: $${order.total_amount}</strong></p>
+                    <p><strong>Payment method: ${order.payment}</strong></p>
+                            ${order.status !== "cancelled" && order.status !== "returned" && order.status !== "delivered" ?
+                                `<button onclick="cancel('${order._id}')" class="cancel-order-button mt-2">Cancel Order</button>` :
+                                (order.status === "delivered" ?
+                                    `<button onclick="returnOrder('${order._id}')" class="cancel-order-button mt-2">Return Order</button>` : '')
+                            }
+                        </div>
+                    `;
+                    container.insertAdjacentHTML('beforeend', updateContainer);
+                });
+            } catch (error) {
+                console.log("error while updating orders", error);
+            }
+        }
+
+
+        async function updatePagination(currentPage,totalPages,userId){
+            try {
+            const paginationContainer = document.getElementById('pagination-container');
+            paginationContainer.innerHTML = "";
+            const leftButton = currentPage > 1
+                ? `<button onclick="changePage('${currentPage}',-1,'${userId}')" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-left" style="color: #000000;"></i></button>`
+                : '';
+            const rightButton = currentPage < totalPages
+                ? `<button onclick="changePage('${currentPage}',1,'${userId}')" style="border-radius: 100px;background-color: #fff;border: 1px solid black;"><i class="fa-solid fa-angle-right" style="color: #000000;"></i></button>`
+                : '';
+            const edits = `
+            ${leftButton}
+            <p style="margin: 0 20px; font-size: 18px;">${currentPage}</p>
+            ${rightButton}
+            `
+            paginationContainer.innerHTML += edits;
+            } catch (error) {
+            console.log("error while updating page",error);
+            }
+        }
+
         function cancel(id){
             Swal.fire({
                title: "Are you sure?",

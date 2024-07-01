@@ -95,8 +95,19 @@
                     <input type="text" class="form-control" id="couponCode" name="coupon_code" value="<%=coupon.coupon_code%>">
                 </div>
                 <div class="mb-3">
-                    <label for="type" class="form-label">type</label>
-                    <input type="text" class="form-control" id="type" name="type" value="<%=coupon.type%>">
+                  <label for="type" class="form-label">type</label>
+                  <select onchange="couponType(this.value)">
+                    <option value="">Select a type</option>
+                    <option value="percentage">Percentage</option>
+                    <option value="flat">Flat</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="">Selected type: </label>
+                  <div id="selected-type">
+                    
+                  </div>
+                  <input type="text" id="input-type" name="type" hidden>
                 </div>
                 <div class="mb-3">
                     <label for="minPurchase" class="form-label">Minimum purchase amount</label>
@@ -131,6 +142,19 @@
         <!-- table ends -->
         <%-include('_footer')-%>
     </div>
+    <script>
+      let type = "";
+      function couponType(cpnType){
+        type = cpnType;
+        // document.getElementById("selected-type").value = "";
+        document.getElementById("selected-type").innerHTML = "";
+        document.getElementById("selected-type").innerHTML = `
+          <p>${cpnType}</p>
+        `;
+        document.getElementById("input-type").value = type;
+        console.log(document.getElementById("input-type").value);
+      }
+    </script>
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="/adminAssets/vendors/js/vendor.bundle.base.js"></script>

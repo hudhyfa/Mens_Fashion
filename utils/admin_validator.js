@@ -19,6 +19,10 @@ const product_validator = function(body){
         errors.invalidPrice = "price must be above zero";
     }
 
+    if(offerPrice >= price){
+        errors.invalidOfferPrice = "offerPrice must be lower than price";
+    }
+
     if(quantityL < 0||quantityXL < 0||quantityXXL < 0||quantityXS < 0||quantityS < 0||quantityM < 0){
         errors.invalidQuantity = "quantity must be zero or above";
     }

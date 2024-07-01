@@ -3,6 +3,7 @@ const Category = require('../modal/category');
 const validator = require('../../utils/admin_validator');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const jimp = require('jimp');
 
 const get_products = async (req,res) => {
     try {
@@ -124,6 +125,7 @@ const get_edit_product = async (req,res) => {
         ]);
 
         req.session.images = product.image;
+        console.log("inside get edit product",req.session.images)
         
         const category = await Category.findOne({_id:product.category})
         console.log(category);
@@ -160,6 +162,27 @@ const add_product = async (req,res) => {
             return res.status(402).redirect('/add_product');
         }
         console.log(req.files)
+        // const croppedImages = [];
+        // for (const file of req.files) {
+
+        //     const image = await jimp.read(file.path);
+      
+        //     const aspectRatio = 16 / 9;
+        //     const width = Math.min(image.bitmap.width, image.bitmap.height * aspectRatio);
+        //     const height = width / aspectRatio;
+        //     const x = (image.bitmap.width - width) / 2;
+        //     const y = (image.bitmap.height - height) / 2;
+      
+        //     const croppedImage = image.crop(x, y, width, height);
+      
+        //     const uniqueFilename = `cropped_${file.originalname}`;
+      
+        //     await croppedImage.writeAsync(`uploads/${uniqueFilename}`);
+      
+        //     croppedImages.push(`uploads/${uniqueFilename}`);
+        // }
+        // console.log(croppedImages);
+      
         const product = await Product.create({
             name:name,
             category:category,
@@ -192,7 +215,7 @@ const add_product = async (req,res) => {
                 }
             ],
             description:description,
-            image: req.files.map(file=>file.path),
+            image: req.files.map(file => file.path),
             created_on:Date.now()
         })
 
@@ -256,7 +279,9 @@ const edit_product = async (req,res) => {
         }
 
         const oldImages = req.session.images;
+        console.log("oldImages",oldImages);
         const newImages = req.files.map(file => file.path);
+        console.log("newImages",newImages);
         const allImages = [...oldImages,...newImages];
 
         const update_body =

@@ -4,7 +4,7 @@ const Order = require('../modal/order');
 const easyinvoice = require('easyinvoice');
 
 const adminValidator = require('../../utils/user_validator')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const excelJs = require('exceljs');
 
 const admin_dashboard = async (req, res) => {

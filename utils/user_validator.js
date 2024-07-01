@@ -31,7 +31,6 @@ const secondary_validation = function (data) {
     const { first_name, last_name, profile_img, password, confirm_password} = data;
     
     const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
-    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/
 
     const errors = {}
     
